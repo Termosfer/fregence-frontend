@@ -1,0 +1,29 @@
+.font-playfair {
+  font-family: "Playfair", serif;
+}
+
+
+.about-p::before {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 2px;
+  background-color: #000;
+}
+
+.section-about {
+  background-image: url("../../assets/about1_3.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.breadcrumb-image {
+  background-image: url("../../assets/Breadcrumb.webp");
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
