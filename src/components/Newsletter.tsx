@@ -1,13 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IoMailOpenOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { toast } from "react-toastify";
 
 const Newsletter = () => {
   const [email, setEmail] = useState<string>("");
-  const navigate = useNavigate();
 
   // 1. Mutation: Backend-ə email göndərir
   const mutation = useMutation({
@@ -16,15 +14,15 @@ const Newsletter = () => {
       return api.post("/subscribers", { email: newEmail });
     },
     onSuccess: () => {
-      toast.success("Uğurla abunə oldunuz!");
+      toast.success("Subscription successful!");
       setEmail("");
     },
     onError: (error: any) => {
       // 401 və ya 403 gələrsə token problemi var deməkdir
       if (error.response?.status === 401 || error.response?.status === 403) {
-        toast.error("Sessiyanızın vaxtı bitib, yenidən giriş edin.");
+        toast.error("Please log in first!");
       } else {
-        toast.error("Bu email artıq abunə olub və ya xəta baş verdi.");
+        toast.error("Email already subscribed.");
       }
     },
   });
@@ -36,22 +34,20 @@ const Newsletter = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      toast.error(
-        toast.warn("Zəhmət olmasa əvvəlcə giriş edin.")
-      )
+      toast.error("Please log in first.");
       // İstəsəniz istifadəçini login səhifəsinə yönləndirə bilərsiniz:
-       navigate("/login");
+      
       return;
     }
 
     // 3. Validasiya
     if (!email) {
-      toast.warn("Zəhmət olmasa email adresinizi yazın.");
+      toast.warn("Please enter your email address.");
       return;
     }
 
     if (!email.includes("@")) {
-      toast.warn("Düzgün email formatı daxil edin.");
+      toast.warn("Please enter a valid email address.");
       return;
     }
 
@@ -104,3 +100,6 @@ const Newsletter = () => {
 };
 
 export default Newsletter;
+
+
+

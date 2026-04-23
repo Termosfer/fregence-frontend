@@ -58,16 +58,26 @@ const QuickModal = ({ show, setShowModal, productId }: QuickModalProps) => {
   };
 
   const isThisItemUpdating = isUpdating && updatingVariables?.perfumeId === productId;
-const handleMainAction = () => {
-  // 1. VƏZİYYƏT: Məhsul səbətdə YOXDURSA
+const handleMainAction  = () => {
+  // 1. TOKEN YOXLANIŞI
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    toast.error("Please log in first!"); // Giriş edilməyibsə bu mesaj çıxacaq
+    return; // Funksiyanı burada dayandırır, aşağıdakı add-to-cart işləmir
+  }
+
+  // 2. ƏGƏR GİRİŞ EDİLİBSƏ MƏHSULU ƏLAVƏ ET
   if (product && !itemInCart) {
-    // Seçilmiş say qədər (localCount) məhsulu səbətə göndər
-    updateQuantity({ perfumeId: product.id, quantity: localCount });
-    toast.success(`${product.name} added to bag`);
-  } 
-  // 2. VƏZİYYƏT: Məhsul ARTIQ səbətdə VARSA
-  else {
-    // Məhsul onsuz da səbətdədir, düyməyə bir də basanda sadəcə modalı bağla
+    // Sənin useCart hook-unda yazdığımız updateQuantity-ni çağırırıq
+    // 'isNew: true' göndəririk ki, useCart-dakı onSuccess tosteri göstərsin
+    updateQuantity({ 
+      perfumeId: product.id, 
+      quantity: localCount, 
+      isNew: true 
+    }); 
+  } else {
+    // Artıq səbətdədirsə bağla
     setShowModal(false);
   }
 };
@@ -85,7 +95,7 @@ const handleMainAction = () => {
         {/* Close Button - Mobildə daha görünən və asan kliklənən */}
         <button 
           onClick={() => setShowModal(false)} 
-          className="absolute top-4 right-4 md:top-6 md:right-6 p-2 rounded-full bg-white/90 text-black hover:bg-black hover:text-white transition-all z-50 shadow-lg cursor-pointer border border-gray-100"
+          className="absolute top-4 right-4 md:top-6 md:right-6 p-2 rounded-full bg-white/90 text-black hover:bg-black hover:text-white hover:rotate-180  transition-all duration-300 z-50 shadow-lg cursor-pointer border border-gray-100"
         >
           <IoMdClose size={20} />
         </button>
@@ -193,9 +203,9 @@ const handleMainAction = () => {
                   {isThisItemUpdating ? (
                     <FiLoader className="animate-spin" size={18} />
                   ) : itemInCart ? (
-                    <><FiCheck size={18} /> Already in Bag</>
+                    <><FiCheck size={18} /> Already in Cart</>
                   ) : (
-                    <><FiShoppingBag size={18} /> Add to Bag</>
+                    <><FiShoppingBag size={18} /> Add to Cart</>
                   )}
                 </button>
               </div>

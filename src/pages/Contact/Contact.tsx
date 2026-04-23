@@ -2,7 +2,6 @@ import img22 from "../../assets/map.webp";
 import { MdLocationOn, MdOutlinePhoneAndroid, MdMail } from "react-icons/md";
 import { FaClock } from "react-icons/fa";
 
-import "./contact.css";
 import Newsletter from "../../components/Newsletter";
 import { toast } from "react-toastify";
 import { useState } from "react";
@@ -48,16 +47,14 @@ const Contact = () => {
       return api.post("/contact", data);
     },
     onSuccess: () => {
-      toast.success(
-        "Mesajınız uğurla göndərildi! Tezlislə sizinlə əlaqə saxlanılacaq.",
-      );
+      toast.success("Message sent! We'll contact you soon.");
       setFormData({ name: "", email: "", message: "" }); // Formu təmizlə
     },
     onError: (error: any) => {
       if (error.response?.status === 401 || error.response?.status === 403) {
-        toast.error("Mesaj göndərmək üçün zəhmət olmasa giriş edin.");
+        toast.error("Please log in first!");
       } else {
-        toast.error("Xəta baş verdi. Bir az sonra yenidən yoxlayın.");
+        toast.error("An error occurred. Please try again later.");
       }
     },
   });
@@ -74,20 +71,20 @@ const Contact = () => {
     // Token yoxlanışı (Əgər backend mütləq giriş tələb edirsə)
     const token = localStorage.getItem("token");
     if (!token) {
-      toast.warn("Zəhmət olmasa əvvəlcə giriş edin.");
+      toast.error("Please log in first.");
       return;
     }
 
     // Sadə validasiya
     if (!formData.name || !formData.email || !formData.message) {
-      toast.warn("Zəhmət olmasa bütün xanaları doldurun.");
+      toast.warn("Please fill in all fields.");
       return;
     }
 
     mutation.mutate(formData);
   };
   return (
-    <div className="contact-page">
+    <div className="contact-page font-[Playfair]">
       <div className="w-full breadcrumb-image h-[200px] sm:h-[300px] lg:h-[500px]"></div>
       <div className="py-10 px-4 sm:px-8 lg:px-20">
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-20">

@@ -23,8 +23,9 @@ const Products = () => {
   const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [sliderPrice, setSliderPrice] = useState(1000);
-const [searchParams] = useSearchParams();
-const initialBrand = searchParams.get("brand") || "";
+  const [searchParams] = useSearchParams();
+  const initialBrand = searchParams.get("brand") || "";
+  const globalQuery = searchParams.get("query") || ""; // Header-dən gələn axtarış sözü
   const [filters, setFilters] = useState({
     brand: initialBrand,
     gender: "",
@@ -36,6 +37,11 @@ const initialBrand = searchParams.get("brand") || "";
     size: 12,
   });
 
+  // Əgər URL-dəki brand dəyişərsə state-i yenilə (Shops-dan gələndə lazım olur)
+  useEffect(() => {
+    setFilters((prev) => ({ ...prev, brand: initialBrand, page: 0 }));
+  }, [initialBrand]);
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setFilters((prev) => ({ ...prev, maxPrice: sliderPrice, page: 0 }));
@@ -45,26 +51,44 @@ const initialBrand = searchParams.get("brand") || "";
 
   // Brendləri çəkirik
   const { data: brands, isLoading: isBrandsLoading } = useQuery<string[]>({
-    queryKey: ["brands"],
     queryFn: () => api.get("/perfumes/brands").then((res) => res.data),
+    queryKey: ["brands"],
   });
 
   const { data: productsData, isLoading: isProductsLoading } = useQuery<
     PageResponse<Perfume>
   >({
-    queryKey: ["perfumes", filters],
+    queryKey: ["perfumes", filters, globalQuery],
     queryFn: async () => {
-      const isFiltered =
+      /* const isFiltered =
         filters.brand !== "" ||
         filters.gender !== "" ||
         filters.minPrice !== 0 ||
-        filters.maxPrice !== 1000;
+        filters.maxPrice !== 1000 ||
+        globalQuery !== "";
 
-      const endpoint = isFiltered ? "/perfumes/filter" : "/perfumes";
+      const endpoint = isFiltered ? "/perfumes/filter" : "/perfumes"; */
+
+      
+      const isSearchActive = globalQuery !== "";
+      const isSidebarFiltered = filters.brand !== "" || filters.gender !== "" || filters.maxPrice < 1000;
+      
+      const endpoint = (isSidebarFiltered || (isSearchActive && filters.brand)) ? "/perfumes/filter" : "/perfumes";
 
       const response = await api.get(endpoint, {
         params: {
+         /*  query: globalQuery,
           brand: filters.brand || undefined,
+          gender: filters.gender || undefined,
+          minPrice: filters.minPrice,
+          maxPrice: filters.maxPrice,
+          sortBy: filters.sortBy,
+          direction: filters.direction,
+          page: filters.page,
+          size: filters.size, */
+
+           query: globalQuery || undefined, // Header axtarışı
+          brand: filters.brand || undefined, // Sidebar brend seçimi
           gender: filters.gender || undefined,
           minPrice: filters.minPrice,
           maxPrice: filters.maxPrice,
@@ -97,13 +121,6 @@ const initialBrand = searchParams.get("brand") || "";
       document.body.style.overflow = "auto";
     };
   }, [isFilterOpen]);
-
-  /* if (isBrandsLoading || isProductsLoading)
-    return (
-      <div className="text-center py-20 text-xl font-bold animate-pulse uppercase tracking-widest">
-        Yüklənir...
-      </div>
-    ); */
 
   return (
     <div className="py-10 font-[Playfair]">

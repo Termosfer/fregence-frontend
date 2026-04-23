@@ -44,12 +44,12 @@ export const useWishlist = () => {
       return { previousWishlist, previousCount };
     },
     onSuccess: () => {
-      toast.success("Favoritlərə əlavə edildi");
+      toast.success("Item added to wishlist!");
     },
     onError: (_err, _newProduct, context) => {
       queryClient.setQueryData(["wishlist"], context?.previousWishlist);
       queryClient.setQueryData(["wishlistCount"], context?.previousCount);
-      toast.error("Xəta baş verdi");
+      toast.error("An error occurred while adding to wishlist.");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
@@ -76,7 +76,7 @@ export const useWishlist = () => {
       return { previousWishlist, previousCount };
     },
     onSuccess: () => {
-      toast.info("Favoritlərdən silindi");
+      toast.info("Item removed from wishlist");
     },
     onError: (_err, _perfumeId, context) => {
       queryClient.setQueryData(["wishlist"], context?.previousWishlist);
@@ -93,11 +93,11 @@ export const useWishlist = () => {
   // Əlavə etmə funksiyası (Artıq product obyektini qəbul edir)
   const addToWishlist = (product: Perfume) => {
     if (!token) {
-      toast.error("Zəhmət olmasa əvvəlcə giriş edin");
+      toast.error("Please log in first!");
       return;
     }
     if (isInWishlist(product.id)) {
-      toast.info("Bu məhsul artıq favoritlərinizdədir");
+      toast.info("This item is already in your wishlist.");
       return;
     }
     addMutation.mutate(product);

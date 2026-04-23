@@ -76,7 +76,7 @@ export const useCart = () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
 
       if (variables.isNew) {
-        toast.success("Məhsul səbətə əlavə edildi!");
+        toast.success("Item added to cart!");
       }
     },
 
@@ -128,11 +128,11 @@ export const useCart = () => {
   });
 
   const handleAddToCart = (product: Perfume) => {
-    if (!token) return toast.error("Zəhmət olmasa əvvəlcə giriş edin");
+    if (!token) return toast.error("Please log in first!");
     
     const alreadyInCart = cartItems.some(item => item.perfumeId === product.id);
     if (alreadyInCart) {
-      return toast.info("Bu məhsul artıq səbətinizdədir.");
+      return toast.info("This item is already in your cart.");
     }
 
     addToCartMutation.mutate({

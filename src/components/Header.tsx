@@ -2,29 +2,36 @@ import {
   FiChevronDown,
   FiHeart,
   FiLayout,
+  FiLoader,
   FiLogOut,
   FiPackage,
   FiSearch,
   FiShoppingCart,
   FiUser,
+  FiXCircle,
 } from "react-icons/fi";
 import "./style.css";
 import logo from "../assets/black.png";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ShoppingCart from "./ShoppingCart";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useWishlist } from "../hooks/useWishlist";
 import { useCart } from "../hooks/useCart";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import api from "../api/axios";
+import type { PageResponse, Perfume } from "../types/perfume";
 
 const Header = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
-  const [isMobileProfileOpen, setIsMobileProfileOpen] =
-    useState<boolean>(false); // Mobildə profil dropdown-u üçün
+  const [isMobileProfileOpen, setIsMobileProfileOpen] = useState<boolean>(false);
+
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -36,18 +43,32 @@ const Header = () => {
   const { wishlistCount } = useWishlist();
   const { cartItems } = useCart();
 
-  // SCROLL EFFEKTİ - Header-in rəngini dəyişmək üçün
+  const { data: searchResults, isLoading: isSearchLoading } = useQuery<PageResponse<Perfume>>({
+    queryKey: ["global-search", searchQuery],
+    queryFn: () =>
+      api.get(`/perfumes?query=${searchQuery}&size=5`).then((res) => res.data),
+    enabled: searchQuery.trim().length > 1, 
+  });
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsSearchOpen(false);
+        setSearchQuery("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
-      // 50-den çox scroll edende 'scrolled' true olur
       setScrolled(window.scrollY > 50);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // MOBİL MENYU AÇILANDA EKRANIN SCROLL OLMASINI BAĞLAMAQ
   useEffect(() => {
     if (mobileMenu) {
       document.body.style.overflow = "hidden";
@@ -66,12 +87,22 @@ const Header = () => {
     setIsMobileProfileOpen(false);
     setMobileMenu(false);
     navigate("/");
-    window.location.reload();
   };
-  /* const clickLogo =()=>{
-  console.log("all is good")
-  navigate("/")
-} */
+
+  const handleResultClick = (productName: string) => {
+    navigate(`/products?query=${encodeURIComponent(productName)}`);
+    setIsSearchOpen(false);
+    setSearchQuery("");
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim().length > 1) {
+      navigate(`/products?query=${encodeURIComponent(searchQuery)}`);
+      setIsSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
   return (
     <div
       className={`header flex items-center py-5 px-4 sm:px-8 lg:px-20 transition-all duration-300 ${
@@ -199,9 +230,79 @@ const Header = () => {
             )}
           </div>
 
-          <div className="relative cursor-pointer loginStyle text-black">
-            <FiSearch className="xl:text-xl text-lg" />
-            <div className="loginHover text-sm">Search</div>
+          <div className="relative" ref={searchRef}>
+            <div
+              className="relative cursor-pointer loginStyle text-black flex items-center"
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+            >
+              <FiSearch className="xl:text-xl text-lg" />
+              <div className="loginHover text-sm">Search</div>
+            </div>
+
+            {isSearchOpen && (
+              <div className="absolute right-0 mt-6 w-[320px] md:w-[450px] bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 animate-in fade-in zoom-in duration-300 z-[150]">
+                <form onSubmit={handleSearchSubmit}>
+                  <div className="relative group">
+                    <input
+                      autoFocus
+                      type="text"
+                      placeholder="What are you looking for?"
+                      className="w-full bg-gray-50 border-none rounded-xl py-4 pl-12 pr-10 text-sm outline-none focus:ring-2 focus:ring-black/5 transition-all font-[Playfair] italic"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors" size={18} />
+                    {searchQuery && (
+                       <FiXCircle 
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-black cursor-pointer transition-colors" 
+                        onClick={() => setSearchQuery("")}
+                       />
+                    )}
+                  </div>
+                </form>
+
+                {searchQuery.trim().length > 1 && (
+                  <div className="mt-6 space-y-3 max-h-[400px] overflow-y-auto no-scrollbar">
+                    {isSearchLoading ? (
+                      <div className="flex flex-col items-center py-6 gap-2 text-gray-400">
+                        <FiLoader className="animate-spin" size={24} />
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Searching...</span>
+                      </div>
+                    ) : searchResults?.content && searchResults.content.length > 0 ? (
+                      <>
+                        <p className="text-[9px] font-black text-gray-300 uppercase tracking-[2px] mb-2 px-1">Top Matches</p>
+                        {searchResults.content.map((p) => (
+                          <div
+                            key={p.id}
+                            onClick={() => handleResultClick(p.name)}
+                            className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-gray-100"
+                          >
+                            <div className="w-14 h-16 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 p-1 border">
+                               <img src={p.imageUrl} alt="" className="w-full h-full object-contain" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold text-gray-900 truncate uppercase tracking-tighter leading-tight">{p.name}</p>
+                              <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">{p.brand}</p>
+                              <p className="text-[11px] font-bold text-[#81d8d0] mt-1">{p.price}.00 AZN</p>
+                            </div>
+                          </div>
+                        ))}
+                        <button 
+                          onClick={handleSearchSubmit}
+                          className="w-full py-3 text-[10px] font-black uppercase tracking-[2px] text-gray-400 hover:text-black transition-colors border-t mt-2"
+                        >
+                          View all results
+                        </button>
+                      </>
+                    ) : (
+                      <div className="py-10 text-center">
+                        <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest italic">No essence found</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           <Link
             to="/wishlist"
