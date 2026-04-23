@@ -23,11 +23,12 @@ import api from "../api/axios";
 import type { PageResponse, Perfume } from "../types/perfume";
 
 const Header = () => {
-   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
-  const [isMobileProfileOpen, setIsMobileProfileOpen] = useState<boolean>(false);
+  const [isMobileProfileOpen, setIsMobileProfileOpen] =
+    useState<boolean>(false);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,16 +44,21 @@ const Header = () => {
   const { wishlistCount } = useWishlist();
   const { cartItems } = useCart();
 
-  const { data: searchResults, isLoading: isSearchLoading } = useQuery<PageResponse<Perfume>>({
+  const { data: searchResults, isLoading: isSearchLoading } = useQuery<
+    PageResponse<Perfume>
+  >({
     queryKey: ["global-search", searchQuery],
     queryFn: () =>
       api.get(`/perfumes?query=${searchQuery}&size=5`).then((res) => res.data),
-    enabled: searchQuery.trim().length > 1, 
+    enabled: searchQuery.trim().length > 1,
   });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setIsSearchOpen(false);
         setSearchQuery("");
       }
@@ -233,7 +239,12 @@ const Header = () => {
           <div className="relative" ref={searchRef}>
             <div
               className="relative cursor-pointer loginStyle text-black flex items-center"
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              onClick={() => {
+                setIsSearchOpen(!isSearchOpen);
+                if (!isSearchOpen) {
+                  setMobileMenu(false);
+                }
+              }}
             >
               <FiSearch className="xl:text-xl text-lg" />
               {/* <div className="loginHover text-sm">Search</div> */}
@@ -251,12 +262,15 @@ const Header = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors" size={18} />
+                    <FiSearch
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors"
+                      size={18}
+                    />
                     {searchQuery && (
-                       <FiXCircle 
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-black cursor-pointer transition-colors" 
+                      <FiXCircle
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-black cursor-pointer transition-colors"
                         onClick={() => setSearchQuery("")}
-                       />
+                      />
                     )}
                   </div>
                 </form>
@@ -266,11 +280,16 @@ const Header = () => {
                     {isSearchLoading ? (
                       <div className="flex flex-col items-center py-6 gap-2 text-gray-400">
                         <FiLoader className="animate-spin" size={24} />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Searching...</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">
+                          Searching...
+                        </span>
                       </div>
-                    ) : searchResults?.content && searchResults.content.length > 0 ? (
+                    ) : searchResults?.content &&
+                      searchResults.content.length > 0 ? (
                       <>
-                        <p className="text-[9px] font-black text-gray-300 uppercase tracking-[2px] mb-2 px-1">Top Matches</p>
+                        <p className="text-[9px] font-black text-gray-300 uppercase tracking-[2px] mb-2 px-1">
+                          Top Matches
+                        </p>
                         {searchResults.content.map((p) => (
                           <div
                             key={p.id}
@@ -278,16 +297,26 @@ const Header = () => {
                             className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-gray-100"
                           >
                             <div className="w-14 h-16 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 p-1 border">
-                               <img src={p.imageUrl} alt="" className="w-full h-full object-contain" />
+                              <img
+                                src={p.imageUrl}
+                                alt=""
+                                className="w-full h-full object-contain"
+                              />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="text-xs font-bold text-gray-900 truncate uppercase tracking-tighter leading-tight">{p.name}</p>
-                              <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">{p.brand}</p>
-                              <p className="text-[11px] font-bold text-[#81d8d0] mt-1">{p.price}.00 AZN</p>
+                              <p className="text-xs font-bold text-gray-900 truncate uppercase tracking-tighter leading-tight">
+                                {p.name}
+                              </p>
+                              <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">
+                                {p.brand}
+                              </p>
+                              <p className="text-[11px] font-bold text-[#81d8d0] mt-1">
+                                {p.price}.00 AZN
+                              </p>
                             </div>
                           </div>
                         ))}
-                        <button 
+                        <button
                           onClick={handleSearchSubmit}
                           className="w-full py-3 text-[10px] font-black uppercase tracking-[2px] text-gray-400 hover:text-black transition-colors border-t mt-2"
                         >
@@ -296,7 +325,9 @@ const Header = () => {
                       </>
                     ) : (
                       <div className="py-10 text-center">
-                        <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest italic">No essence found</p>
+                        <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest italic">
+                          No essence found
+                        </p>
                       </div>
                     )}
                   </div>
@@ -399,7 +430,8 @@ const Header = () => {
                         to="/profile"
                         className="flex items-center gap-2 font-medium"
                       >
-                        <FiUser />My Account
+                        <FiUser />
+                        My Account
                       </Link>
                       <Link
                         to="/orders"
