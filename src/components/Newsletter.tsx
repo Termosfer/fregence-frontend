@@ -3,12 +3,14 @@ import { useState } from "react";
 import { IoMailOpenOutline } from "react-icons/io5";
 import api from "../api/axios";
 import { toast } from "react-toastify";
+import type { ApiError } from "../types/perfume";
+import type { AxiosError } from "axios";
 
 const Newsletter = () => {
   const [email, setEmail] = useState<string>("");
 
   // 1. Mutation: Backend-ə email göndərir
-  const mutation = useMutation({
+  const mutation = useMutation<void, AxiosError<ApiError>, string>({
     mutationFn: (newEmail: string) => {
       // Backend obyekt formatında gözləyirsə: { email: "..." }
       return api.post("/subscribers", { email: newEmail });
@@ -17,7 +19,7 @@ const Newsletter = () => {
       toast.success("Subscription successful!");
       setEmail("");
     },
-    onError: (error: any) => {
+    onError: (error) => {
       // 401 və ya 403 gələrsə token problemi var deməkdir
       if (error.response?.status === 401 || error.response?.status === 403) {
         toast.error("Please log in first!");

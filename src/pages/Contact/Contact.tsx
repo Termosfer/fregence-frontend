@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import api from "../../api/axios";
+import type { ApiError } from "../../types/perfume";
+import type { AxiosError } from "axios";
 const contactInfo = [
   {
     id: 1,
@@ -33,24 +35,29 @@ const contactInfo = [
     text: "contact@example.com",
   },
 ];
+interface ContactFormData {
+  name: string;
+  email: string;
+  message: string;
+}
 const Contact = () => {
   // 1. Form state-i
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
     message: "",
   });
 
   // 2. TanStack Query Mutation (POST /api/contact)
-  const mutation = useMutation({
-    mutationFn: (data: typeof formData) => {
+  const mutation = useMutation<void, AxiosError<ApiError>, ContactFormData>({
+    mutationFn: (data) => {
       return api.post("/contact", data);
     },
     onSuccess: () => {
       toast.success("Message sent! We'll contact you soon.");
       setFormData({ name: "", email: "", message: "" }); // Formu təmizlə
     },
-    onError: (error: any) => {
+    onError: (error) => {
       if (error.response?.status === 401 || error.response?.status === 403) {
         toast.error("Please log in first!");
       } else {
@@ -71,7 +78,7 @@ const Contact = () => {
     // Token yoxlanışı (Əgər backend mütləq giriş tələb edirsə)
     const token = localStorage.getItem("token");
     if (!token) {
-      toast.error("Please log in first.");
+      toast.error("Please log in first!.");
       return;
     }
 
