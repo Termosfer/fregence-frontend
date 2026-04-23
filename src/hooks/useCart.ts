@@ -84,7 +84,7 @@ export const useCart = () => {
       if (context?.previousCart) {
         queryClient.setQueryData(["cart"], context.previousCart);
       }
-      toast.error("Xəta baş verdi, yenidən yoxlayın.");
+      toast.error("Something went wrong. Please try again.");;
     },
 
     onSettled: () => {
@@ -114,7 +114,7 @@ export const useCart = () => {
       return { previousCart };
     },
     onSuccess: () => {
-      toast.info("Məhsul səbətdən silindi");
+      toast.info("Item removed from cart.");
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (_err, _variables, context) => {
