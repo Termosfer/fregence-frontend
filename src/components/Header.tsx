@@ -236,7 +236,7 @@ const Header = () => {
               onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
               <FiSearch className="xl:text-xl text-lg" />
-              <div className="loginHover text-sm">Search</div>
+              {/* <div className="loginHover text-sm">Search</div> */}
             </div>
 
             {isSearchOpen && (
@@ -309,7 +309,7 @@ const Header = () => {
             className="hidden lg:block relative loginStyle text-black"
           >
             <FiHeart className="xl:text-xl text-lg" />
-            <div className="loginHover text-sm">Favorites</div>
+            {/* <div className="loginHover text-sm">Favorites</div> */}
             {wishlistCount > 0 && (
               <div className="badge text-[12px] 2xl:w-[20px] 2xl:h-[20px] w-[15px] h-[15px] ">
                 {wishlistCount}
@@ -321,7 +321,7 @@ const Header = () => {
             onClick={() => setIsOpen(true)}
           >
             <FiShoppingCart className="xl:text-xl text-lg" />
-            <div className="loginHover text-sm">Cart</div>
+            {/* <div className="loginHover text-sm">Cart</div> */}
             {cartItems.length > 0 && (
               <div className="badge text-[12px] 2xl:w-[20px] 2xl:h-[20px] w-[15px] h-[15px]">
                 {cartItems.length}
