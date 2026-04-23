@@ -15,35 +15,22 @@ export const useCart = () => {
       return res.data;
     },
     enabled: !!token,
+    // BU SƏTİRLƏRİ ƏLAVƏ EDİN:
+    staleTime: 0, // Datanı hər zaman köhnə say ki, invalidated olan kimi dərhal fetch etsin
+    refetchOnMount: true, // Komponent hər görünəndə (modal açılanda) yoxlasın
   });
 
   const cartItems = responseData?.items || [];
-
-  // Dəyərləri hər render-də birbaşa hesablayırıq (Gecikmə olmaması üçün)
   const cartTotal = cartItems.reduce((sum, item) => sum + item.subTotal, 0);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   // 2. Artırıb-azaltma / Əlavə etmə
-  const addToCartMutation = useMutation<void, Error, AddToCartArgs, CartMutationContext >({
+  const addToCartMutation = useMutation<void, Error, AddToCartArgs, CartMutationContext>({
     mutationKey: ["cart-update"],
-    mutationFn: ({
-      perfumeId,
-      quantity,
-    }: {
-      perfumeId: number;
-      quantity: number;
-      perfume?: Perfume;
-    }) => api.post(`/cart/add?perfumeId=${perfumeId}&quantity=${quantity}`),
+    mutationFn: ({ perfumeId, quantity }) => 
+      api.post(`/cart/add?perfumeId=${perfumeId}&quantity=${quantity}`),
 
-    onMutate: async ({
-      perfumeId,
-      quantity,
-      perfume,
-    }: {
-      perfumeId: number;
-      quantity: number;
-      perfume?: Perfume;
-    }) => {
+    onMutate: async ({ perfumeId, quantity, perfume }) => {
       await queryClient.cancelQueries({ queryKey: ["cart"] });
       const previousCart = queryClient.getQueryData<CartResponse>(["cart"]);
 
@@ -64,42 +51,44 @@ export const useCart = () => {
               : item,
           );
         } else {
-          // YENİ MƏHSUL: Əgər 'perfume' obyekti gəlibsə, məlumatları dərhal istifadə et
           const newItem: CartItem = {
-            cartItemId: Math.random(), // Müvəqqəti ID
+            cartItemId: Math.random(), 
             perfumeId: perfumeId,
             perfumeName: perfume?.name || "Loading...",
             brand: perfume?.brand || "...",
             price: perfume?.price || 0,
             quantity: quantity,
             subTotal: (perfume?.price || 0) * quantity,
-            imageUrl: perfume?.imageUrl, // Şəklin dərhal görünməsi üçün
+            imageUrl: perfume?.imageUrl, 
           };
           newItems = [...(old.items || []), newItem];
         }
 
         const newTotal = newItems.reduce((sum, i) => sum + i.subTotal, 0);
-
         return { ...old, items: newItems, totalAmount: newTotal };
       });
 
       return { previousCart };
     },
-     onSuccess: (_data, variables) => {
-      // Əgər biz handleAddToCart funksiyasından (yəni ilk əlavədən) gəlmişiksə
-      // variables daxilində "isNew" deyə bir xüsusi sahə göndərəcəyik.
-      if ((variables).isNew) {
+
+    onSuccess: (_data, variables) => {
+      // Mutasiya uğurlu olan kimi dərhal cache-i ləğv et və təzələ
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+
+      if (variables.isNew) {
         toast.success("Məhsul səbətə əlavə edildi!");
       }
-      // Say dəyişəndə isə heç bir toster çıxmayacaq (çünkü isNew olmayacaq)
     },
+
     onError: (_err, _variables, context) => {
       if (context?.previousCart) {
         queryClient.setQueryData(["cart"], context.previousCart);
       }
+      toast.error("Xəta baş verdi, yenidən yoxlayın.");
     },
 
     onSettled: () => {
+      // Bütün mutasiyalar bitibsə mütləq serverlə sinxronlaş
       if (queryClient.isMutating({ mutationKey: ["cart-update"] }) === 0) {
         queryClient.invalidateQueries({ queryKey: ["cart"] });
       }
@@ -109,8 +98,7 @@ export const useCart = () => {
   // 3. Silmək Mutasiyası
   const removeFromCartMutation = useMutation<void, Error, number, CartMutationContext>({
     mutationKey: ["cart-remove"],
-    mutationFn: (cartItemId: number) =>
-      api.delete(`/cart/remove/${cartItemId}`),
+    mutationFn: (cartItemId: number) => api.delete(`/cart/remove/${cartItemId}`),
 
     onMutate: async (cartItemId) => {
       await queryClient.cancelQueries({ queryKey: ["cart"] });
@@ -118,18 +106,16 @@ export const useCart = () => {
 
       queryClient.setQueryData<CartResponse>(["cart"], (old) => {
         if (!old) return old;
-        const filteredItems = old.items.filter(
-          (item) => item.cartItemId !== cartItemId,
-        );
+        const filteredItems = old.items.filter(item => item.cartItemId !== cartItemId);
         const newTotal = filteredItems.reduce((sum, i) => sum + i.subTotal, 0);
-
         return { ...old, items: filteredItems, totalAmount: newTotal };
       });
 
       return { previousCart };
     },
     onSuccess: () => {
-      toast.info("Səbətdən silindi");
+      toast.info("Məhsul səbətdən silindi");
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (_err, _variables, context) => {
       if (context?.previousCart) {
@@ -141,17 +127,14 @@ export const useCart = () => {
     },
   });
 
-  // Home və ya Cartlist üçün xüsusi köməkçi funksiya
   const handleAddToCart = (product: Perfume) => {
     if (!token) return toast.error("Zəhmət olmasa əvvəlcə giriş edin");
-    // Əgər məhsul artıq səbətdədirsə, birbaşa xəbərdarlıq ver və sorğu atma
-    const alreadyInCart = cartItems.some(
-      (item) => item.perfumeId === product.id,
-    );
+    
+    const alreadyInCart = cartItems.some(item => item.perfumeId === product.id);
     if (alreadyInCart) {
       return toast.info("Bu məhsul artıq səbətinizdədir.");
     }
-    // Mutation-a həm ID, həm də bütün product obyektini göndəririk (Optimistic üçün)
+
     addToCartMutation.mutate({
       perfumeId: product.id,
       quantity: 1,
@@ -169,8 +152,8 @@ export const useCart = () => {
     updatingVariables: addToCartMutation.variables,
     isRemoving: removeFromCartMutation.isPending,
     removingVariables: removeFromCartMutation.variables,
-    addToCart: handleAddToCart, // Obyekt qəbul edir
-    updateQuantity: addToCartMutation.mutate, // Səbət daxili artırıb-azaltma
+    addToCart: handleAddToCart,
+    updateQuantity: addToCartMutation.mutate,
     removeFromCart: removeFromCartMutation.mutate,
   };
 };

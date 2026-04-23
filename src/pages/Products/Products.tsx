@@ -9,6 +9,7 @@ import Cartlist from "../../components/Cartlist";
 import api from "../../api/axios";
 import type { PageResponse, Perfume } from "../../types/perfume";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 
 const sortOptions = [
   { label: "Featured", sortBy: "id", direction: "DESC" },
@@ -22,9 +23,10 @@ const Products = () => {
   const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [sliderPrice, setSliderPrice] = useState(1000);
-
+const [searchParams] = useSearchParams();
+const initialBrand = searchParams.get("brand") || "";
   const [filters, setFilters] = useState({
-    brand: "",
+    brand: initialBrand,
     gender: "",
     minPrice: 0,
     maxPrice: 1000,
@@ -96,12 +98,12 @@ const Products = () => {
     };
   }, [isFilterOpen]);
 
-  if (isBrandsLoading || isProductsLoading)
+  /* if (isBrandsLoading || isProductsLoading)
     return (
       <div className="text-center py-20 text-xl font-bold animate-pulse uppercase tracking-widest">
         Yüklənir...
       </div>
-    );
+    ); */
 
   return (
     <div className="py-10 font-[Playfair]">
@@ -275,15 +277,38 @@ const Products = () => {
               )}
             </div>
           </div>
-
-          <Cartlist
-            data={productsData!}
-            onPageChange={(newPage) => updateFilter({ page: newPage })}
-            page={filters.page}
-          />
+          <div className="flex-1">
+            {isBrandsLoading || isProductsLoading ? (
+              /* Yüklənmə zamanı görünəcək hissə - Səhifəni boş qoymur */
+              <div
+                className="grid gap-10
+          grid-cols-1
+          sm:grid-cols-2
+          lg:grid-cols-3
+          2xl:grid-cols-4"
+              >
+                {/* 8 dənə boş qutu (Skeleton) göstəririk */}
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="animate-pulse bg-gray-100 rounded-lg h-[300px] w-[230px]"
+                  ></div>
+                ))}
+              </div>
+            ) : (
+              /* Data gələndən sonra real komponent */
+              <Cartlist
+                data={productsData!}
+                onPageChange={(newPage) => updateFilter({ page: newPage })}
+                page={filters.page}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
+    /* </div>
+    </div> */
   );
 };
 

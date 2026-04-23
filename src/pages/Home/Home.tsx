@@ -20,6 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import QuickModal from "../../components/QuickModal";
 import { useWishlist } from "../../hooks/useWishlist";
 import { useCart } from "../../hooks/useCart";
+import { Link } from "react-router";
 const slides = [
   {
     image: img1,
@@ -100,12 +101,6 @@ const Home = () => {
     queryFn: () => fetchPerfumes(6),
   });
 
-  if (isLoading)
-    return (
-      <div className="text-center py-20 text-xl font-bold animate-pulse uppercase tracking-widest">
-        Yüklənir...
-      </div>
-    );
 
   if (isError) {
     return (
@@ -169,7 +164,7 @@ const Home = () => {
             The perfect harmony between passion, elegance and desire
           </p>
 
-          <button
+          <Link to="/products"
             className="
         cursor-pointer
         relative
@@ -210,7 +205,7 @@ const Home = () => {
             >
               SHOP NOW
             </span>
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -397,94 +392,110 @@ const Home = () => {
         </div>
 
         <div
-          className="
-      grid
-      grid-cols-1
-      sm:grid-cols-2
-      lg:grid-cols-3
-      xl:grid-cols-4
-      gap-10
-      px-4 sm:px-8 lg:px-20
-      mt-10
-    "
+  className="
+    grid
+    grid-cols-1
+    sm:grid-cols-2
+    lg:grid-cols-3
+    xl:grid-cols-4
+    gap-10
+    px-4 sm:px-8 lg:px-20
+    mt-10
+    
+  "
+>
+  {isLoading
+    ? /* 
+         DİQQƏT: Burada yeni bir <div className="grid..."> yaratmırıq!
+         Skeletləri birbaşa ana grid-in içinə düzürük.
+      */
+      [...Array(4)].map((_, i) => (
+        <div 
+          key={i} 
+          className="flex flex-col items-center justify-between p-4 bg-white rounded-lg shadow-sm animate-pulse border border-gray-50"
         >
-          {data?.content?.map((item) => (
+          {/* Şəkil yeri üçün skelet */}
+          <div className="w-full aspect-square bg-gray-100 rounded-lg mb-5"></div>
+          
+          {/* Mətn yerləri üçün skelet */}
+          <div className="w-full flex flex-col items-center gap-3">
+            <div className="h-4 bg-gray-100 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-100 rounded w-1/2"></div>
+          </div>
+        </div>
+      ))
+    : data?.content?.map((item) => (
+        <div
+          key={item.id}
+          className="relative overflow-hidden flex flex-col items-center justify-between text-center group shadow-lg rounded-lg p-4 bg-white"
+        >
+          {/* ŞƏKİL SAHƏSİ */}
+          <div className="w-full aspect-square overflow-hidden img-hover-effect">
+            <img
+              src={item.imageUrl}
+              alt={item.name}
+              className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+            />
+
+            <span className="absolute top-3 -right-14 bg-red-500 text-white text-xs font-semibold px-16 py-1 rotate-45 shadow-lg">
+              SALE
+            </span>
+
+            {/* HOVER İKONLARI */}
             <div
-              key={item.id}
-              className=" relative overflow-hidden flex flex-col items-center justify-between text-center group shadow-lg rounded-lg p-4 bg-white"
+              className="
+                absolute bottom-20 left-1/2 transform -translate-x-1/2 
+                flex items-center justify-center gap-4
+                transition-all duration-500
+                opacity-100 translate-y-0
+                xl:opacity-0 xl:translate-y-20
+                xl:group-hover:opacity-100 xl:group-hover:translate-y-0
+              "
             >
-              <div className=" w-full aspect-square  overflow-hidden img-hover-effect ">
-                <img
-                  src={item.imageUrl}
-                  alt={item.name}
-                  className="object-cover w-full h-full "
-                />
-
-                <span className="absolute top-3 -right-14 bg-red-500 text-white text-xs font-semibold px-16 py-1 rotate-45 shadow-lg">
-                  SALE
-                </span>
-
-                <div
-                  className="
-  absolute bottom-20 left-1/2 transform -translate-x-1/2 
-  flex items-center justify-center gap-4
-  transition-all duration-500
-
-  opacity-100 translate-y-0
-  xl:opacity-0 xl:translate-y-40
-xl:group-hover:opacity-100 xl:group-hover:translate-y-0"
-                >
-                  <div
-                    className="  relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
-                    onClick={() => handleOpenModal(item.id)}
-                  >
-                    <FiSearch className="w-4 h-4 md:w-5 md:h-5" />
-                    {/* <div className="loginHover1 uppercase tracking-tighter">
-                      Quick view
-                    </div> */}
-                  </div>
-
-                  <div
-                    className="  relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
-                    onClick={() => addToWishlist(item)}
-                  >
-                    <FiHeart className="w-4 h-4 md:w-5 md:h-5" />
-                    {/* <div className="loginHover1 uppercase tracking-tighter">
-                      Wishlist
-                    </div> */}
-                  </div>
-
-                  <div
-                    className="  relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addToCart(item);
-                    }}
-                  >
-                    <FiShoppingCart className="w-4 h-4 md:w-5 md:h-5" />
-                    {/* <div className="loginHover1 uppercase tracking-tighter">
-                      Add to Cart
-                    </div> */}
-                  </div>
-                </div>
+              <div
+                className="relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
+                onClick={() => handleOpenModal(item.id)}
+              >
+                <FiSearch className="w-4 h-4 md:w-5 md:h-5" />
               </div>
-              <div className="mt-5">
-                <h5 className="text-base font-semibold mb-2">{item.name}</h5>
-                <div className="flex justify-center items-center gap-3">
-                  <span className="text-[#81d8d0] text-base font-semibold">
-                    {item.price}
-                    <span className="text-xs">.00 azn</span>
-                  </span>
-                  {item.discountPrice && (
-                    <span className="line-through text-xs text-gray-500">
-                      {item.discountPrice}.00 azn
-                    </span>
-                  )}
-                </div>
+
+              <div
+                className="relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
+                onClick={() => addToWishlist(item)}
+              >
+                <FiHeart className="w-4 h-4 md:w-5 md:h-5" />
+              </div>
+
+              <div
+                className="relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToCart(item);
+                }}
+              >
+                <FiShoppingCart className="w-4 h-4 md:w-5 md:h-5" />
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* MƏTN SAHƏSİ */}
+          <div className="mt-5">
+            <h5 className="text-base font-semibold mb-2">{item.name}</h5>
+            <div className="flex justify-center items-center gap-3">
+              <span className="text-[#81d8d0] text-base font-semibold">
+                {item.price}
+                <span className="text-xs">.00 azn</span>
+              </span>
+              {item.discountPrice && (
+                <span className="line-through text-xs text-gray-500">
+                  {item.discountPrice}.00 azn
+                </span>
+              )}
+            </div>
+          </div>
         </div>
+      ))}
+</div>
       </section>
       <QuickModal
         show={open}
