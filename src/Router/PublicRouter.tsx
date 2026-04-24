@@ -11,6 +11,9 @@ import Register from "../pages/Register/Register";
 import Checkout from "../pages/Checkout/Checkout";
 import Profile from "../pages/Profile/Profile";
 import Order from "../pages/Order/Order";
+import PrivacyPolicy from "../pages/PrivacyPolicy/PrivacyPolicy";
+import TermsOfService from "../pages/TermsOfService/TermsOfService";
+import FAQs from "../pages/FAQs/FAQs";
 
 
 const PublicRouter = () => {
@@ -28,6 +31,9 @@ const PublicRouter = () => {
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/profile/*" element={<Profile />} />
       <Route path="/orders" element={<Order />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="/faq" element={<FAQs />} />
       
       <Route path="*" element={<div className="text-center py-20 text-xl">404 - Page Not Found</div>} />
       

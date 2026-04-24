@@ -5,96 +5,70 @@ import api from "../api/axios";
 import { toast } from "react-toastify";
 import type { ApiError } from "../types/perfume";
 import type { AxiosError } from "axios";
+import { FiLoader, FiArrowRight } from "react-icons/fi";
 
 const Newsletter = () => {
   const [email, setEmail] = useState<string>("");
 
-  // 1. Mutation: Backend-ə email göndərir
   const mutation = useMutation<void, AxiosError<ApiError>, string>({
-    mutationFn: (newEmail: string) => {
-      // Backend obyekt formatında gözləyirsə: { email: "..." }
-      return api.post("/subscribers", { email: newEmail });
-    },
+    mutationFn: (newEmail: string) => api.post("/subscribers", { email: newEmail }),
     onSuccess: () => {
       toast.success("Subscription successful!");
       setEmail("");
-    },
-    onError: (error) => {
-      // 401 və ya 403 gələrsə token problemi var deməkdir
-      if (error.response?.status === 401 || error.response?.status === 403) {
-        toast.error("Please log in first!");
-      } else {
-        toast.error("Email already subscribed.");
-      }
     },
   });
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // 2. Token Yoxlanışı
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      toast.error("Please log in first.");
-      // İstəsəniz istifadəçini login səhifəsinə yönləndirə bilərsiniz:
-      
-      return;
-    }
-
-    // 3. Validasiya
-    if (!email) {
-      toast.warn("Please enter your email address.");
-      return;
-    }
-
-    if (!email.includes("@")) {
-      toast.warn("Please enter a valid email address.");
-      return;
-    }
-
-    // Hər şey qaydasındadırsa, sorğunu göndər
+    if (!email.includes("@")) return toast.warn("Please enter a valid email.");
     mutation.mutate(email);
   };
+
   return (
-    <section className="border-t  py-20 px-4 sm:px-8 lg:px-20 mt-20 border-[#00000080]">
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-5 w-full">
-        <div className="flex items-center  gap-10 w-full">
-          <div className="flex items-center justify-center gap-2 sm:gap-5 border-r-1 pr-5 border-[#00000080]">
-            <IoMailOpenOutline className="text-lg lg:text-4xl 2xl:text-6xl" />
-            <div className="flex flex-col">
-              <span className="text-sm sm:text-md 2xl:text-xl font-semibold text-left ">
-                SIGN UP
-              </span>
-              <span className="text-sm sm:text-md 2xl:text-xl font-semibold text-left text-nowrap">
-                FOR NEWSLETTER
-              </span>
-            </div>
+    <section className="bg-[#FAFAF9] border-y border-gray-100 py-24 px-4 sm:px-8 lg:px-20 font-[Playfair]">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12">
+        
+        {/* TEXT SECTION */}
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-6 lg:w-1/2">
+          <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white border border-gray-100 flex items-center justify-center text-[#81d8d0] shadow-sm">
+            <IoMailOpenOutline className="text-3xl md:text-4xl" />
           </div>
-          <p className="text-[#00000080] text-xs sm:text-sm 2xl:text-lg text-left ">
-            Subscribe to the weekly newsletter for all the latest updates
-          </p>
+          <div className="text-center md:text-left space-y-2">
+            <h2 className="text-gray-900 text-2xl md:text-4xl font-bold uppercase tracking-tighter leading-none">
+              Sign Up <br /> <span className="italic font-light text-gray-400">for Newsletter</span>
+            </h2>
+            <p className="text-gray-400 text-sm md:text-base font-medium italic">
+              Receive the latest updates on niche fragrances and exclusive events.
+            </p>
+          </div>
         </div>
-        <form
-          className="flex items-center   overflow-hidden rounded-lg w-full"
-          onSubmit={handleSubscribe}
-        >
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={mutation.isPending}
-            type="text"
-            placeholder="Enter your email..."
-            className={`py-4 lg:py-5 text-sm sm:text-md 2xl:text-lg text-[#00000080] px-5 lg:px-10 rounded-l-lg w-full bg-[#f2f2f2] outline-none"
-            `}
-          />
-          <button
-            type="submit"
-            disabled={mutation.isPending}
-            className="bg-black text-white text-sm sm:text-md 2xl:text-lg py-4 lg:py-5  px-10 rounded-r-lg cursor-pointer"
-          >
-            Subscribe
-          </button>
+
+        {/* FORM SECTION */}
+        <form onSubmit={handleSubscribe} className="w-full lg:w-1/2 max-w-lg">
+          <div className="relative group flex items-center border-b-2 border-gray-200 focus-within:border-black transition-all duration-500 pb-2">
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={mutation.isPending}
+              type="email"
+              placeholder="Enter your email address..."
+              className="w-full bg-transparent py-4 text-black outline-none placeholder:text-gray-300 italic text-lg"
+            />
+            <button
+              type="submit"
+              disabled={mutation.isPending}
+              className="ml-4 flex items-center gap-2 group/btn"
+            >
+              <span className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 group-hover/btn:text-black transition-colors cursor-pointer">
+                {mutation.isPending ? "Wait..." : "Subscribe"}
+              </span>
+              {mutation.isPending ? (
+                <FiLoader className="animate-spin text-black" />
+              ) : (
+                <FiArrowRight className="text-gray-300 group-hover/btn:text-black group-hover/btn:translate-x-1 transition-all" />
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </section>
@@ -102,6 +76,3 @@ const Newsletter = () => {
 };
 
 export default Newsletter;
-
-
-
