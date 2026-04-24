@@ -139,13 +139,13 @@ const handleMainAction  = () => {
                   {product.name}
                 </h1>
                 
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl md:text-3xl font-bold text-gray-800 tracking-tighter">
-                    {product.price}.00 AZN
+                <div className="flex items-center gap-4 font-[Jost] font-medium">
+                  <span className="text-2xl md:text-3xl font-medium text-gray-800 tracking-tighter">
+                    {product.price}.00 Azn
                   </span>
                   {product.discountPrice && (
                     <span className="line-through text-gray-400 text-base md:text-lg">
-                      {product.discountPrice}.00 AZN
+                      {product.discountPrice}.00 Azn
                     </span>
                   )}
                 </div>

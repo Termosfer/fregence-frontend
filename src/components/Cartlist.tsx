@@ -13,141 +13,97 @@ interface CartlistProps {
 
 const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(
-    null,
-  );
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  
   const { addToWishlist } = useWishlist();
   const { addToCart } = useCart();
+
   const handleOpenQuickView = (id: number) => {
     setSelectedProductId(id);
     setShowModal(true);
   };
 
-  // Mürəkkəb Pagination Məntiqi (Həmişə İlk, Son və Cari ətrafını göstərir)
   const getPaginationRange = () => {
     const total = data?.totalPages || 0;
     const current = data?.number || 0;
     const range: (number | string)[] = [];
-
-    // Əgər səhifə sayı 7-dən azdırsa, hamısını göstər (üç nöqtəyə ehtiyac yoxdur)
-    if (total <= 7) {
-      return Array.from({ length: total }, (_, i) => i);
-    }
-
-    // 1. Həmişə ilk səhifəni əlavə et
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i);
     range.push(0);
-
-    // Sol tərəfdə üç nöqtə lazımdırsa
-    if (current > 2) {
-      range.push("...");
-    }
-
-    // 2. Cari səhifənin ətrafındakı rəqəmlər (Current - 1, Current, Current + 1)
+    if (current > 2) range.push("...");
     const start = Math.max(1, current - 1);
     const end = Math.min(total - 2, current + 1);
-
-    for (let i = start; i <= end; i++) {
-      range.push(i);
-    }
-
-    // Sağ tərəfdə üç nöqtə lazımdırsa
-    if (current < total - 3) {
-      range.push("...");
-    }
-
-    // 3. Həmişə sonuncu səhifəni əlavə et
+    for (let i = start; i <= end; i++) range.push(i);
+    if (current < total - 3) range.push("...");
     range.push(total - 1);
-
     return range;
   };
-  if (!data || !data.content) {
-    return (
-      <div className="text-center py-10 w-full font-bold">
-        Məhsul yüklənir və ya tapılmadı...
-      </div>
-    );
-  }
+
+  if (!data || !data.content) return null;
 
   return (
     <>
-      <div
-        className="
-          grid gap-10
-          grid-cols-1
-          sm:grid-cols-2
-          lg:grid-cols-3
-          2xl:grid-cols-4
-          
-        "
-      >
-        {data?.content?.map((item) => (
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full">
+        {data.content.map((item) => (
           <div
             key={item.id}
-            className=" relative overflow-hidden flex flex-col items-center justify-between text-center group shadow-lg rounded-lg p-4 bg-white"
+            className="relative flex flex-col items-center justify-between text-center group shadow-md rounded-xl p-4 bg-white hover:shadow-xl transition-all duration-500 h-full border border-gray-50"
           >
-            <div className=" w-full aspect-square  overflow-hidden img-hover-effect ">
-              <img
-                src={item.imageUrl}
-                alt={item.name}
-                loading="lazy"
-                className="object-cover w-full h-full "
-              />
+            {/* ŞƏKİL SAHƏSİ */}
+            <div className="relative w-full aspect-square overflow-hidden rounded-lg bg-white flex items-center justify-center">
+              <div className="block w-full h-full p-4">
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  loading="lazy"
+                  className="object-contain w-full h-full transition-transform duration-700 group-hover:scale-110"
+                />
+              </div>
 
-              <span className="absolute top-3 -right-14 bg-red-500 text-white text-xs font-semibold px-16 py-1 rotate-45 shadow-lg">
-                SALE
+              <span className="absolute top-2 -right-10 bg-red-500 text-white text-[10px] font-black px-10 py-1 rotate-45 shadow-lg z-10 uppercase">
+                Sale
               </span>
 
-              <div
-                className="
-  absolute bottom-20 left-1/2 transform -translate-x-1/2 
-  flex items-center justify-center gap-4
-  transition-all duration-500
-
-  opacity-100 translate-y-0
-  xl:opacity-0 xl:translate-y-40
-xl:group-hover:opacity-100 xl:group-hover:translate-y-0
-"
-              >
-                <div
-                  className="group relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
-                  onClick={() => handleOpenQuickView(item.id)}
+              {/* SIRA İLƏ SAĞDAN SOLA GƏLƏN İKONLAR */}
+              <div className="absolute top-10 right-0 flex flex-col gap-4 p-1 z-20 overflow-hidden ">
+                
+                {/* 1. Quick View (Gecikməsiz) */}
+                <button
+                  onClick={(e) => { e.preventDefault(); handleOpenQuickView(item.id); }}
+                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-20 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-0"
                 >
-                  <FiSearch className="w-3 h-3 md:w-4 md:h-4 " />
-                  
-                </div>
+                  <FiSearch size={16} />
+                </button>
 
-                <div
-                  className="group relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToWishlist(item);
-                  }}
+                {/* 2. Wishlist (75ms Gecikmə) */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); addToWishlist(item); }}
+                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-20 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-[75ms]"
                 >
-                  <FiHeart className="w-3 h-3 md:w-4 md:h-4" />
-                  
-                </div>
+                  <FiHeart size={16} />
+                </button>
 
-                <div
-                  className=" group relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToCart(item);
-                  }}
+                {/* 3. Add to Cart (150ms Gecikmə) */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); addToCart(item); }}
+                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-20 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-[150ms]"
                 >
-                  <FiShoppingCart className="w-3 h-3 md:w-4 md:h-4" />
-                  
-                </div>
+                  <FiShoppingCart size={16} />
+                </button>
               </div>
             </div>
-            <div className="mt-5">
-              <h5 className="text-base font-semibold mb-2">{item.name}</h5>
+
+            {/* MƏTN SAHƏSİ */}
+            <div className="mt-4 w-full px-1">
+              <h5 className="text-sm font-bold mb-1 text-gray-800 uppercase tracking-tight truncate px-2">
+                {item.name}
+              </h5>
               <div className="flex justify-center items-center gap-3 font-[Jost]">
-                <span className="text-[#81d8d0] text-base font-semibold">
-                  {item.price}<span className="text-xs">.00 Azn</span>
+                <span className="text-[#81d8d0] text-sm font-black">
+                  {item.price}.00 <span className="text-[9px]">AZN</span>
                 </span>
                 {item.discountPrice && (
-                  <span className="line-through text-xs text-gray-500">
-                    {item.discountPrice}.00 Azn
+                  <span className="line-through text-[11px] text-gray-400">
+                    {item.discountPrice}.00
                   </span>
                 )}
               </div>
@@ -156,42 +112,20 @@ xl:group-hover:opacity-100 xl:group-hover:translate-y-0
         ))}
       </div>
 
-      <QuickModal
-        show={showModal}
-        setShowModal={setShowModal}
-        productId={selectedProductId}
-      />
+      <QuickModal show={showModal} setShowModal={setShowModal} productId={selectedProductId} />
 
-      <div className="flex justify-center items-center gap-2 mt-14 flex-wrap">
+      {/* PAGINATION */}
+      <div className="flex justify-center items-center gap-2 mt-16 mb-10">
         {getPaginationRange().map((p, index) => {
-          if (p === "...") {
-            return (
-              <span
-                key={`dots-${index}`}
-                className="px-3 py-2 text-gray-400 font-bold"
-              >
-                ...
-              </span>
-            );
-          }
-
+          if (p === "...") return <span key={index} className="text-gray-300 px-1">...</span>;
           const isActive = page === p;
-
           return (
             <button
-              key={`page-${p}`}
-              onClick={() => {
-                onPageChange(p as number);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className={`
-          w-10 h-10 border rounded-md transition-all duration-300 cursor-pointer font-bold text-sm
-          ${
-            isActive
-              ? "bg-black text-white border-black scale-110 shadow-lg"
-              : "bg-white text-black border-gray-200 hover:border-black hover:bg-gray-50"
-          }
-        `}
+              key={index}
+              onClick={() => { onPageChange(p as number); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              className={`w-9 h-9 border rounded-md transition-all duration-300 font-bold text-xs uppercase tracking-widest ${
+                isActive ? "bg-black text-white border-black scale-105 shadow-md" : "bg-white text-gray-400 border-gray-100 hover:border-black hover:text-black"
+              }`}
             >
               {(p as number) + 1}
             </button>
