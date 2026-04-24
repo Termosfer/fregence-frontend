@@ -1,147 +1,3 @@
-.loginHover {
-  position: absolute;
-  left: 50%;
-  top: 40px;
-  transform: translate(-50%, -10px);
-  /* background-color: #3E2C1C; */
-  background-color: black;
-  color: #F5EBDD;
-  padding: 8px 14px;
-  border-radius: 6px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s ease;
-}
-
-.loginStyle:hover .loginHover {
-  opacity: 1;
-  transform: translate(-50%, 0);
-  pointer-events: auto;
-}
-
-.loginStyle .loginHover::before {
-  content: "";
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 6px;
-  border-style: solid;
-  border-color: transparent transparent black transparent;
-}
-
-.shopIconContainer2 {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translate(-50%, 0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-.img-hover-effect:hover .shopIconContainer2 {
-  opacity: 1;
-  transform: translate(-50%, -50%);
-}
-.loginStyle2 {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  background-color: #ffffff;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.loginStyle2 .loginHover2 {
-  position: absolute;
-  left: 50%;
-  top: -55px;
-  transform: translate(-50%, -10px);
-  color: white;
-  background-color: black;
-  padding: 10px 14px;
-  border-radius: 6px;
-  white-space: nowrap;
-  font-size: 18px;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s ease;
-}
-
-
-.loginStyle2:hover .loginHover2 {
-  opacity: 1;
-  transform: translate(-50%, 0);
-  pointer-events: auto;
-}
-
-.loginStyle2 .loginHover2::before {
-  content: "";
-  position: absolute;
-  top: 45px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 6px;
-  border-style: solid;
-  border-color: black transparent  transparent transparent;
-}
-
-.loginStyle2:hover {
-  background-color: black;
-  color: white;
-
-}
-
-.animate {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 50;
-  width: 600px;
-  height: 100vh;
-  background-color: white;
-  animation-duration: 0.7s;
-  animation-fill-mode: forwards;
-  will-change: transform;
-  animation-name: none; /* 👈 ÇOX VACİB */
-  will-change: transform;
-  
-}
-
-.animate.slide-in {
-  animation-name: slide-in;
-}
-
-.animate.slide-out {
-  animation-name: slide-out;
-}
-
-@keyframes slide-in {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-@keyframes slide-out {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -154,9 +10,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  /* background-color: #3E2C1C; */
   background-color: white;
-/* color: #F5EBDD; */
   transition: all 0.7s ease;
 }
 
@@ -193,7 +47,6 @@
   animation: slideUp 0.4s ease forwards;
 }
 
-/* Arrow düymələri */
 .slider-btn {
   width: 48px;
   height: 48px;

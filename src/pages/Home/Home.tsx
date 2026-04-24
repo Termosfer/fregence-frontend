@@ -396,7 +396,7 @@ const Home = () => {
     grid
     grid-cols-1
     sm:grid-cols-2
-    lg:grid-cols-3
+    lg:grid-cols-2
     xl:grid-cols-4
     gap-10
     px-4 sm:px-8 lg:px-20
@@ -427,7 +427,7 @@ const Home = () => {
           className="relative overflow-hidden flex flex-col items-center justify-between text-center group shadow-lg rounded-lg p-4 bg-white"
         >
           {/* ŞƏKİL SAHƏSİ */}
-          <div className="w-full aspect-square overflow-hidden img-hover-effect">
+          <div className="w-full aspect-square overflow-hidden img-hover-effect ">
             <img
               src={item.imageUrl}
               alt={item.name}

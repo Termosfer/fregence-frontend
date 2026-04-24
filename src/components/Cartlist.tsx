@@ -128,7 +128,7 @@ xl:group-hover:opacity-100 xl:group-hover:translate-y-0
                 </div>
 
                 <div
-                  className="loginStyle1 group relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
+                  className=" group relative inline-flex items-center justify-center w-[40px] h-[40px] md:w-[50px] md:h-[50px] bg-white rounded-full shadow-lg cursor-pointer hover:bg-black hover:text-white transition-colors duration-500"
                   onClick={(e) => {
                     e.stopPropagation();
                     addToCart(item);
