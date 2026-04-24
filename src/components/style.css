@@ -176,21 +176,6 @@
   }
 }
 
-/* badge */
-.badge {
-  position: absolute;
-  bottom: -8px;
-  right: -4px;
-  /* background: #D4AF37; */
-  background-color: #81d8d0;
-  color: black;
-  border-radius: 50%;
- 
-  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 
 @keyframes slideUp {

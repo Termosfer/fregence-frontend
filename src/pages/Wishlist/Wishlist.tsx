@@ -84,7 +84,7 @@ const Wishlist = () => {
                     </td>
 
                     {/* Price */}
-                    <td className="py-6 font-semibold text-lg hidden md:table-cell text-center">
+                    <td className="py-6 font-medium font-[Jost] text-lg hidden md:table-cell text-center">
                       {item.price}<span className="text-sm">.00 azn</span>
                     </td>
 

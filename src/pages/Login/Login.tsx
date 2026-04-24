@@ -17,7 +17,7 @@ const Login = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.warn("Zəhmət olmasa bütün xanaları doldurun!");
+      toast.warn("Please fill in all fields!");
       return;
     }
 
@@ -30,7 +30,7 @@ const Login = () => {
       localStorage.setItem("role", response.data.role); // Məsələn: "ADMIN"
       localStorage.setItem("userName", response.data.name.split(" ")[0]); // Adın bir hissəsi
       // 2. Uğurlu bildiriş göstər
-      toast.success("Xoş gəldiniz! Giriş uğurludur.");
+      toast.success("Welcome! Login successful.");
 
       // 3. 2 saniyə sonra Ana Səhifəyə yönləndir
       setTimeout(() => {
@@ -39,7 +39,7 @@ const Login = () => {
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
       const errorMsg =
-        error.response?.data?.message || "Email və ya parol səhvdir!";
+        error.response?.data?.message || "Invalid email or password!";
       toast.error(errorMsg);
     } finally {
       setLoading(false);

@@ -113,9 +113,7 @@ xl:group-hover:opacity-100 xl:group-hover:translate-y-0
                   onClick={() => handleOpenQuickView(item.id)}
                 >
                   <FiSearch className="w-3 h-3 md:w-4 md:h-4 " />
-                  {/* <div className="loginHover1  uppercase tracking-tighter whitespace-nowrap  opacity-0  group-hover:opacity-100  transition-opacity duration-700 absolute -top-10 left-1/2 transform -translate-x-1/2 mt-1 px-5 py-2 bg-black text-white text-xs rounded-lg">
-                    Quick view
-                  </div> */}
+                  
                 </div>
 
                 <div
@@ -126,9 +124,7 @@ xl:group-hover:opacity-100 xl:group-hover:translate-y-0
                   }}
                 >
                   <FiHeart className="w-3 h-3 md:w-4 md:h-4" />
-                  {/* <div className="loginHover1 uppercase text-nowrap tracking-tighter display-none md:block absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-5 py-2 bg-black text-white text-xs rounded-lg">
-                    Wishlist
-                  </div> */}
+                  
                 </div>
 
                 <div
@@ -139,21 +135,19 @@ xl:group-hover:opacity-100 xl:group-hover:translate-y-0
                   }}
                 >
                   <FiShoppingCart className="w-3 h-3 md:w-4 md:h-4" />
-                  {/* <div className="loginHover1 uppercase tracking-tighter text-nowrap display-none md:block absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-5 py-2 bg-black text-white text-xs rounded-lg">
-                    Add to Cart
-                  </div> */}
+                  
                 </div>
               </div>
             </div>
             <div className="mt-5">
               <h5 className="text-base font-semibold mb-2">{item.name}</h5>
-              <div className="flex justify-center items-center gap-3">
+              <div className="flex justify-center items-center gap-3 font-[Jost]">
                 <span className="text-[#81d8d0] text-base font-semibold">
-                  {item.price}<span className="text-xs">.00 azn</span>
+                  {item.price}<span className="text-xs">.00 Azn</span>
                 </span>
                 {item.discountPrice && (
                   <span className="line-through text-xs text-gray-500">
-                    {item.discountPrice}.00 azn
+                    {item.discountPrice}.00 Azn
                   </span>
                 )}
               </div>

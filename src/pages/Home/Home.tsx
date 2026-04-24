@@ -405,10 +405,7 @@ const Home = () => {
   "
 >
   {isLoading
-    ? /* 
-         DİQQƏT: Burada yeni bir <div className="grid..."> yaratmırıq!
-         Skeletləri birbaşa ana grid-in içinə düzürük.
-      */
+    ? 
       [...Array(4)].map((_, i) => (
         <div 
           key={i} 
@@ -481,14 +478,14 @@ const Home = () => {
           {/* MƏTN SAHƏSİ */}
           <div className="mt-5">
             <h5 className="text-base font-semibold mb-2">{item.name}</h5>
-            <div className="flex justify-center items-center gap-3">
+            <div className="flex justify-center items-center gap-3 font-[Jost]">
               <span className="text-[#81d8d0] text-base font-semibold">
                 {item.price}
-                <span className="text-xs">.00 azn</span>
+                <span className="text-xs">.00 Azn</span>
               </span>
               {item.discountPrice && (
                 <span className="line-through text-xs text-gray-500">
-                  {item.discountPrice}.00 azn
+                  {item.discountPrice}.00 Azn
                 </span>
               )}
             </div>

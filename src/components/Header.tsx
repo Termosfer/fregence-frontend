@@ -296,11 +296,11 @@ const Header = () => {
                             onClick={() => handleResultClick(p.name)}
                             className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-gray-100"
                           >
-                            <div className="w-14 h-16 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 p-1 border">
+                            <div className="w-14 h-16 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 p-1  shadow-md">
                               <img
                                 src={p.imageUrl}
                                 alt=""
-                                className="w-full h-full object-contain"
+                                className="w-full h-full object-fill rounded-lg"
                               />
                             </div>
                             <div className="min-w-0 flex-1">
@@ -311,7 +311,7 @@ const Header = () => {
                                 {p.brand}
                               </p>
                               <p className="text-[11px] font-bold text-[#81d8d0] mt-1">
-                                {p.price}.00 AZN
+                                {p.price}.00 Azn
                               </p>
                             </div>
                           </div>
@@ -342,7 +342,7 @@ const Header = () => {
             <FiHeart className="xl:text-xl text-lg" />
             {/* <div className="loginHover text-sm">Favorites</div> */}
             {wishlistCount > 0 && (
-              <div className="badge text-[12px] 2xl:w-[20px] 2xl:h-[20px] w-[15px] h-[15px] ">
+              <div className="absolute -top-2 -right-1 bg-[#81d8d0] text-black rounded-full flex items-center justify-center text-xs w-[15px] h-[15px] ">
                 {wishlistCount}
               </div>
             )}
@@ -354,7 +354,7 @@ const Header = () => {
             <FiShoppingCart className="xl:text-xl text-lg" />
             {/* <div className="loginHover text-sm">Cart</div> */}
             {cartItems.length > 0 && (
-              <div className="badge text-[12px] 2xl:w-[20px] 2xl:h-[20px] w-[15px] h-[15px]">
+              <div className="absolute -top-2 -right-1 bg-[#81d8d0] text-black rounded-full flex items-center justify-center text-xs  w-[15px] h-[15px]">
                 {cartItems.length}
               </div>
             )}
@@ -460,12 +460,12 @@ const Header = () => {
               onClick={() => setMobileMenu(false)}
               className="relative flex items-center gap-2 font-medium text-base"
             >
-              <FiHeart className="text-xl" />
               <span>Favorites</span>
+              <FiHeart className="text-xl" />
               {wishlistCount > 0 && (
-                <span className="bg-black text-white text-[10px] px-2 py-0.5 rounded-full">
+               <div className="absolute -top-1 -right-1 bg-[#81d8d0] text-black rounded-full flex items-center justify-center text-xs  w-[15px] h-[15px]">
                   {wishlistCount}
-                </span>
+                </div>
               )}
             </Link>
           </div>

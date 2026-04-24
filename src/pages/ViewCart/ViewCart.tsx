@@ -13,9 +13,9 @@ const ViewCart = () => {
     updateQuantity,
     isLoading,
     isUpdating,
-    updatingVariables, // O an artırılan/azaldılan məhsulun ID-si
+    updatingVariables, 
     isRemoving,
-    removingVariables, // O an silinən məhsulun ID-si
+    removingVariables, 
   } = useCart();
 
   // 1. Məhsulların yerinin dəyişməməsi üçün ID-yə görə sıralayırıq
@@ -112,9 +112,9 @@ const ViewCart = () => {
                           <h2 className="font-bold text-lg text-gray-800 leading-tight">
                             {item.perfumeName}
                           </h2>
-                          <p className="text-base font-medium text-[#81d8d0]">
+                          <p className="text-base font-medium text-[#81d8d0] font-[Jost]">
                             {item.price}
-                            <span className="text-xs">.00 azn</span>
+                            <span className="text-xs">.00 Azn</span>
                           </p>
 
                           {/* DELETE BUTTON */}
@@ -187,12 +187,12 @@ const ViewCart = () => {
                     </td>
 
                     {/* TOTAL PRICE */}
-                    <td className="py-8 block md:table-cell text-left md:text-right font-bold text-base text-gray-800">
+                    <td className="py-8 block md:table-cell text-left md:text-right font-medium text-base text-gray-800 font-[Jost]">
                       <span className="md:hidden font-bold text-gray-400 mr-2 text-xs uppercase tracking-widest">
                         Total:
                       </span>
                       {item.subTotal}
-                      <span className="text-xs">.00 azn</span>
+                      <span className="text-xs">.00 Azn</span>
                     </td>
                   </tr>
                 );
@@ -223,14 +223,14 @@ const ViewCart = () => {
           <div className="space-y-5 mb-8">
             <div className="flex justify-between text-gray-600 font-medium">
               <span>Subtotal</span>
-              <span className="text-black font-bold">
+              <span className="text-black font-medium font-[Jost]">
                 {cartTotal}
-                <span className="text-xs">.00 azn</span>
+                <span className="text-xs">.00 Azn</span>
               </span>
             </div>
             <div className="flex justify-between text-gray-600 font-medium">
               <span>Shipping</span>
-              <span className="text-green-600 font-bold text-xs uppercase tracking-widest">
+              <span className="text-green-600 font-medium font-[Jost] text-xs uppercase tracking-widest">
                 Free
               </span>
             </div>
@@ -238,9 +238,9 @@ const ViewCart = () => {
 
           <div className="flex justify-between font-bold border-t border-gray-200 pt-6 text-2xl text-black">
             <span>Total</span>
-            <span className="tracking-tight">
+            <span className="tracking-tight font-medium font-[Jost]">
               {cartTotal}
-              <span className="text-xs">.00 azn</span>
+              <span className="text-xs">.00 Azn</span>
             </span>
           </div>
 

@@ -60,34 +60,20 @@ const Products = () => {
   >({
     queryKey: ["perfumes", filters, globalQuery],
     queryFn: async () => {
-      /* const isFiltered =
+      const isSearchActive = globalQuery !== "";
+      const isSidebarFiltered =
         filters.brand !== "" ||
         filters.gender !== "" ||
-        filters.minPrice !== 0 ||
-        filters.maxPrice !== 1000 ||
-        globalQuery !== "";
+        filters.maxPrice < 1000;
 
-      const endpoint = isFiltered ? "/perfumes/filter" : "/perfumes"; */
-
-      
-      const isSearchActive = globalQuery !== "";
-      const isSidebarFiltered = filters.brand !== "" || filters.gender !== "" || filters.maxPrice < 1000;
-      
-      const endpoint = (isSidebarFiltered || (isSearchActive && filters.brand)) ? "/perfumes/filter" : "/perfumes";
+      const endpoint =
+        isSidebarFiltered || (isSearchActive && filters.brand)
+          ? "/perfumes/filter"
+          : "/perfumes";
 
       const response = await api.get(endpoint, {
         params: {
-         /*  query: globalQuery,
-          brand: filters.brand || undefined,
-          gender: filters.gender || undefined,
-          minPrice: filters.minPrice,
-          maxPrice: filters.maxPrice,
-          sortBy: filters.sortBy,
-          direction: filters.direction,
-          page: filters.page,
-          size: filters.size, */
-
-           query: globalQuery || undefined, // Header axtarışı
+          query: globalQuery || undefined, // Header axtarışı
           brand: filters.brand || undefined, // Sidebar brend seçimi
           gender: filters.gender || undefined,
           minPrice: filters.minPrice,
@@ -296,7 +282,6 @@ const Products = () => {
           </div>
           <div className="flex-1">
             {isBrandsLoading || isProductsLoading ? (
-              /* Yüklənmə zamanı görünəcək hissə - Səhifəni boş qoymur */
               <div
                 className="grid gap-10
           grid-cols-1
@@ -304,7 +289,6 @@ const Products = () => {
           lg:grid-cols-3
           2xl:grid-cols-4"
               >
-                {/* 8 dənə boş qutu (Skeleton) göstəririk */}
                 {[...Array(8)].map((_, i) => (
                   <div
                     key={i}
@@ -313,7 +297,6 @@ const Products = () => {
                 ))}
               </div>
             ) : (
-              /* Data gələndən sonra real komponent */
               <Cartlist
                 data={productsData!}
                 onPageChange={(newPage) => updateFilter({ page: newPage })}
@@ -324,8 +307,6 @@ const Products = () => {
         </div>
       </div>
     </div>
-    /* </div>
-    </div> */
   );
 };
 

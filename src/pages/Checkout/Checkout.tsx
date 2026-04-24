@@ -173,7 +173,7 @@ const Checkout = () => {
                       <p className="text-[10px] text-gray-400 uppercase tracking-widest">{item.brand}</p>
                       <div className="flex justify-between items-center mt-1">
                          <span className="text-xs text-gray-500 font-medium">Qty: {item.quantity}</span>
-                         <span className="text-sm font-bold">${item.subTotal.toFixed(2)}</span>
+                         <span className="text-sm font-medium font-[Jost]">{item.subTotal}<span className="text-xs">.00 Azn</span></span>
                       </div>
                     </div>
                   </div>
@@ -182,17 +182,17 @@ const Checkout = () => {
 
               {/* CALCULATION */}
               <div className="space-y-4 pt-6 border-t border-dashed border-gray-200">
-                <div className="flex justify-between text-gray-500 text-sm">
+                <div className="flex justify-between items-center text-gray-500 text-sm">
                   <span>Subtotal</span>
-                  <span className="font-bold text-black">${cartTotal.toFixed(2)}</span>
+                  <span className="font-medium font-[Jost] text-black">{cartTotal} <span className="text-xs">00 Azn</span></span>
                 </div>
-                <div className="flex justify-between text-gray-500 text-sm">
+                <div className="flex justify-between items-center text-gray-500 text-sm ">
                   <span>Shipping Cost</span>
-                  <span className="text-green-600 font-bold uppercase text-[10px] tracking-widest italic">Complimentary</span>
+                  <span className="text-green-600 font-bold uppercase text-[10px] tracking-widest font-medium font-[Jost]">Complimentary</span>
                 </div>
                 <div className="flex justify-between text-xl font-bold pt-4 text-black border-t border-gray-100">
                   <span className="tracking-tighter">Estimated Total</span>
-                  <span className="tracking-tight">${cartTotal.toFixed(2)}</span>
+                  <span className="tracking-tight font-medium font-[Jost]">{cartTotal} <span className="text-xs">00 Azn</span></span>
                 </div>
               </div>
 

@@ -78,8 +78,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
           </button>
         </div>
 
-        {/* MƏHSULLAR SİYAHISI - flex-1 (Dinamik skrol buradadır) */}
-        {/* overflow-y-auto sayəsində yalnız məhsul çox olanda skrol yaranacaq */}
+      
         <div className="flex-1 min-h-0 overflow-y-auto">
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-gray-400">
@@ -161,9 +160,9 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                             <FiPlus size={14} />
                           </button>
                         </div>
-                        <span className="font-bold text-[#81d8d0]">
+                        <span className="font-medium font-[Jost] text-[#81d8d0] text-xs">
                           {item.subTotal}
-                          <span className="text-sm">.00 azn</span>
+                          <span className="text-xs">.00 Azn</span>
                         </span>
                         <button
                           onClick={() => removeFromCart(item.cartItemId)}
@@ -192,9 +191,9 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
             <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400">
               Estimated Total
             </h2>
-            <p className="font-bold text-lg text-gray-800">
+            <p className="font-medium font-[Jost] text-lg text-gray-800">
               {cartTotal}
-              <span className="text-sm">.00 azn</span>
+              <span className="text-sm">.00 Azn</span>
             </p>
           </div>
 
