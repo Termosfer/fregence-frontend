@@ -1,28 +1,51 @@
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoMailOpenOutline } from "react-icons/io5";
 import api from "../api/axios";
-import { toast } from "react-toastify";
 import type { ApiError } from "../types/perfume";
 import type { AxiosError } from "axios";
 import { FiLoader, FiArrowRight } from "react-icons/fi";
 
 const Newsletter = () => {
   const [email, setEmail] = useState<string>("");
+  // Mesaj və onun tipini (uğur/xəta) saxlamaq üçün state
+  const [status, setStatus] = useState<{ message: string; type: "success" | "error" | null }>({
+    message: "",
+    type: null,
+  });
 
   const mutation = useMutation<void, AxiosError<ApiError>, string>({
     mutationFn: (newEmail: string) => api.post("/subscribers", { email: newEmail }),
     onSuccess: () => {
-      toast.success("Subscription successful!");
+      setStatus({ message: "Subscription successful! Welcome to our list.", type: "success" });
       setEmail("");
+    },
+    onError: (error) => {
+      const serverMessage = error.response?.data?.message || "Something went wrong!";
+      setStatus({ message: serverMessage, type: "error" });
     },
   });
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.includes("@")) return toast.warn("Please enter a valid email.");
+    
+    // Köhnə statusu təmizləyirik
+    setStatus({ message: "", type: null });
+
+    if (!email.includes("@")) {
+      setStatus({ message: "Please enter a valid email.", type: "error" });
+      return;
+    }
+
     mutation.mutate(email);
   };
+
+  // İstifadəçi yenidən yazmağa başlayanda mesajı gizlətmək üçün (opsional)
+  useEffect(() => {
+    if (email.length > 0) {
+      setStatus({ message: "", type: null });
+    }
+  }, [email]);
 
   return (
     <section className="bg-[#FAFAF9] border-y border-gray-100 py-24 px-4 sm:px-8 lg:px-20 font-[Playfair]">
@@ -44,13 +67,13 @@ const Newsletter = () => {
         </div>
 
         {/* FORM SECTION */}
-        <form onSubmit={handleSubscribe} className="w-full lg:w-1/2 max-w-lg">
-          <div className="relative group flex items-center border-b-2 border-gray-200 focus-within:border-black transition-all duration-500 pb-2">
+        <div className="w-full lg:w-1/2 max-w-lg">
+          <form onSubmit={handleSubscribe} className="relative group flex items-center border-b-2 border-gray-200 focus-within:border-black transition-all duration-500 pb-2">
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={mutation.isPending}
-              type="email"
+              type="text" // Validasiyanı özümüz etdiyimiz üçün 'text' saxladıq
               placeholder="Enter your email address..."
               className="w-full bg-transparent py-4 text-black outline-none placeholder:text-gray-300 italic text-lg"
             />
@@ -68,8 +91,19 @@ const Newsletter = () => {
                 <FiArrowRight className="text-gray-300 group-hover/btn:text-black group-hover/btn:translate-x-1 transition-all" />
               )}
             </button>
+          </form>
+
+          {/* İNPUTUN ALTINDAKI MESAJ HİSSƏSİ */}
+          <div className="h-6 mt-2"> {/* Hündürlük sabit qoyulub ki, mesaj çıxanda layout sürüşməsin */}
+            {status.message && (
+              <p className={`text-xs font-bold uppercase tracking-widest text-left ${
+                status.type === "success" ? "text-green-600" : "text-red-500"
+              } animate-in fade-in slide-in-from-top-1 duration-300`}>
+                {status.message}
+              </p>
+            )}
           </div>
-        </form>
+        </div>
       </div>
     </section>
   );

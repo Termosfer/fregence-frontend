@@ -7,7 +7,7 @@ export interface Perfume {
   imageUrl: string;
   description: string;
   ml: number;
-  gender: 'MEN' | 'WOMEN' | 'UNISEX';
+  gender: "MEN" | "WOMEN" | "UNISEX";
   isNew: boolean;
   isRecommended?: boolean;
 }
@@ -28,7 +28,6 @@ export interface PageResponse<T> {
   last: boolean;
 }
 
-// Səbətdəki məhsulun tipi
 export interface CartItem {
   cartItemId: number;
   perfumeId: number;
@@ -37,38 +36,44 @@ export interface CartItem {
   price: number;
   quantity: number;
   subTotal: number;
-  imageUrl?: string; 
+  imageUrl?: string;
 }
 
-// Səbət API-nın ümumi cavabı
 export interface CartResponse {
   items: CartItem[];
   totalAmount: number;
 }
 
-// Mutasiya üçün dəyişən tipi
 export interface AddToCartArgs {
   perfumeId: number;
   quantity: number;
-  perfume?: Perfume; // Optimistic update üçün bütün obyekt
-  isNew?: boolean;   // Tosterin çıxıb-çıxmayacağını təyin edən bayraq
+  perfume?: Perfume;
+  isNew?: boolean;
 }
 
-// Cart Optimistic Context
 export interface CartMutationContext {
   previousCart: CartResponse | undefined;
 }
 
-// Wishlist Optimistic Context
 export interface WishlistMutationContext {
   previousWishlist: Perfume[] | undefined;
   previousCount: number | undefined;
 }
 
+export interface UserProfile {
+  id?: number;
+  name: string;
+  email: string;
+}
+
+export interface PasswordUpdateData {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export interface ApiError {
   message: string;
 }
-
 
 export interface OrderItem {
   id: number;
@@ -85,12 +90,11 @@ export interface OrderResponse {
   address: string;
   phoneNumber: string;
   orderNote: string;
-  status: 'PENDING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
+  status: "PENDING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
   orderDate: string;
   preferredDeliveryTime: string;
   items: OrderItem[];
 }
-
 
 export type OrderStatus = "PENDING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
 
@@ -98,7 +102,7 @@ export interface OrderItem {
   id: number;
   perfumeName: string;
   imageUrl: string;
-  brand:string;
+  brand: string;
   quantity: number;
   price: number;
 }
@@ -110,19 +114,14 @@ export interface Order {
   status: OrderStatus;
   items: OrderItem[];
   orderNote?: string;
-  address:string;
+  address: string;
   // YENİ SAHƏLƏR:
   courierName?: string;
   courierPhone?: string;
   estimatedDeliveryTime?: string;
+  preferredDeliveryTime?: string;
 }
 
-export interface UserProfile {
-  id: number;
-  name: string;
-  email: string;
-  // digər lazım olan profil sahələri
-}
 
 export interface AddProductFormInput {
   name: string;
@@ -133,7 +132,7 @@ export interface AddProductFormInput {
   description: string;
   discountPrice?: number;
   isNew?: boolean;
-   isRecommended?: boolean;
+  isRecommended?: boolean;
 }
 
 export interface ShipOrderArgs {
@@ -143,7 +142,6 @@ export interface ShipOrderArgs {
   estimatedTime: string;
 }
 
-
 export interface User {
   id: number;
   fullName: string;
@@ -151,7 +149,6 @@ export interface User {
   role: "ADMIN" | "USER";
 }
 
-// Backend-dən gələn səhifələmə strukturu
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;

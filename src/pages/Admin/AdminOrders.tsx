@@ -115,39 +115,59 @@ const AdminOrders = () => {
                     <tr className="bg-[#fafafa]">
                       <td
                         colSpan={5}
-                        className="px-8 py-8 border-b border-gray-100 shadow-inner"
+                        className="p-8 border-b border-gray-100 shadow-inner"
                       >
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 animate-in slide-in-from-top-2 duration-300">
                           {/* SOL: MÜŞTƏRİ TƏLƏBİ (ÜNVAN VƏ NOT) */}
-                          <div className="space-y-6">
+                          <div className="space-y-4">
                             <div>
-                              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-3">
+                              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-1">
                                 Delivery Destination
                               </h4>
-                              <div className="flex items-start gap-3">
-                                <div className="p-2 bg-white rounded-lg border border-gray-100 text-gray-400">
-                                  <FiMapPin />
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 bg-white rounded-lg border border-gray-100 text-gray-400">
+                                    <FiMapPin />
+                                  </div>
+                                  <p className="text-sm font-medium text-gray-700 leading-relaxed">
+                                    {order.address}
+                                  </p>
                                 </div>
-                                <p className="text-sm font-medium text-gray-700 leading-relaxed">
-                                  {order.address}
-                                </p>
-                              </div>
+                               
                             </div>
 
                             {/* MÜŞTƏRİ NOTU BURADA GÖSTƏRİLİR */}
                             <div>
-                              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-3">
+                              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-1">
                                 Customer's Note
                               </h4>
-                              <div className="flex items-start gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                                <div className="p-2 text-[#81d8d0]">
-                                  <FiEdit3 />
+                              <div className="flex flex-col bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                                <div className="flex items-center gap-3 ">
+                                  <div className="p-2 text-[#81d8d0]">
+                                    <FiEdit3 />
+                                  </div>
+                                  <p className="text-sm italic text-gray-600">
+                                    {order.orderNote
+                                      ? `"${order.orderNote}"`
+                                      : "No special instructions provided by the customer."}
+                                  </p>
                                 </div>
-                                <p className="text-sm italic text-gray-600">
-                                  {order.orderNote
-                                    ? `"${order.orderNote}"`
-                                    : "No special instructions provided by the customer."}
-                                </p>
+                                 <div className="flex items-center gap-3 ">
+                                  <div className="p-2 text-[#81d8d0]">
+                                    <FiClock />
+                                  </div>
+                                  <p className="text-sm italic text-gray-600">
+                                     {order.preferredDeliveryTime
+                                        ? new Date(
+                                            order.preferredDeliveryTime,
+                                          ).toLocaleString("en-GB", {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            day: "2-digit",
+                                            month: "short",
+                                          })
+                                        : "Not assigned"}
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           </div>

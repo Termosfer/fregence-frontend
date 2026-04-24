@@ -1,32 +1,22 @@
 import { useState, useEffect } from "react";
 import { useUser } from "../../hooks/useUser";
-import {
-  FiUser,
-  FiLock,
-  FiEye,
-  FiEyeOff,
-  FiMail,
-  FiShield,
-} from "react-icons/fi";
+import { FiUser,  FiEye, FiEyeOff,  FiShield, FiLoader } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import type { UserProfile, PasswordUpdateData } from "../../types/perfume";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Profile = () => {
-  const {
-    user,
-    updateProfile,
-    isUpdating,
-    changePassword,
-    isChangingPassword,
-  } = useUser();
+  const { user, updateProfile, isUpdating, changePassword, isChangingPassword } = useUser();
   const navigate = useNavigate();
-  // Profil State
-  const [profile, setProfile] = useState({ name: "", email: "" });
+  const queryClient = useQueryClient();
 
-  // Parol State
-  const [passData, setPassData] = useState({
-    oldPassword: "",
-    newPassword: "",
-  });
+  const [profileStatus, setProfileStatus] = useState<{ msg: string; type: "success" | "error" | null }>({ msg: "", type: null });
+  const [passStatus, setPassStatus] = useState<{ msg: string; type: "success" | "error" | null }>({ msg: "", type: null });
+
+  const [profile, setProfile] = useState<UserProfile>({ name: "", email: "" });
+  const [passData, setPassData] = useState<PasswordUpdateData>({ oldPassword: "", newPassword: "" });
+  
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
 
@@ -34,163 +24,132 @@ const Profile = () => {
     if (user) setProfile({ name: user.name, email: user.email });
   }, [user]);
 
-  const handleInfoUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateProfile(profile);
-    navigate("/");
+  // Ümumi Logout Funksiyası
+  const forceLogout = (message: string) => {
+    localStorage.clear();
+    queryClient.clear(); // React Query cache-ini silir
+    toast.info(message);
+    setTimeout(() => navigate("/login"), 1000);
   };
 
+  // 1. PROFIL YENİLƏMƏ
+  const handleInfoUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (profile.name === user?.name && profile.email === user?.email) {
+      setProfileStatus({ msg: "No changes detected.", type: "error" });
+      return;
+    }
+
+    updateProfile(profile, {
+      onSuccess: () => {
+        setProfileStatus({ msg: "Profile updated! Logging out...", type: "success" });
+        forceLogout("Security notice: Profile changed. Please login again.");
+      },
+      onError: (err) => {
+        setProfileStatus({ msg: err.response?.data?.message || "Update failed.", type: "error" });
+      }
+    });
+  };
+
+  // 2. PAROL YENİLƏMƏ
   const handlePasswordUpdate = (e: React.FormEvent) => {
     e.preventDefault();
-    changePassword({
-      oldPassword: passData.oldPassword,
-      newPassword: passData.newPassword,
+    if (!passData.oldPassword || !passData.newPassword) {
+      setPassStatus({ msg: "Fill all fields.", type: "error" });
+      return;
+    }
+
+    changePassword(passData, {
+      onSuccess: () => {
+        setPassStatus({ msg: "Password changed! Logging out...", type: "success" });
+        forceLogout("Security notice: Password changed. Please login again.");
+      },
+      onError: (err) => {
+        setPassStatus({ msg: err.response?.data?.message || "Wrong current password.", type: "error" });
+      }
     });
-    navigate("/");
   };
 
   return (
     <div className="py-16 px-4 sm:px-8 lg:px-20 font-[Playfair] bg-[#fafafa] min-h-screen">
       <div className="max-w-5xl mx-auto">
-        {/* Header Section */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold uppercase tracking-tighter text-gray-900">
-            My Account
-          </h1>
-          <p className="text-gray-400 text-sm mt-2 uppercase tracking-widest">
-            Manage your profile and security settings
-          </p>
-        </div>
+        <h1 className="text-4xl font-bold uppercase tracking-tighter mb-12">My Account</h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-          {/* CARD 1: GENERAL INFORMATION */}
-          <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100 transition-all hover:shadow-md">
-            <div className="flex items-center gap-3 mb-10">
-              <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-black">
-                <FiUser size={20} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* PROFILE CARD */}
+          <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100 flex flex-col">
+            <h2 className="text-xl font-bold uppercase tracking-widest mb-10 flex items-center gap-3">
+              <FiUser /> Profile Info
+            </h2>
+            <form onSubmit={handleInfoUpdate} className="space-y-8 flex-1">
+              <div className="group">
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2">Full Name</label>
+                <input 
+                  value={profile.name} 
+                  onChange={(e) => setProfile({ ...profile, name: e.target.value })} 
+                  className="w-full border-b border-gray-100 py-2 outline-none focus:border-black transition-all bg-transparent text-sm" 
+                />
               </div>
-              <h2 className="text-xl font-bold uppercase tracking-widest">
-                Profile Info
-              </h2>
-            </div>
-
-            <form onSubmit={handleInfoUpdate} className="space-y-8">
-              <div className="group relative">
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2 group-focus-within:text-black transition-colors">
-                  Full Name
-                </label>
-                <div className="flex items-center gap-3 border-b border-gray-100 py-2 group-focus-within:border-black transition-all">
-                  <FiUser className="text-gray-300" />
-                  <input
-                    value={profile.name}
-                    onChange={(e) =>
-                      setProfile({ ...profile, name: e.target.value })
-                    }
-                    className="w-full outline-none bg-transparent text-sm placeholder:text-gray-200"
-                    placeholder="Enter your name"
-                  />
-                </div>
+              <div className="group">
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2">Email Address</label>
+                <input 
+                  type="email" 
+                  value={profile.email} 
+                  onChange={(e) => setProfile({ ...profile, email: e.target.value })} 
+                  className="w-full border-b border-gray-100 py-2 outline-none focus:border-black transition-all bg-transparent text-sm" 
+                />
               </div>
-
-              <div className="group relative">
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2 group-focus-within:text-black transition-colors">
-                  Email Address
-                </label>
-                <div className="flex items-center gap-3 border-b border-gray-100 py-2 group-focus-within:border-black transition-all">
-                  <FiMail className="text-gray-300" />
-                  <input
-                    type="email"
-                    value={profile.email}
-                    onChange={(e) =>
-                      setProfile({ ...profile, email: e.target.value })
-                    }
-                    className="w-full outline-none bg-transparent text-sm placeholder:text-gray-200"
-                    placeholder="Email address"
-                  />
-                </div>
+              <div>
+                <button disabled={isUpdating} className="w-full bg-black text-white py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[3px] border-2 hover:bg-white  hover:text-black transition-all disabled:bg-gray-200 cursor-pointer flex justify-center items-center gap-2">
+                  {isUpdating ? <FiLoader className="animate-spin" /> : "Save & Re-login"}
+                </button>
+                {profileStatus.msg && (
+                  <p className={`mt-3 text-[11px] font-bold text-center uppercase tracking-widest ${profileStatus.type === "success" ? "text-green-600" : "text-red-500"}`}>
+                    {profileStatus.msg}
+                  </p>
+                )}
               </div>
-
-              <button
-                disabled={isUpdating}
-                className="cursor-pointer w-full bg-black text-white py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[3px] hover:bg-white hover:text-black  hover:border-2 border-2 transition-all active:scale-[0.98] disabled:bg-gray-300 shadow-lg shadow-gray-200"
-              >
-                {isUpdating ? "Processing..." : "Save Profile Changes"}
-              </button>
             </form>
           </div>
 
-          {/* CARD 2: SECURITY / PASSWORD */}
-          <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100 transition-all hover:shadow-md">
-            <div className="flex items-center gap-3 mb-10">
-              <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-black">
-                <FiShield size={20} />
+          {/* SECURITY CARD */}
+          <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100 flex flex-col">
+            <h2 className="text-xl font-bold uppercase tracking-widest mb-10 flex items-center gap-3">
+              <FiShield /> Security
+            </h2>
+            <form onSubmit={handlePasswordUpdate} className="space-y-8 flex-1">
+              <div className="relative group">
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2">Current Password</label>
+                <input 
+                  type={showOld ? "text" : "password"} 
+                  autoComplete="current-password"
+                  value={passData.oldPassword} 
+                  onChange={(e) => setPassData({ ...passData, oldPassword: e.target.value })} 
+                  className="w-full border-b border-gray-100 py-2 pr-10 outline-none focus:border-black transition-all bg-transparent text-sm" 
+                />
+                <button type="button" onClick={() => setShowOld(!showOld)} className="absolute right-0 bottom-2 text-gray-400">{showOld ? <FiEyeOff /> : <FiEye />}</button>
               </div>
-              <h2 className="text-xl font-bold uppercase tracking-widest">
-                Security
-              </h2>
-            </div>
-
-            <form onSubmit={handlePasswordUpdate} className="space-y-8">
-              {/* Old Password */}
-              <div className="group relative">
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2 group-focus-within:text-black transition-colors">
-                  Current Password
-                </label>
-                <div className="flex items-center gap-3 border-b border-gray-100 py-2 group-focus-within:border-black transition-all">
-                  <FiLock className="text-gray-300" />
-                  <input
-                    type={showOld ? "text" : "password"}
-                    autoComplete="current-password"
-                    value={passData.oldPassword}
-                    onChange={(e) =>
-                      setPassData({ ...passData, oldPassword: e.target.value })
-                    }
-                    className="w-full outline-none bg-transparent text-sm"
-                    placeholder="••••••••"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowOld(!showOld)}
-                    className="text-gray-300 hover:text-black transition-colors"
-                  >
-                    {showOld ? <FiEyeOff size={16} /> : <FiEye size={16} />}
-                  </button>
-                </div>
+              <div className="relative group">
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2">New Password</label>
+                <input 
+                  type={showNew ? "text" : "password"} 
+                  autoComplete="new-password"
+                  value={passData.newPassword} 
+                  onChange={(e) => setPassData({ ...passData, newPassword: e.target.value })} 
+                  className="w-full border-b border-gray-100 py-2 pr-10 outline-none focus:border-black transition-all bg-transparent text-sm" 
+                />
+                <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-0 bottom-2 text-gray-400">{showNew ? <FiEyeOff /> : <FiEye />}</button>
               </div>
-
-              {/* New Password */}
-              <div className="group relative">
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2 group-focus-within:text-black transition-colors">
-                  New Password
-                </label>
-                <div className="flex items-center gap-3 border-b border-gray-100 py-2 group-focus-within:border-black transition-all">
-                  <FiLock className="text-gray-300" />
-                  <input
-                    type={showNew ? "text" : "password"}
-                    autoComplete="new-password"
-                    value={passData.newPassword}
-                    onChange={(e) =>
-                      setPassData({ ...passData, newPassword: e.target.value })
-                    }
-                    className="w-full outline-none bg-transparent text-sm"
-                    placeholder="Min. 6 characters"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowNew(!showNew)}
-                    className="text-gray-300 hover:text-black transition-colors"
-                  >
-                    {showNew ? <FiEyeOff size={16} /> : <FiEye size={16} />}
-                  </button>
-                </div>
+              <div>
+                <button disabled={isChangingPassword} className="w-full bg-white text-black border-2 border-black py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[3px] hover:bg-black hover:text-white transition-all disabled:opacity-30 cursor-pointer flex justify-center items-center gap-2">
+                  {isChangingPassword ? <FiLoader className="animate-spin" /> : "Update & Re-login"}
+                </button>
+                {passStatus.msg && (
+                  <p className={`mt-3 text-[11px] font-bold text-center uppercase tracking-widest ${passStatus.type === "success" ? "text-green-600" : "text-red-500"}`}>
+                    {passStatus.msg}
+                  </p>
+                )}
               </div>
-
-              <button
-                disabled={isChangingPassword}
-                className="cursor-pointer w-full bg-white text-black border-2 border-black py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[3px] hover:bg-black hover:text-white transition-all active:scale-[0.98] disabled:border-gray-200 disabled:text-gray-300 shadow-sm"
-              >
-                {isChangingPassword ? "Updating..." : "Change Password"}
-              </button>
             </form>
           </div>
         </div>

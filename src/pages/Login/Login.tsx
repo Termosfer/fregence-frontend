@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import api from "../../api/axios"; // Sizin axios instance
+import api from "../../api/axios";
 import type { AxiosError } from "axios";
 
 const Login = () => {
@@ -10,69 +10,117 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
+  // Xətaları izləmək üçün state
+  const [errors, setErrors] = useState({ email: "", password: "" });
 
-  const navigate = useNavigate();
-
+  useEffect(() => {
+    if (serverError) setServerError("");
+  }, [email, password]);
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
+  setServerError(""); 
 
-    if (!email || !password) {
-      toast.warn("Please fill in all fields!");
-      return;
-    }
+  // 1. Validasiya məntiqi - MÜTLƏQ AKTİV OLMALIDIR
+  let hasError = false;
+  const newErrors = { email: "", password: "" };
 
-    setLoading(true);
-    try {
-      const response = await api.post("/auth/login", { email, password });
-      
-      // 1. Tokeni yadda saxla
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.role); // Məsələn: "ADMIN"
-      localStorage.setItem("userName", response.data.name.split(" ")[0]); // Adın bir hissəsi
-      // 2. Uğurlu bildiriş göstər
-      toast.success("Welcome! Login successful.");
+  if (!email.trim()) {
+    newErrors.email = "Email is required";
+    hasError = true;
+  }
+  if (!password.trim()) {
+    newErrors.password = "Password is required";
+    hasError = true;
+  }
 
-      // 3. 2 saniyə sonra Ana Səhifəyə yönləndir
-      setTimeout(() => {
-        navigate("/");
-      }, 1500);
-    } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-      const errorMsg =
-        error.response?.data?.message || "Invalid email or password!";
-      toast.error(errorMsg);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setErrors(newErrors);
+
+  // Əgər inputlar boşdursa, funksiyanı saxla, API-ya sorğu göndərmə!
+  if (hasError) return; 
+
+  setLoading(true);
+
+  // KRİTİK ADDIM: Yeni girişdən əvvəl köhnə qalıqları silirik
+  localStorage.clear(); 
+
+  try {
+    const response = await api.post("/auth/login", { email, password });
+
+    // Yalnız sorğu uğurlu olanda (200-299 status) bura işləyəcək
+    console.log("Login successful:", response.data);
+
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("role", response.data.role);
+    localStorage.setItem("userName", response.data.name.split(" ")[0]);
+
+    toast.success(`Welcome back, ${response.data.name}!`);
+
+    // Uğurlu girişdən sonra yönləndiririk
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 1500);
+
+  } catch (err) {
+    // Səhv parol yazıldıqda (401, 400 və s.) birbaşa bura düşəcək
+    console.log("Login failed!");
+    
+    const error = err as AxiosError<{ message: string }>;
+    const errorMsg = error.response?.data?.message || "Invalid email or password!";
+    
+    setServerError(errorMsg); // Xətanı göstəririk
+    // HEÇ BİR YÖNLƏNDİRMƏ (navigate) ETMİRİK!
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
-    <div className=" flex items-center justify-center bg-gray-50 px-4 font-[Playfair] h-screen">
+    <div className="flex items-center justify-center bg-gray-50 px-4 font-[Playfair] h-screen">
       <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-xl">
-        <h2 className="text-3xl font-bold text-center mb-8 tracking-tight">
+        <h2 className="text-3xl font-bold text-center mb-8 tracking-tight text-gray-800">
           Login
-        </h2> 
+        </h2>
 
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={handleLogin} className="space-y-5">
           {/* Email */}
-          <div>
+          <div className="flex flex-col gap-1">
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none transition"
-              placeholder="example@gmail.com"
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errors.email) setErrors({ ...errors, email: "" }); // Yazmağa başlayanda xətanı sil
+              }}
+              className={`w-full p-3 border rounded-lg focus:ring-2 outline-none transition ${
+                errors.email
+                  ? "border-red-500 focus:ring-red-200"
+                  : "border-gray-300 focus:ring-black"
+              }`}
+              placeholder="example@mail.com"
             />
+            {errors.email && (
+              <span className="text-red-500 text-xs font-bold animate-pulse text-left">
+                {errors.email}*
+              </span>
+            )}
           </div>
 
-          {/* Password with Eye Icon */}
-          <div className="relative">
+          {/* Password */}
+          <div className="flex flex-col gap-1">
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none transition"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password) setErrors({ ...errors, password: "" });
+                }}
+                className={`w-full p-3 pr-12 border rounded-lg focus:ring-2 outline-none transition ${
+                  errors.password
+                    ? "border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:ring-black"
+                }`}
                 placeholder="••••••••"
               />
               <button
@@ -83,13 +131,18 @@ const Login = () => {
                 {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
               </button>
             </div>
+            {errors.password && (
+              <span className="text-red-500 text-xs font-bold animate-pulse text-left">
+                {errors.password}*
+              </span>
+            )}
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-lg font-bold text-white transition-all ${
+            className={`w-full py-3 rounded-lg font-bold text-white transition-all mt-2 ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-black hover:bg-gray-800 active:scale-95"

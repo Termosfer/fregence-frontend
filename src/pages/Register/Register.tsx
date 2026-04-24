@@ -2,14 +2,12 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiEye, FiEyeOff, FiUser, FiMail, FiLock } from "react-icons/fi";
-import api from "../../api/axios"; // Sizin axios instance
+import api from "../../api/axios"; 
 import type { AxiosError } from "axios";
 
 const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
-
-  // Parolun görünməsi üçün state-lər
   const [showPass, setShowPass] = useState<boolean>(false);
 
   // Form datası
@@ -17,48 +15,62 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+  });
+
+  // Xətaları izləmək üçün state
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    
+    // İstifadəçi yazmağa başlayanda həmin xananın xətasını silirik
+    if (errors[name as keyof typeof errors]) {
+      setErrors({ ...errors, [name]: "" });
+    }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Sadə validasiya
-    if (!formData.name || !formData.email || !formData.password) {
-      toast.warn("Zəhmət olmasa bütün xanaları doldurun!");
-      return;
+    // Validasiya məntiqi
+    let hasError = false;
+    const newErrors = { name: "", email: "", password: "" };
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+      hasError = true;
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+      hasError = true;
+    }
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required";
+      hasError = true;
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Minimum 6 characters required";
+      hasError = true;
     }
 
-    if (formData.password.length < 6) {
-      toast.error("Şifrə ən azı 6 simvoldan ibarət olmalıdır!");
-      return;
-    }
+    setErrors(newErrors);
+    if (hasError) return;
 
     setLoading(true);
     try {
-      // Backend-ə göndərilən data (backend-in gözlədiyi formatda)
-      const registerData = {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      };
+      await api.post("/auth/register", formData);
+      toast.success("Account created successfully! Please login.");
 
-      await api.post("/auth/register", registerData);
-
-      toast.success("Qeydiyyat uğurla tamamlandı! Giriş edin.");
-
-      // Uğurlu qeydiyyatdan sonra Login səhifəsinə göndəririk
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
-      const errorMsg =
-        error.response?.data?.message || "Qeydiyyat zamanı xəta baş verdi!";
+      const errorMsg = error.response?.data?.message || "Registration failed!";
       toast.error(errorMsg);
     } finally {
       setLoading(false);
@@ -66,18 +78,18 @@ const Register = () => {
   };
 
   return (
-    
-      <div className=" flex items-center justify-center bg-gray-50 px-4  font-[Playfair] h-screen">
-        <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-xl border border-gray-100">
-          <h2 className="text-3xl font-bold text-center mb-2 tracking-tight">
-            Create Account
-          </h2>
-          <p className="text-center text-gray-500 mb-8 text-sm italic">
-            Join our fragrance world
-          </p>
+    <div className="flex items-center justify-center bg-gray-50 px-4 font-[Playfair] h-screen">
+      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-xl border border-gray-100">
+        <h2 className="text-3xl font-bold text-center mb-2 tracking-tight text-gray-800">
+          Create Account
+        </h2>
+        <p className="text-center text-gray-500 mb-8 text-sm italic">
+          Join our fragrance world
+        </p>
 
-          <form onSubmit={handleRegister} className="space-y-5">
-            {/* Full Name */}
+        <form onSubmit={handleRegister} className="space-y-4">
+          {/* Full Name */}
+          <div className="flex flex-col gap-1">
             <div className="relative">
               <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -85,12 +97,21 @@ const Register = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none transition text-sm"
-                placeholder="Name"
+                className={`w-full p-3 pl-10 border rounded-lg focus:ring-2 outline-none transition text-sm ${
+                  errors.name ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-black"
+                }`}
+                placeholder="Full Name"
               />
             </div>
+            {errors.name && (
+              <span className="text-red-500 text-[10px] font-bold uppercase tracking-wider ml-1 animate-pulse text-left">
+                {errors.name}*
+              </span>
+            )}
+          </div>
 
-            {/* Email */}
+          {/* Email */}
+          <div className="flex flex-col gap-1">
             <div className="relative">
               <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -98,12 +119,21 @@ const Register = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none transition text-sm"
+                className={`w-full p-3 pl-10 border rounded-lg focus:ring-2 outline-none transition text-sm ${
+                  errors.email ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-black"
+                }`}
                 placeholder="Email Address"
               />
             </div>
+            {errors.email && (
+              <span className="text-red-500 text-[10px] font-bold uppercase tracking-wider ml-1 animate-pulse text-left">
+                {errors.email}*
+              </span>
+            )}
+          </div>
 
-            {/* Password */}
+          {/* Password */}
+          <div className="flex flex-col gap-1">
             <div className="relative">
               <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -111,7 +141,9 @@ const Register = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full p-3 pl-10 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none transition text-sm"
+                className={`w-full p-3 pl-10 pr-12 border rounded-lg focus:ring-2 outline-none transition text-sm ${
+                  errors.password ? "border-red-500 focus:ring-red-200 " : "border-gray-300 focus:ring-black"
+                }`}
                 placeholder="Password"
               />
               <button
@@ -122,29 +154,35 @@ const Register = () => {
                 {showPass ? <FiEyeOff size={18} /> : <FiEye size={18} />}
               </button>
             </div>
-
-            {/* Register Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-3.5 rounded-lg font-bold text-white tracking-widest transition-all ${
-                loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-black hover:bg-gray-800 active:scale-95 shadow-lg shadow-gray-200"
-              }`}
-            >
-              {loading ? "CREATING ACCOUNT..." : "REGISTER"}
-            </button>
-          </form>
-
-          <div className="mt-8 text-center text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link to="/login" className="text-black font-bold hover:underline">
-              Login here
-            </Link>
+            {errors.password && (
+              <span className="text-red-500 text-[10px] font-bold uppercase tracking-wider ml-1 animate-pulse text-left">
+                {errors.password}*
+              </span>
+            )}
           </div>
+
+          {/* Register Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3.5 rounded-lg font-bold text-white tracking-widest transition-all mt-2 ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-black hover:bg-gray-800 active:scale-95 shadow-lg shadow-gray-200"
+            }`}
+          >
+            {loading ? "CREATING ACCOUNT..." : "REGISTER"}
+          </button>
+        </form>
+
+        <div className="mt-8 text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link to="/login" className="text-black font-bold hover:underline">
+            Login here
+          </Link>
         </div>
       </div>
+    </div>
   );
 };
 
