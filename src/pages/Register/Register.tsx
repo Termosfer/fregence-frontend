@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FiEye, FiEyeOff, FiUser, FiMail, FiLock } from "react-icons/fi";
-import api from "../../api/axios"; 
+import { FiEye, FiEyeOff, FiUser, FiMail, FiLock, FiAlertCircle } from "react-icons/fi"; // FiAlertCircle əlavə edildi
+import api from "../../api/axios";
 import type { AxiosError } from "axios";
 
 const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [showPass, setShowPass] = useState<boolean>(false);
+  const [serverError, setServerError] = useState<string>(""); // 1. Server xətası üçün state əlavə edildi
 
   // Form datası
   const [formData, setFormData] = useState({
@@ -27,15 +28,17 @@ const Register = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    
-    // İstifadəçi yazmağa başlayanda həmin xananın xətasını silirik
+
+    // İstifadəçi yazmağa başlayanda xətaları silirik
     if (errors[name as keyof typeof errors]) {
       setErrors({ ...errors, [name]: "" });
     }
+    if (serverError) setServerError(""); // 2. Yazmağa başlayanda server xətasını sil
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setServerError(""); // Yeni cəhddə xətanı təmizlə
 
     // Validasiya məntiqi
     let hasError = false;
@@ -71,7 +74,9 @@ const Register = () => {
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
       const errorMsg = error.response?.data?.message || "Registration failed!";
-      toast.error(errorMsg);
+      
+      // 3. Toster əvəzinə server xətasını state-ə yazırıq
+      setServerError(errorMsg); 
     } finally {
       setLoading(false);
     }
@@ -96,9 +101,12 @@ const Register = () => {
                 type="text"
                 name="name"
                 value={formData.name}
+                autoComplete="name" // 4. Standart autocomplete dəyəri
                 onChange={handleChange}
                 className={`w-full p-3 pl-10 border rounded-lg focus:ring-2 outline-none transition text-sm ${
-                  errors.name ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-black"
+                  errors.name
+                    ? "border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:ring-black"
                 }`}
                 placeholder="Full Name"
               />
@@ -118,9 +126,12 @@ const Register = () => {
                 type="email"
                 name="email"
                 value={formData.email}
+                autoComplete="email" // 5. Standart autocomplete dəyəri
                 onChange={handleChange}
                 className={`w-full p-3 pl-10 border rounded-lg focus:ring-2 outline-none transition text-sm ${
-                  errors.email ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-black"
+                  errors.email
+                    ? "border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:ring-black"
                 }`}
                 placeholder="Email Address"
               />
@@ -141,8 +152,11 @@ const Register = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
+                autoComplete="new-password" // 6. Standart autocomplete dəyəri
                 className={`w-full p-3 pl-10 pr-12 border rounded-lg focus:ring-2 outline-none transition text-sm ${
-                  errors.password ? "border-red-500 focus:ring-red-200 " : "border-gray-300 focus:ring-black"
+                  errors.password
+                    ? "border-red-500 focus:ring-red-200 "
+                    : "border-gray-300 focus:ring-black"
                 }`}
                 placeholder="Password"
               />
@@ -158,6 +172,18 @@ const Register = () => {
               <span className="text-red-500 text-[10px] font-bold uppercase tracking-wider ml-1 animate-pulse text-left">
                 {errors.password}*
               </span>
+            )}
+          </div>
+
+          {/* SERVER ERROR MESSAGE (Eyni email xətası burada görünür) */}
+          <div className="h-4 flex items-center justify-center">
+            {serverError && (
+              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-top-1">
+                <FiAlertCircle className="text-red-500" size={14} />
+                <p className="text-red-600 text-[11px] font-bold uppercase tracking-widest">
+                  {serverError}
+                </p>
+              </div>
             )}
           </div>
 

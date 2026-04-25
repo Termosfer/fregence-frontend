@@ -23,7 +23,7 @@ const Products = () => {
   const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [sliderPrice, setSliderPrice] = useState(1000);
-  const [searchParams] = useSearchParams();
+  const [searchParams,setSearchParams] = useSearchParams();
   const initialBrand = searchParams.get("brand") || "";
   const globalQuery = searchParams.get("query") || ""; // Header-dən gələn axtarış sözü
   const [filters, setFilters] = useState({
@@ -40,7 +40,10 @@ const Products = () => {
   // Əgər URL-dəki brand dəyişərsə state-i yenilə (Shops-dan gələndə lazım olur)
   useEffect(() => {
     setFilters((prev) => ({ ...prev, brand: initialBrand, page: 0 }));
-  }, [initialBrand]);
+     if (initialBrand === "" && globalQuery === "") {
+     setSliderPrice(1000);
+  }
+  }, [initialBrand, globalQuery]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -93,6 +96,27 @@ const Products = () => {
       (opt) =>
         opt.sortBy === filters.sortBy && opt.direction === filters.direction,
     )?.label || "Featured";
+
+const resetAllFilters = () => {
+    // URL-dəki bütün parametrləri (brand və query) təmizləyirik
+    setSearchParams({}); 
+    
+    // Slayderi sıfırlayırıq
+    setSliderPrice(1000);
+    
+    // State-i ilkin vəziyyətinə qaytarırıq
+    setFilters({
+      brand: "",
+      gender: "",
+      minPrice: 0,
+      maxPrice: 1000,
+      sortBy: "id",
+      direction: "DESC",
+      page: 0,
+      size: 12,
+    });
+  };
+
   const updateFilter = (newVal: Partial<typeof filters>) => {
     setFilters((prev) => ({
       ...prev,
@@ -148,8 +172,9 @@ const Products = () => {
     [&::-webkit-scrollbar-track]:bg-transparent"
           >
             <button
-              onClick={() => updateFilter({ brand: "" })}
-              className={`cursor-pointer text-left text-base transition-all ${filters.brand === "" ? "text-black font-bold" : "text-[#00000080]"}`}
+              /* onClick={() => updateFilter({ brand: "" })} */
+              onClick={resetAllFilters}
+              className={`cursor-pointer text-left text-base transition-all ${filters.brand === "" && !globalQuery ? "text-black font-bold" : "text-[#00000080]"}`}
             >
               All Brands
             </button>

@@ -55,7 +55,7 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
                   src={item.imageUrl}
                   alt={item.name}
                   loading="lazy"
-                  className="object-contain w-full h-full transition-transform duration-700 group-hover:scale-110"
+                  className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
                 />
               </div>
 
@@ -69,7 +69,7 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
                 {/* 1. Quick View (Gecikməsiz) */}
                 <button
                   onClick={(e) => { e.preventDefault(); handleOpenQuickView(item.id); }}
-                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-20 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-0"
+                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500   translate-x-0 opacity-100 xl:translate-x-20  xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-0"
                 >
                   <FiSearch size={16} />
                 </button>
@@ -77,7 +77,7 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
                 {/* 2. Wishlist (75ms Gecikmə) */}
                 <button
                   onClick={(e) => { e.stopPropagation(); addToWishlist(item); }}
-                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-20 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-[75ms]"
+                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-0 opacity-100 xl:translate-x-20  xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-[75ms]"
                 >
                   <FiHeart size={16} />
                 </button>
@@ -85,7 +85,7 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
                 {/* 3. Add to Cart (150ms Gecikmə) */}
                 <button
                   onClick={(e) => { e.stopPropagation(); addToCart(item); }}
-                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-20 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-[150ms]"
+                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-0 opacity-100 xl:translate-x-20  xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-[150ms]"
                 >
                   <FiShoppingCart size={16} />
                 </button>

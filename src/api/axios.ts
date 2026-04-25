@@ -29,16 +29,22 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Əgər backend 401 qaytarırsa (tokenin vaxtı bitib və ya səhvdir)
+    // Sorğu atılan URL-i yoxlayırıq (məsələn: /auth/login)
+    const isLoginRequest = error.config?.url?.includes("/auth/login");
+
+    // Əgər status 401-dirsə
     if (error.response?.status === 401) {
-      // 1. LocalStorage-i tam təmizləyirik (token, role, userName silinir)
-      localStorage.clear(); 
       
-      // 2. Səhifəni kökündən yeniləyirik və Loginə atırıq.
-      // Səhifə reload olduğu üçün TanStack Query-nin yaddaşındakı (memory) 
-      // bütün Wishlist və Cart dataları avtomatik sıfırlanır (0 olur).
-      window.location.href = "/";
+      // ƏGƏR BU LOGİN SORĞUSU DEYİLDİRSƏ (Məsələn, səbətə baxanda tokenin vaxtı bitibsə)
+      if (!isLoginRequest) {
+        localStorage.clear(); 
+        window.location.href = "/"; // Yalnız bu halda refresh etsin
+      }
+      
+      // Əgər bu bir logindirsə, burada heç nə etmirik (window.location yazmırıq)
+      // Beləliklə, Login.tsx-dəki catch bloku işləyəcək və sən xətanı görəcəksən.
     }
+
     return Promise.reject(error);
   }
 );

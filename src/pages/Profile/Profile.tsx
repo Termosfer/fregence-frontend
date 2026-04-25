@@ -86,6 +86,7 @@ const Profile = () => {
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2">Full Name</label>
                 <input 
                   value={profile.name} 
+                  autoComplete="new-name"
                   onChange={(e) => setProfile({ ...profile, name: e.target.value })} 
                   className="w-full border-b border-gray-100 py-2 outline-none focus:border-black transition-all bg-transparent text-sm" 
                 />
@@ -95,6 +96,7 @@ const Profile = () => {
                 <input 
                   type="email" 
                   value={profile.email} 
+                  autoComplete="new-email"
                   onChange={(e) => setProfile({ ...profile, email: e.target.value })} 
                   className="w-full border-b border-gray-100 py-2 outline-none focus:border-black transition-all bg-transparent text-sm" 
                 />

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
 import api from "../../api/axios";
 import type { AxiosError } from "axios";
 
@@ -11,67 +11,65 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
-  // Xətaları izləmək üçün state
   const [errors, setErrors] = useState({ email: "", password: "" });
 
-  useEffect(() => {
-    if (serverError) setServerError("");
-  }, [email, password]);
   const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setServerError(""); 
+    e.preventDefault();
+    setServerError("");
 
-  // 1. Validasiya məntiqi - MÜTLƏQ AKTİV OLMALIDIR
-  let hasError = false;
-  const newErrors = { email: "", password: "" };
+    // 1. Validasiya məntiqi - MÜTLƏQ AKTİV OLMALIDIR
+    let hasError = false;
+    const newErrors = { email: "", password: "" };
 
-  if (!email.trim()) {
-    newErrors.email = "Email is required";
-    hasError = true;
-  }
-  if (!password.trim()) {
-    newErrors.password = "Password is required";
-    hasError = true;
-  }
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+      hasError = true;
+    }
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+      hasError = true;
+    }
 
-  setErrors(newErrors);
+    setErrors(newErrors);
 
-  // Əgər inputlar boşdursa, funksiyanı saxla, API-ya sorğu göndərmə!
-  if (hasError) return; 
+    // Əgər inputlar boşdursa, funksiyanı saxla, API-ya sorğu göndərmə!
+    if (hasError) return;
 
-  setLoading(true);
+    setLoading(true);
 
-  // KRİTİK ADDIM: Yeni girişdən əvvəl köhnə qalıqları silirik
-  localStorage.clear(); 
+    // KRİTİK ADDIM: Yeni girişdən əvvəl köhnə qalıqları silirik
+    localStorage.clear();
 
-  try {
-    const response = await api.post("/auth/login", { email, password });
+    try {
+      const response = await api.post("/auth/login", { email, password });
 
-    // Yalnız sorğu uğurlu olanda (200-299 status) bura işləyəcək
+      // Yalnız sorğu uğurlu olanda (200-299 status) bura işləyəcək
 
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("role", response.data.role);
-    localStorage.setItem("userName", response.data.name.split(" ")[0]);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
+      localStorage.setItem("userName", response.data.name.split(" ")[0]);
 
-    toast.success(`Welcome back, ${response.data.name}!`);
+      toast.success(`Welcome , ${response.data.name}!`);
 
-    // Uğurlu girişdən sonra yönləndiririk
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 1500);
+      // Uğurlu girişdən sonra yönləndiririk
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+    } catch (err) {
+      // Səhv parol yazıldıqda (401, 400 və s.) birbaşa bura düşəcək
 
-  } catch (err) {
-    // Səhv parol yazıldıqda (401, 400 və s.) birbaşa bura düşəcək
-    
-    const error = err as AxiosError<{ message: string }>;
-    const errorMsg = error.response?.data?.message || "Invalid email or password!";
-    
-    setServerError(errorMsg); // Xətanı göstəririk
-    // HEÇ BİR YÖNLƏNDİRMƏ (navigate) ETMİRİK!
-  } finally {
-    setLoading(false);
-  }
-};
+      const error = err as AxiosError<{ message: string }>;
+      if (error.response?.status === 401 || error.response?.status === 400) {
+        setServerError("Email or password is wrong");
+      } else {
+        // Digər gözlənilməz sistem xətaları üçün
+        setServerError("An unexpected error occurred. Please try again.");
+      }
+      // HEÇ BİR YÖNLƏNDİRMƏ (navigate) ETMİRİK!
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center bg-gray-50 px-4 font-[Playfair] h-screen">
@@ -86,9 +84,12 @@ const Login = () => {
             <input
               type="email"
               value={email}
+               autoComplete="current-email"
               onChange={(e) => {
                 setEmail(e.target.value);
-                if (errors.email) setErrors({ ...errors, email: "" }); // Yazmağa başlayanda xətanı sil
+                // Yazmağa başlayan kimi həm lokal, həm server xətasını silirik
+                if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
+                if (serverError) setServerError("");
               }}
               className={`w-full p-3 border rounded-lg focus:ring-2 outline-none transition ${
                 errors.email
@@ -110,9 +111,13 @@ const Login = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
+                autoComplete="current-password"
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  if (errors.password) setErrors({ ...errors, password: "" });
+                  // Yazmağa başlayan kimi həm lokal, həm server xətasını silirik
+                  if (errors.password)
+                    setErrors((prev) => ({ ...prev, password: "" }));
+                  if (serverError) setServerError("");
                 }}
                 className={`w-full p-3 pr-12 border rounded-lg focus:ring-2 outline-none transition ${
                   errors.password
@@ -136,11 +141,20 @@ const Login = () => {
             )}
           </div>
 
+          {/* SERVER ERROR MESSAGE (Burada göstəririk) */}
+          {serverError && (
+            <div className="flex items-center gap-2 bg-red-50 p-3 rounded-lg border border-red-100 animate-in fade-in slide-in-from-top-1 duration-300">
+              <FiAlertCircle className="text-red-500 shrink-0" />
+              <p className="text-red-600 text-[11px] font-bold uppercase tracking-tighter">
+                {serverError}
+              </p>
+            </div>
+          )}
           {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-lg font-bold text-white transition-all mt-2 ${
+            className={`w-full py-3 rounded-lg font-bold text-white transition-all mt-2 cursor-pointer ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-black hover:bg-gray-800 active:scale-95"
