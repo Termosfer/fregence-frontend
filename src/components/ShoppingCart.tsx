@@ -21,6 +21,11 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
     updatingVariables,
   } = useCart();
 
+  // Kuryer hesablama məntiqi
+  const SHIPPING_LIMIT = 180;
+  const shippingCost = cartTotal < SHIPPING_LIMIT && cartItems.length > 0 ? 10 : 0;
+  const finalTotal = cartTotal + shippingCost;
+
   const sortedItems = [...cartItems].sort(
     (a, b) => a.cartItemId - b.cartItemId,
   );
@@ -187,18 +192,38 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
 
         {/* Footer - flex-shrink-0 (Sabit aşağıda qalır) */}
         <div className="p-4 md:p-6 border-t border-gray-100 bg-white shadow-[0_-10px_20px_rgba(0,0,0,0.02)] flex-shrink-0">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400">
-              Estimated Total
-            </h2>
-            <p className="font-medium font-[Jost] text-lg text-gray-800">
-              {cartTotal}
-              <span className="text-sm">.00 Azn</span>
-            </p>
+          <div className="flex flex-col mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400">
+                Shipping
+              </h2>
+              <p className="font-medium font-[Jost] text-gray-800">
+                {shippingCost === 0 ? (
+                  <span className="text-green-600 uppercase text-xs font-bold tracking-widest">Free</span>
+                ) : (
+                  <span className="text-green-600 font-bold">+10.00 Azn</span>
+                )}
+              </p>
+            </div>
+            <div className="flex items-center justify-between">
+              <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400">
+                Estimated Total
+              </h2>
+              <p className="font-medium font-[Jost] text-lg text-gray-800">
+                {finalTotal}
+                <span className="text-sm">.00 Azn</span>
+              </p>
+            </div>
+            
+            {shippingCost > 0 && (
+              <p className="mt-3 text-[10px] text-gray-400 uppercase tracking-widest text-center italic">
+                Add <span className="font-bold text-black">{SHIPPING_LIMIT - cartTotal} Azn</span> more for <span className="text-green-600 font-bold">Free</span> shipping
+              </p>
+            )}
           </div>
 
           <div className="flex flex-col gap-4">
-            <Link to="/checkout" className="relative w-full h-14 bg-black text-white rounded-xl overflow-hidden group cursor-pointer  shadow-lg active:scale-[0.98] transition-transform">
+            <Link to="/checkout" onClick={() => setIsOpen(false)} className="relative w-full h-14 bg-black text-white rounded-xl overflow-hidden group cursor-pointer  shadow-lg active:scale-[0.98] transition-transform">
               <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tracking-[3px] uppercase transition-transform duration-300 group-hover:-translate-y-full">
                 Secure Checkout
               </span>
@@ -209,7 +234,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
             <Link
               to="/viewcart"
               onClick={() => setIsOpen(false)}
-              className="relative inline-block w-full h-14 bg-white text-black rounded-xl overflow-hidden group cursor-pointer  shadow-lg active:scale-[0.98] transition-transform"
+              className="relative inline-block w-full h-14 bg-white text-black border border-black rounded-xl overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform"
             >
               <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tracking-[3px] uppercase transition-transform duration-300 group-hover:-translate-y-full">
                 View Full Cart
