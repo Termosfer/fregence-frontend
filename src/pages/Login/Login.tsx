@@ -48,7 +48,6 @@ const Login = () => {
     const response = await api.post("/auth/login", { email, password });
 
     // Yalnız sorğu uğurlu olanda (200-299 status) bura işləyəcək
-    console.log("Login successful:", response.data);
 
     localStorage.setItem("token", response.data.token);
     localStorage.setItem("role", response.data.role);
@@ -63,7 +62,6 @@ const Login = () => {
 
   } catch (err) {
     // Səhv parol yazıldıqda (401, 400 və s.) birbaşa bura düşəcək
-    console.log("Login failed!");
     
     const error = err as AxiosError<{ message: string }>;
     const errorMsg = error.response?.data?.message || "Invalid email or password!";

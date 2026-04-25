@@ -144,7 +144,7 @@ export interface ShipOrderArgs {
 
 export interface User {
   id: number;
-  fullName: string;
+  name: string;
   email: string;
   role: "ADMIN" | "USER";
 }

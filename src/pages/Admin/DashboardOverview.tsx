@@ -13,6 +13,8 @@ interface DashboardStats {
   totalPerfumes: number;
   totalRevenue: number;
   topSellingPerfume: string;
+  averageOrderValue: number;
+  customerGrowthRate: number;
 }
 
 const DashboardOverview = () => {
@@ -21,7 +23,6 @@ const DashboardOverview = () => {
     queryKey: ["admin-stats"],
     queryFn: () => api.get("/admin/dashboard/stats").then((res) => res.data),
   });
-
   const statCards = [
     { 
       label: "Total Revenue", 
@@ -110,11 +111,11 @@ const DashboardOverview = () => {
            <div className="space-y-6">
               <div className="flex items-center gap-4">
                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                 <span className="text-sm font-bold text-gray-700 uppercase tracking-tighter">Average Order: 240 AZN</span>
+                 <span className="text-sm font-bold text-gray-700 uppercase tracking-tighter">Average Order: {stats?.averageOrderValue} Azn</span>
               </div>
               <div className="flex items-center gap-4">
                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                 <span className="text-sm font-bold text-gray-700 uppercase tracking-tighter">Customer Growth: +12%</span>
+                 <span className="text-sm font-bold text-gray-700 uppercase tracking-tighter">Customer Growth: +{stats?.customerGrowthRate}%</span>
               </div>
               <div className="flex items-center gap-4">
                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>

@@ -9,15 +9,9 @@ import {
 } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
-import type { PageResponse } from "../../types/perfume";
+import type { PageResponse, User } from "../../types/perfume";
 
-// İstifadəçi interfeysi
-interface User {
-  id: number;
-  fullName: string;
-  email: string;
-  role: "ADMIN" | "USER";
-}
+
 
 const AdminUsers = () => {
   const queryClient = useQueryClient();
@@ -29,7 +23,7 @@ const AdminUsers = () => {
     User[] | PageResponse<User>
   >({
     queryKey: ["admin-users"],
-    queryFn: () => api.get("/users/me").then((res) => res.data), // Backend endpointinizə uyğun tənzimləyin
+    queryFn: () => api.get("/users/admin/all-users").then((res) => res.data), // Backend endpointinizə uyğun tənzimləyin
   });
   const users: User[] = responseData
     ? Array.isArray(responseData)
@@ -46,11 +40,14 @@ const AdminUsers = () => {
   });
 
   // Axtarış filtri (Həm Ad, həm də Email üzrə)
-  const filteredUsers = users.filter(
-    (u) =>
-      u.fullName.toLowerCase().includes(query.toLowerCase()) ||
-      u.email.toLowerCase().includes(query.toLowerCase()),
-  );
+  const filteredUsers = users.filter((u) => {
+  // Əgər fullName və ya email null-dursa, boş string ("") kimi qəbul et
+  const name = u.name?.toLowerCase() || "";
+  const email = u.email?.toLowerCase() || "";
+  const searchTerm = query.toLowerCase();
+
+  return name.includes(searchTerm) || email.includes(searchTerm);
+});
 
   if (isLoading)
     return (
@@ -108,11 +105,11 @@ const AdminUsers = () => {
                       <div className="flex items-center gap-4">
                         {/* Avatar */}
                         <div className="w-10 h-10 rounded-xl bg-[#0F172A] text-white flex items-center justify-center font-bold text-sm shadow-md">
-                          {u.fullName.charAt(0).toUpperCase()}
+                          {u.name.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex flex-col">
                           <span className="font-bold text-gray-900 text-sm uppercase tracking-tight">
-                            {u.fullName}
+                            {u.name}
                           </span>
                           <span className="text-[9px] text-teal-600 font-bold uppercase tracking-widest flex items-center gap-1">
                             <FiCheckCircle size={10} /> Active Member
@@ -145,7 +142,7 @@ const AdminUsers = () => {
                       <button
                         onClick={() =>
                           window.confirm(
-                            `Permanently delete user ${u.fullName}?`,
+                            `Permanently delete user ${u.name}?`,
                           ) && deleteMutation.mutate(u.id)
                         }
                         className="p-2.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 cursor-pointer"

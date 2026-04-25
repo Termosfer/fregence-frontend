@@ -17,7 +17,6 @@ const AdminOrders = () => {
   const [openOrderId, setOpenOrderId] = useState<number | null>(null);
   const [isShipModalOpen, setIsShipModalOpen] = useState(false);
   const [targetOrderId, setTargetOrderId] = useState<number | null>(null);
-  console.log(allOrders, "adsadsadasd");
   const handleOpenShipModal = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
     setTargetOrderId(id);
@@ -140,7 +139,7 @@ const AdminOrders = () => {
                               <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-1">
                                 Customer's Note
                               </h4>
-                              <div className="flex flex-col bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                              <div className="flex flex-col bg-white p-4 rounded-3xl border border-blue-100 shadow-lg shadow-blue-900/5">
                                 <div className="flex items-center gap-3 ">
                                   <div className="p-2 text-[#81d8d0]">
                                     <FiEdit3 />

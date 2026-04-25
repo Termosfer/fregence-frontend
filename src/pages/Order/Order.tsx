@@ -11,7 +11,6 @@ import type { Order, OrderItem, OrderStatus } from "../../types/perfume";
 const OrderHistory = () => {
   const { orders, isLoading } = useUser();
   const [openOrderId, setOpenOrderId] = useState<number | null>(null);
-console.log(orders)
   // Statusa uyğun rəng, ikon və mətni təyin edən funksiya
   const getStatusDetails = (status: OrderStatus) => {
     switch (status) {
