@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
-
+import { motion } from "framer-motion";
 import { 
   FiPackage, FiChevronDown, FiCheckCircle, 
   FiClock, FiTruck, FiAlertCircle, FiShoppingBag, FiPhone 
@@ -27,13 +27,68 @@ const OrderHistory = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="py-20 text-center animate-pulse uppercase tracking-[4px] font-bold text-gray-400">
-        Syncing your history...
+ if (isLoading) {
+  return (
+    <div className="flex flex-col items-center justify-center py-40 bg-[#fafafa] min-h-[60vh] font-[Playfair] overflow-hidden">
+      
+      {/* MAŞININ GETDİYİ YOL (TRASS) */}
+      <div className="relative w-64 md:w-96 h-[2px] bg-gray-200 mb-10">
+        
+        {/* HƏRƏKƏT EDƏN MAŞIN */}
+        <motion.div
+          initial={{ x: "-20%" }} // Başlanğıc: Sol tərəf (ekranın çölü)
+          animate={{ x: "120%" }}  // Son: Sağ tərəf (ekranın çölü)
+          transition={{
+            repeat: Infinity,      // Daimi dövr etsin
+            duration: 2.5,         // Sürəti (saniyə ilə)
+            ease: "easeInOut",     // Giriş və çıxışda yavaşlasın (təbii görünsün)
+          }}
+          className="absolute -top-7 text-[#81d8d0] flex flex-col items-center"
+        >
+          {/* Maşının yüngülcə yuxarı-aşağı titrəməsi (Realistik mühərrik effekti) */}
+          <motion.div
+            animate={{ y: [0, -2, 0] }}
+            transition={{ repeat: Infinity, duration: 0.3 }}
+          >
+            <FiTruck size={32} />
+          </motion.div>
+          
+          {/* Maşının altındakı kölgə */}
+          <div className="w-6 h-1 bg-black/5 rounded-full blur-[2px] mt-1"></div>
+        </motion.div>
+
+        {/* Yol üzərindəki hərəkət edən nöqtələr (Asfalt effekti) */}
+        <div className="absolute inset-0 overflow-hidden">
+           <motion.div 
+             initial={{ x: 0 }}
+             animate={{ x: -100 }}
+             transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+             className="flex gap-10 opacity-20"
+           >
+             {[...Array(10)].map((_, i) => (
+               <div key={i} className="min-w-[20px] h-[2px] bg-gray-400"></div>
+             ))}
+           </motion.div>
+        </div>
       </div>
-    );
-  }
+
+      {/* MƏTN HİSSƏSİ */}
+      <div className="text-center space-y-2">
+        <motion.h3 
+          animate={{ opacity: [0.4, 1, 0.4] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="text-[11px] font-black uppercase tracking-[6px] text-gray-500"
+        >
+          Dispatching History
+        </motion.h3>
+        <p className="text-[9px] text-gray-300 uppercase tracking-widest italic">
+          Please wait while we reach our archives
+        </p>
+      </div>
+
+    </div>
+  );
+}
 
   return (
     <div className="py-16 px-4 sm:px-8 lg:px-20 font-[Playfair] bg-[#fafafa] min-h-screen">

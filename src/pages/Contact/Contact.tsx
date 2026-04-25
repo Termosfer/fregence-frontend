@@ -23,7 +23,7 @@ const Contact = () => {
     { icon: FiClock, title: "Hours", text: "Mon-Sun: 10:00 - 22:00" },
   ];
 
-  const mutation = useMutation<void, AxiosError<ApiError>, typeof formData>({
+ const mutation = useMutation<void, AxiosError<ApiError>, typeof formData>({
     mutationFn: (data) => api.post("/contact", data),
     onSuccess: () => {
       setStatus({ 
@@ -33,8 +33,22 @@ const Contact = () => {
       setFormData({ name: "", email: "", message: "" });
     },
     onError: (error) => {
-      const serverMessage = error.response?.data?.message || "An error occurred while sending your message.";
-      setStatus({ message: serverMessage, type: "error" });
+      // Backend-dən gələn uzun xəta mesajını götürürük
+      const serverMessage = error.response?.data?.message || "";
+
+      // Əgər mesajın daxilində "duplicate key" və "email" sözləri keçirsə
+      if (serverMessage.includes("duplicate key") && serverMessage.includes("email")) {
+        setStatus({ 
+          message: "This email address has already sent a message.", 
+          type: "error" 
+        });
+      } else {
+        // Digər xətalar üçün (məs: 401, 500 və s.)
+        setStatus({ 
+          message: error.response?.data?.message || "An error occurred. Please try again.", 
+          type: "error" 
+        });
+      }
     },
   });
 
