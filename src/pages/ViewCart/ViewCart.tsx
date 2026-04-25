@@ -233,7 +233,10 @@ const ViewCart = () => {
             </div>
             <div className="flex justify-between text-gray-600 font-medium">
               <span>Shipping</span>
-              {shippingCost === 0 ? (
+               <span className="text-green-600 font-bold font-[Jost] text-xs uppercase tracking-widest">
+                  Free
+                </span>
+              {/* {shippingCost === 0 ? (
                 <span className="text-green-600 font-bold font-[Jost] text-xs uppercase tracking-widest">
                   Free
                 </span>
@@ -242,7 +245,7 @@ const ViewCart = () => {
                   +{shippingCost}
                   <span className="text-xs">.00 Azn</span>
                 </span>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -254,11 +257,11 @@ const ViewCart = () => {
             </span>
           </div>
 
-          {shippingCost > 0 && (
+          {/* {shippingCost > 0 && (
              <p className="mt-4 text-[10px] text-gray-400 uppercase tracking-widest text-center italic">
                 Add <span className="font-bold text-black">{SHIPPING_LIMIT - cartTotal} Azn</span> more for <span className="text-green-600 font-bold">Free</span> shipping
              </p>
-          )}
+          )} */}
 
           <Link to="/checkout" className="relative inline-flex items-center justify-center w-full h-[60px] bg-black text-white rounded-2xl overflow-hidden group cursor-pointer mt-10 shadow-lg active:scale-[0.98] transition-transform">
             <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tracking-[3px] uppercase transition-transform duration-300 group-hover:-translate-y-full">

@@ -22,9 +22,9 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
   } = useCart();
 
   // Kuryer hesablama məntiqi
-  const SHIPPING_LIMIT = 180;
+ /*  const SHIPPING_LIMIT = 180;
   const shippingCost = cartTotal < SHIPPING_LIMIT && cartItems.length > 0 ? 10 : 0;
-  const finalTotal = cartTotal + shippingCost;
+  const finalTotal = cartTotal + shippingCost; */
 
   const sortedItems = [...cartItems].sort(
     (a, b) => a.cartItemId - b.cartItemId,
@@ -198,11 +198,12 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                 Shipping
               </h2>
               <p className="font-medium font-[Jost] text-gray-800">
-                {shippingCost === 0 ? (
+                <span className="text-green-600 uppercase text-xs font-bold tracking-widest">Free</span>
+                {/* {shippingCost === 0 ? (
                   <span className="text-green-600 uppercase text-xs font-bold tracking-widest">Free</span>
                 ) : (
                   <span className="text-green-600 font-bold">+10.00 Azn</span>
-                )}
+                )} */}
               </p>
             </div>
             <div className="flex items-center justify-between">
@@ -210,16 +211,16 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                 Estimated Total
               </h2>
               <p className="font-medium font-[Jost] text-lg text-gray-800">
-                {finalTotal}
+                {cartTotal}
                 <span className="text-sm">.00 Azn</span>
               </p>
             </div>
             
-            {shippingCost > 0 && (
+            {/* {shippingCost > 0 && (
               <p className="mt-3 text-[10px] text-gray-400 uppercase tracking-widest text-center italic">
                 Add <span className="font-bold text-black">{SHIPPING_LIMIT - cartTotal} Azn</span> more for <span className="text-green-600 font-bold">Free</span> shipping
               </p>
-            )}
+            )} */}
           </div>
 
           <div className="flex flex-col gap-4">

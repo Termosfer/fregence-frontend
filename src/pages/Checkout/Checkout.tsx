@@ -328,7 +328,10 @@ const Checkout = () => {
                 </div>
                 <div className="flex justify-between items-center text-gray-500 text-sm ">
                   <span>Shipping Cost</span>
-                  {shippingCost === 0 ? (
+                  <span className="text-green-600 font-bold uppercase text-[10px] tracking-widest font-[Jost]">
+                      Complimentary
+                    </span>
+                  {/* {shippingCost === 0 ? (
                     <span className="text-green-600 font-bold uppercase text-[10px] tracking-widest font-[Jost]">
                       Complimentary
                     </span>
@@ -336,7 +339,7 @@ const Checkout = () => {
                     <span className="text-green-600 font-bold font-[Jost]">
                       +{shippingCost}.00 Azn
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div className="flex justify-between text-xl font-bold pt-4 text-black border-t border-gray-100">
                   <span className="tracking-tighter uppercase text-sm">
@@ -353,7 +356,10 @@ const Checkout = () => {
                   <FiShoppingBag />
                 </div>
                 <p className="text-[10px] text-gray-400 leading-tight font-medium uppercase tracking-wider">
-                  {cartTotal >= SHIPPING_LIMIT ? (
+                  Your order qualifies for{" "}
+                      <span className="text-green-600 font-bold">FREE</span>{" "}
+                      shipping.
+                  {/* {cartTotal >= SHIPPING_LIMIT ? (
                     <>
                       Your order qualifies for{" "}
                       <span className="text-green-600 font-bold">FREE</span>{" "}
@@ -369,7 +375,7 @@ const Checkout = () => {
                       <span className="text-green-600 font-bold">FREE</span>{" "}
                       shipping.
                     </>
-                  )}
+                  )} */}
                 </p>
               </div>
             </div>
