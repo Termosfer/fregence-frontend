@@ -26,7 +26,7 @@ const OrderHistory = () => {
         return { color: "text-gray-500 bg-gray-50 border-gray-100", icon: <FiPackage /> };
     }
   };
-
+console.log(orders, "order")
  if (isLoading) {
   return (
     <div className="flex flex-col items-center justify-center py-40 bg-[#fafafa] min-h-[60vh] font-[Playfair] overflow-hidden">

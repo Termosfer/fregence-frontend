@@ -15,15 +15,14 @@ import {
   FiArrowLeft,
   FiShield,
 } from "react-icons/fi";
-import type { CartItem } from "../../types/perfume";
+import type { CartItem, Order } from "../../types/perfume";
 import type { AxiosError } from "axios";
 
 const Checkout = () => {
-  const navigate = useNavigate();
+const navigate = useNavigate();
   const { cartItems, cartTotal, cartCount, isLoading } = useCart();
   const [loading, setLoading] = useState(false);
 
-  // VALIDASIYA ÜÇÜN STATE
   const [errors, setErrors] = useState({
     fullName: "",
     email: "",
@@ -41,17 +40,13 @@ const Checkout = () => {
     note: "",
   });
 
-  // KURYER MƏNTİQİ: 100 AZN-dən aşağıdırsa 10 AZN, yuxarıdırsa 0
   const SHIPPING_LIMIT = 180;
   const shippingCost = cartTotal < SHIPPING_LIMIT ? 10 : 0;
   const finalTotal = cartTotal + shippingCost;
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    // Yazmağa başlayanda xətanı silirik
     if (errors[name as keyof typeof errors]) {
       setErrors({ ...errors, [name]: "" });
     }
@@ -61,57 +56,45 @@ const Checkout = () => {
     e.preventDefault();
     if (cartItems.length === 0) return toast.error("Your cart is empty!");
 
-    // VALIDASIYA YOXLANIŞI
     let hasError = false;
-    const newErrors = {
-      fullName: "",
-      email: "",
-      address: "",
-      phone: "",
-      deliveryTime: "",
-    };
+    const newErrors = { fullName: "", email: "", address: "", phone: "", deliveryTime: "" };
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
-      hasError = true;
-    }
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-      hasError = true;
-    }
-    if (!formData.address.trim()) {
-      newErrors.address = "Address is required";
-      hasError = true;
-    }
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone is required";
-      hasError = true;
-    }
-    if (!formData.deliveryTime.trim()) {
-      newErrors.deliveryTime = "Delivery time is required";
-      hasError = true;
-    }
+    if (!formData.fullName.trim()) { newErrors.fullName = "Full name is required"; hasError = true; }
+    if (!formData.email.trim()) { newErrors.email = "Email is required"; hasError = true; }
+    if (!formData.address.trim()) { newErrors.address = "Address is required"; hasError = true; }
+    if (!formData.phone.trim()) { newErrors.phone = "Phone is required"; hasError = true; }
+    if (!formData.deliveryTime.trim()) { newErrors.deliveryTime = "Delivery time is required"; hasError = true; }
 
     setErrors(newErrors);
     if (hasError) return;
 
     setLoading(true);
     try {
-      const formattedTime = formData.deliveryTime
-        ? `${formData.deliveryTime}:00`
-        : "";
+      const formattedTime = formData.deliveryTime ? `${formData.deliveryTime}:00` : "";
 
-      await api.post("/orders/checkout", null, {
+      // 1. Sorğunu göndəririk
+       const res = (await api.post("/orders/checkout", null, {
         params: {
           address: formData.address,
           phoneNumber: formData.phone,
           preferredTime: formattedTime,
           note: formData.note,
         },
-      });
+      })) as unknown as Order;
 
-      toast.success("Order placed successfully!");
-      navigate("/");
+      // 2. ID-ni mütləq tutmaq üçün yoxlama
+      const orderId = res.id
+      
+
+      if (orderId) {
+        toast.success("Order placed successfully!");
+        // 3. DÜZƏLİŞ: Backtick (``) istifadə edirik ki, dəyişən linkə düşsün
+        navigate(`/order-success/${orderId}`);
+      } else {
+        // Əgər ID hansısa səbəbdən gəlməsə, 'confirmed' olaraq yönləndir
+        navigate("/order-success/confirmed");
+      }
+
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
       toast.error(error.response?.data?.message || "Checkout failed.");
@@ -121,71 +104,71 @@ const Checkout = () => {
   };
 
   if (isLoading) {
-  return (
-    <div className="flex flex-col items-center justify-center py-40 bg-[#fafafa] min-h-[70vh] font-[Playfair] overflow-hidden">
-      
-      {/* HƏRƏKƏT EDƏN SƏBƏT ANİMASİYASI */}
-      <div className="relative w-64 md:w-80 h-[1px] bg-gray-200 mb-12">
-        
-        {/* Sürüşən Səbət */}
-        <motion.div
-          initial={{ x: "-20%", opacity: 0 }}
-          animate={{ x: "120%", opacity: [0, 1, 1, 0] }}
-          transition={{
-            repeat: Infinity,
-            duration: 2.5,
-            ease: "easeInOut",
-          }}
-          className="absolute -top-8 text-[#81d8d0] flex flex-col items-center"
-        >
+    return (
+      <div className="flex flex-col items-center justify-center py-40 bg-[#fafafa] min-h-[70vh] font-[Playfair] overflow-hidden">
+        {/* HƏRƏKƏT EDƏN SƏBƏT ANİMASİYASI */}
+        <div className="relative w-64 md:w-80 h-[1px] bg-gray-200 mb-12">
+          {/* Sürüşən Səbət */}
           <motion.div
-            animate={{ 
-              rotate: [0, -10, 10, 0],
-              y: [0, -2, 0] 
+            initial={{ x: "-20%", opacity: 0 }}
+            animate={{ x: "120%", opacity: [0, 1, 1, 0] }}
+            transition={{
+              repeat: Infinity,
+              duration: 2.5,
+              ease: "easeInOut",
             }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
+            className="absolute -top-8 text-[#81d8d0] flex flex-col items-center"
           >
-            <FiShoppingBag size={32} />
+            <motion.div
+              animate={{
+                rotate: [0, -10, 10, 0],
+                y: [0, -2, 0],
+              }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            >
+              <FiShoppingBag size={32} />
+            </motion.div>
+            {/* Səbətin altındakı zərif kölgə */}
+            <div className="w-6 h-1 bg-black/5 rounded-full blur-[2px] mt-1"></div>
           </motion.div>
-          {/* Səbətin altındakı zərif kölgə */}
-          <div className="w-6 h-1 bg-black/5 rounded-full blur-[2px] mt-1"></div>
-        </motion.div>
 
-        {/* Yol üzərindəki parıltı (Progress line) */}
-        <motion.div 
-          initial={{ scaleX: 0, originX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-[#81d8d0]/50 to-transparent"
-        />
-      </div>
+          {/* Yol üzərindəki parıltı (Progress line) */}
+          <motion.div
+            initial={{ scaleX: 0, originX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-[#81d8d0]/50 to-transparent"
+          />
+        </div>
 
-      {/* MƏTN HİSSƏSİ */}
-      <div className="text-center space-y-3 relative">
-        <motion.div
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="flex flex-col items-center gap-3"
-        >
-          <div className="flex items-center gap-2 text-gray-400">
-            <FiShield className="text-[#81d8d0] animate-pulse" />
-            <span className="text-[11px] font-black uppercase tracking-[6px]">
-              Securing Checkout
-            </span>
-          </div>
-          <p className="text-[9px] text-gray-300 uppercase tracking-widest italic">
-            Verifying your fragrance selection...
-          </p>
-        </motion.div>
-      </div>
+        {/* MƏTN HİSSƏSİ */}
+        <div className="text-center space-y-3 relative">
+          <motion.div
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="flex flex-col items-center gap-3"
+          >
+            <div className="flex items-center gap-2 text-gray-400">
+              <FiShield className="text-[#81d8d0] animate-pulse" />
+              <span className="text-[11px] font-black uppercase tracking-[6px]">
+                Securing Checkout
+              </span>
+            </div>
+            <p className="text-[9px] text-gray-300 uppercase tracking-widest italic">
+              Verifying your fragrance selection...
+            </p>
+          </motion.div>
+        </div>
 
-      {/* Arxa planda böyük loqo silueti (Opsional, daha da lüks göstərir) */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
-        <h1 className="text-[20vw] font-black uppercase tracking-tighter">MI</h1>
+        {/* Arxa planda böyük loqo silueti (Opsional, daha da lüks göstərir) */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
+          <h1 className="text-[20vw] font-black uppercase tracking-tighter">
+            MI
+          </h1>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   // --- KRİTİK DÜZƏLİŞ: SƏBƏT BOŞDURSA BU EKRANI GÖSTƏR ---
   if (!cartItems || cartItems.length === 0) {
