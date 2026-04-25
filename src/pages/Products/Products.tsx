@@ -23,7 +23,7 @@ const Products = () => {
   const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [sliderPrice, setSliderPrice] = useState(1000);
-  const [searchParams,setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const initialBrand = searchParams.get("brand") || "";
   const globalQuery = searchParams.get("query") || ""; // Header-dən gələn axtarış sözü
   const [filters, setFilters] = useState({
@@ -40,9 +40,9 @@ const Products = () => {
   // Əgər URL-dəki brand dəyişərsə state-i yenilə (Shops-dan gələndə lazım olur)
   useEffect(() => {
     setFilters((prev) => ({ ...prev, brand: initialBrand, page: 0 }));
-     if (initialBrand === "" && globalQuery === "") {
-     setSliderPrice(1000);
-  }
+    if (initialBrand === "" && globalQuery === "") {
+      setSliderPrice(1000);
+    }
   }, [initialBrand, globalQuery]);
 
   useEffect(() => {
@@ -97,13 +97,13 @@ const Products = () => {
         opt.sortBy === filters.sortBy && opt.direction === filters.direction,
     )?.label || "Featured";
 
-const resetAllFilters = () => {
+  const resetAllFilters = () => {
     // URL-dəki bütün parametrləri (brand və query) təmizləyirik
-    setSearchParams({}); 
-    
+    setSearchParams({});
+
     // Slayderi sıfırlayırıq
     setSliderPrice(1000);
-    
+
     // State-i ilkin vəziyyətinə qaytarırıq
     setFilters({
       brand: "",
@@ -131,6 +131,8 @@ const resetAllFilters = () => {
       document.body.style.overflow = "auto";
     };
   }, [isFilterOpen]);
+
+  console.log(productsData, "data");
 
   return (
     <div className="py-10 font-[Playfair]">
@@ -171,33 +173,25 @@ const resetAllFilters = () => {
     [&::-webkit-scrollbar-thumb]:rounded-full
     [&::-webkit-scrollbar-track]:bg-transparent"
           >
-            <button
-              /* onClick={() => updateFilter({ brand: "" })} */
-              onClick={resetAllFilters}
-              className={`cursor-pointer text-left text-base transition-all ${filters.brand === "" && !globalQuery ? "text-black font-bold" : "text-[#00000080]"}`}
-            >
-              All Brands
-            </button>
-
-            {brands?.map((brandName, index) => (
-              <div
-                key={index}
-                onClick={() => updateFilter({ brand: brandName })}
-                className={`group relative flex items-center font-semibold text-base cursor-pointer transition-all duration-300 mb-2 
-                  ${filters.brand === brandName ? "text-black" : "text-[#00000080] hover:text-black"}`}
-              >
-                <MdKeyboardArrowRight
-                  className={`absolute left-0 transition-all duration-300 
-                    ${filters.brand === brandName ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}`}
-                />
-                <p
-                  className={`text-sm md:text-base 2xl:text-base transition-transform duration-300 
-                  ${filters.brand === brandName ? "translate-x-6" : "group-hover:translate-x-6"}`}
-                >
-                  {brandName}
-                </p>
+            <div className="flex flex-col gap-4">
+            {isBrandsLoading ? (
+              // Brendlər üçün skelet sətirləri
+              [...Array(10)].map((_, i) => (
+                <div key={i} className="h-5 w-3/4 bg-gray-100 rounded animate-pulse ml-5"></div>
+              ))
+            ) : (
+              /* Brend siyahısı kodu buraya gəlir... */
+              <div className="flex flex-col gap-3 max-h-[370px] overflow-y-auto custom-scrollbar">
+                 <button onClick={resetAllFilters} className={`cursor-pointer text-left text-base transition-all ${filters.brand === "" && !globalQuery ? "text-black font-bold" : "text-[#00000080]"}`}>All Brands</button>
+                 {brands?.map((brandName, index) => (
+                   <div key={index} onClick={() => updateFilter({ brand: brandName })} className={`group relative flex items-center font-semibold text-base cursor-pointer transition-all duration-300 mb-2 ${filters.brand === brandName ? "text-black" : "text-[#00000080] hover:text-black"}`}>
+                     <MdKeyboardArrowRight className={`absolute left-0 transition-all duration-300 ${filters.brand === brandName ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}`} />
+                     <p className={`text-sm md:text-base transition-transform duration-300 ${filters.brand === brandName ? "translate-x-6" : "group-hover:translate-x-6"}`}>{brandName}</p>
+                   </div>
+                 ))}
               </div>
-            ))}
+            )}
+          </div>
           </div>
 
           <div className="flex items-center gap-3 py-3 px-5 border-l-4 border-black my-8">

@@ -13,8 +13,10 @@ interface CartlistProps {
 
 const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(
+    null,
+  );
+
   const { addToWishlist } = useWishlist();
   const { addToCart } = useCart();
 
@@ -65,10 +67,12 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
 
               {/* SIRA İLƏ SAĞDAN SOLA GƏLƏN İKONLAR */}
               <div className="absolute top-10 right-0 flex flex-col gap-4 p-1 z-20 overflow-hidden ">
-                
                 {/* 1. Quick View (Gecikməsiz) */}
                 <button
-                  onClick={(e) => { e.preventDefault(); handleOpenQuickView(item.id); }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleOpenQuickView(item.id);
+                  }}
                   className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500   translate-x-0 opacity-100 xl:translate-x-20  xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-0"
                 >
                   <FiSearch size={16} />
@@ -76,7 +80,10 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
 
                 {/* 2. Wishlist (75ms Gecikmə) */}
                 <button
-                  onClick={(e) => { e.stopPropagation(); addToWishlist(item); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToWishlist(item);
+                  }}
                   className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-0 opacity-100 xl:translate-x-20  xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-[75ms]"
                 >
                   <FiHeart size={16} />
@@ -84,7 +91,10 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
 
                 {/* 3. Add to Cart (150ms Gecikmə) */}
                 <button
-                  onClick={(e) => { e.stopPropagation(); addToCart(item); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToCart(item);
+                  }}
                   className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-0 opacity-100 xl:translate-x-20  xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-[150ms]"
                 >
                   <FiShoppingCart size={16} />
@@ -98,12 +108,23 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
                 {item.name}
               </h5>
               <div className="flex justify-center items-center gap-3 font-[Jost]">
-                <span className="text-[#81d8d0] text-sm font-black">
-                  {item.price}.00 <span className="text-[9px]">AZN</span>
-                </span>
-                {item.discountPrice && (
-                  <span className="line-through text-[11px] text-gray-400">
-                    {item.discountPrice}.00
+                {item.discountPrice && item.discountPrice > 0 ? (
+                  // Ehtimal 1: Endirim VARSA
+                  <>
+                    {/* Yeni qiymət (Endirimli) */}
+                    <span className="text-[#81d8d0] text-sm font-black">
+                      {item.discountPrice}{" "} AZN
+                    </span>
+
+                    {/* Köhnə qiymət (Üstü xətli) */}
+                    <span className="line-through text-[11px] text-gray-400">
+                      {item.price} AZN
+                    </span>
+                  </>
+                ) : (
+                  // Ehtimal 2: Endirim YOXDURSA (Yalnız normal qiymət)
+                  <span className="text-gray-900 text-sm font-black">
+                    {item.price} AZN
                   </span>
                 )}
               </div>
@@ -112,19 +133,33 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
         ))}
       </div>
 
-      <QuickModal show={showModal} setShowModal={setShowModal} productId={selectedProductId} />
+      <QuickModal
+        show={showModal}
+        setShowModal={setShowModal}
+        productId={selectedProductId}
+      />
 
       {/* PAGINATION */}
       <div className="flex justify-center items-center gap-2 mt-16 mb-10">
         {getPaginationRange().map((p, index) => {
-          if (p === "...") return <span key={index} className="text-gray-300 px-1">...</span>;
+          if (p === "...")
+            return (
+              <span key={index} className="text-gray-300 px-1">
+                ...
+              </span>
+            );
           const isActive = page === p;
           return (
             <button
               key={index}
-              onClick={() => { onPageChange(p as number); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              onClick={() => {
+                onPageChange(p as number);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
               className={`w-9 h-9 border rounded-md transition-all duration-300 font-bold text-xs uppercase tracking-widest ${
-                isActive ? "bg-black text-white border-black scale-105 shadow-md" : "bg-white text-gray-400 border-gray-100 hover:border-black hover:text-black"
+                isActive
+                  ? "bg-black text-white border-black scale-105 shadow-md"
+                  : "bg-white text-gray-400 border-gray-100 hover:border-black hover:text-black"
               }`}
             >
               {(p as number) + 1}

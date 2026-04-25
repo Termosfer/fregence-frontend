@@ -314,7 +314,27 @@ data?.content.map((item) => (
       <div >
         <h4 className="text-sm font-bold text-gray-900 uppercase tracking-tight mt-1 hover:text-[#81d8d0] transition-colors">{item.name}</h4>
       </div>
-      <p className="text-base font-bold text-gray-800 mt-2">{item.price}<span className="text-xs">.00 Azn</span></p>
+       <div className="flex justify-center items-center gap-3 font-[Jost]">
+                {item.discountPrice && item.discountPrice > 0  ? (
+                  // Ehtimal 1: Endirim VARSA
+                  <>
+                    {/* Yeni qiymət (Endirimli) */}
+                    <span className="text-[#81d8d0] text-sm font-black">
+                      {item.discountPrice}{" "}AZN
+                    </span>
+
+                    {/* Köhnə qiymət (Üstü xətli) */}
+                    <span className="line-through text-[11px] text-gray-400">
+                      {item.price} AZN
+                    </span>
+                  </>
+                ) : (
+                  // Ehtimal 2: Endirim YOXDURSA (Yalnız normal qiymət)
+                  <span className="text-gray-900 text-sm font-black">
+                    {item.price} AZN
+                  </span>
+                )}
+              </div>
     </div>
   </motion.div>
 ))}

@@ -138,7 +138,7 @@ const OrderHistory = () => {
                         {icon}
                       </div>
                       
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-2 ">
                         <div className="flex flex-col">
                           <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Order ID</span>
                           <span className="text-sm font-bold text-gray-800">#{order.id}</span>
@@ -149,7 +149,7 @@ const OrderHistory = () => {
                         </div>
                         <div className="flex flex-col hidden sm:flex">
                           <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Total</span>
-                          <span className="text-sm font-bold text-[#81d8d0] tracking-tighter">{order.totalAmount} Azn</span>
+                          <span className="text-xs font-bold text-[#81d8d0] tracking-tighter font-[Jost]">{order.totalAmount} AZN</span>
                         </div>
                       </div>
                     </div>
@@ -214,12 +214,12 @@ const OrderHistory = () => {
                               <div>
                                 <p className="text-sm font-bold uppercase text-gray-800 leading-tight">{item.perfumeName}</p>
                                 <p className="text-[10px] text-gray-400 font-bold uppercase mt-1 tracking-widest">
-                                  Qty: <span className="text-black">{item.quantity}</span> • Unit Price: <span className="text-black">{item.price} Azn</span>
+                                  Qty: <span className="text-black">{item.quantity}</span> • Unit Price: <span className="text-black font-[Jost]">{item.price} AZN</span>
                                 </p>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <p className="text-sm font-bold text-gray-800 tracking-tighter">{(item.price * item.quantity)} Azn</p>
+                            <div className="text-right font-[Jost]">
+                              <p className="text-sm font-bold text-gray-800 tracking-tighter ">{(item.price * item.quantity)} AZN</p>
                             </div>
                           </div>
                         ))}

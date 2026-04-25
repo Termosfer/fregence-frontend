@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
 import { useCart } from "../../hooks/useCart";
@@ -11,6 +12,8 @@ import {
   FiShoppingBag,
   FiUser,
   FiMail,
+  FiArrowLeft,
+  FiShield,
 } from "react-icons/fi";
 import type { CartItem } from "../../types/perfume";
 import type { AxiosError } from "axios";
@@ -117,12 +120,112 @@ const Checkout = () => {
     }
   };
 
-  if (isLoading)
+  if (isLoading) {
+  return (
+    <div className="flex flex-col items-center justify-center py-40 bg-[#fafafa] min-h-[70vh] font-[Playfair] overflow-hidden">
+      
+      {/* HƏRƏKƏT EDƏN SƏBƏT ANİMASİYASI */}
+      <div className="relative w-64 md:w-80 h-[1px] bg-gray-200 mb-12">
+        
+        {/* Sürüşən Səbət */}
+        <motion.div
+          initial={{ x: "-20%", opacity: 0 }}
+          animate={{ x: "120%", opacity: [0, 1, 1, 0] }}
+          transition={{
+            repeat: Infinity,
+            duration: 2.5,
+            ease: "easeInOut",
+          }}
+          className="absolute -top-8 text-[#81d8d0] flex flex-col items-center"
+        >
+          <motion.div
+            animate={{ 
+              rotate: [0, -10, 10, 0],
+              y: [0, -2, 0] 
+            }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+          >
+            <FiShoppingBag size={32} />
+          </motion.div>
+          {/* Səbətin altındakı zərif kölgə */}
+          <div className="w-6 h-1 bg-black/5 rounded-full blur-[2px] mt-1"></div>
+        </motion.div>
+
+        {/* Yol üzərindəki parıltı (Progress line) */}
+        <motion.div 
+          initial={{ scaleX: 0, originX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-[#81d8d0]/50 to-transparent"
+        />
+      </div>
+
+      {/* MƏTN HİSSƏSİ */}
+      <div className="text-center space-y-3 relative">
+        <motion.div
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="flex flex-col items-center gap-3"
+        >
+          <div className="flex items-center gap-2 text-gray-400">
+            <FiShield className="text-[#81d8d0] animate-pulse" />
+            <span className="text-[11px] font-black uppercase tracking-[6px]">
+              Securing Checkout
+            </span>
+          </div>
+          <p className="text-[9px] text-gray-300 uppercase tracking-widest italic">
+            Verifying your fragrance selection...
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Arxa planda böyük loqo silueti (Opsional, daha da lüks göstərir) */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
+        <h1 className="text-[20vw] font-black uppercase tracking-tighter">MI</h1>
+      </div>
+    </div>
+  );
+}
+
+  // --- KRİTİK DÜZƏLİŞ: SƏBƏT BOŞDURSA BU EKRANI GÖSTƏR ---
+  if (!cartItems || cartItems.length === 0) {
     return (
-      <div className="py-20 text-center animate-pulse uppercase">
-        Syncing...
+      <div className="py-40 px-4 flex flex-col items-center justify-center font-[Playfair] bg-[#fafafa] min-h-screen">
+        <div className="text-center p-12 bg-white rounded-[2rem] shadow-xl max-w-lg w-full border border-gray-100 flex flex-col items-center">
+          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 mb-6">
+            <FiShoppingBag size={40} />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 uppercase tracking-tighter mb-4">
+            Your bag is empty
+          </h2>
+          <p className="text-gray-400 italic mb-8">
+            You need to add at least one fragrance to your bag to proceed with
+            the checkout.
+          </p>
+
+          <Link
+            to="/products"
+            className="
+                            relative  md:min-w-[200px]
+                            h-[46px] w-[200px] overflow-hidden group
+                            rounded-full bg-black text-white
+                            border border-black transition
+                            hover:bg-white hover:text-black
+                            cursor-pointer
+                            inline-flex items-center justify-center
+                          "
+          >
+            <span className="absolute inset-0 flex items-center justify-center gap-1 text-sm font-semibold transition-transform duration-300 group-hover:-translate-y-full ">
+              <FiArrowLeft /> Start Shopping
+            </span>
+            <span className="absolute inset-0 flex items-center justify-center gap-1 text-sm font-semibold text-black translate-y-full transition-transform duration-300 group-hover:translate-y-0 ">
+              <FiArrowLeft /> Start Shopping
+            </span>
+          </Link>
+        </div>
       </div>
     );
+  }
 
   return (
     <div className="py-10 px-4 sm:px-8 lg:px-20 font-[Playfair] bg-[#fafafa] min-h-screen">
@@ -329,8 +432,8 @@ const Checkout = () => {
                 <div className="flex justify-between items-center text-gray-500 text-sm ">
                   <span>Shipping Cost</span>
                   <span className="text-green-600 font-bold uppercase text-[10px] tracking-widest font-[Jost]">
-                      Complimentary
-                    </span>
+                    Complimentary
+                  </span>
                   {/* {shippingCost === 0 ? (
                     <span className="text-green-600 font-bold uppercase text-[10px] tracking-widest font-[Jost]">
                       Complimentary
@@ -357,8 +460,8 @@ const Checkout = () => {
                 </div>
                 <p className="text-[10px] text-gray-400 leading-tight font-medium uppercase tracking-wider">
                   Your order qualifies for{" "}
-                      <span className="text-green-600 font-bold">FREE</span>{" "}
-                      shipping.
+                  <span className="text-green-600 font-bold">FREE</span>{" "}
+                  shipping.
                   {/* {cartTotal >= SHIPPING_LIMIT ? (
                     <>
                       Your order qualifies for{" "}

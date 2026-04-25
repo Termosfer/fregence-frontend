@@ -139,16 +139,27 @@ const handleMainAction  = () => {
                   {product.name}
                 </h1>
                 
-                <div className="flex items-center gap-4 font-[Jost] font-medium">
-                  <span className="text-2xl md:text-3xl font-medium text-gray-800 tracking-tighter">
-                    {product.price}.00 Azn
-                  </span>
-                  {product.discountPrice && (
-                    <span className="line-through text-gray-400 text-base md:text-lg">
-                      {product.discountPrice}.00 Azn
+                <div className="flex justify-center items-center gap-3 font-[Jost]">
+                {product.discountPrice && product.discountPrice > 0 ? (
+                  // Ehtimal 1: Endirim VARSA
+                  <>
+                    {/* Yeni qiymət (Endirimli) */}
+                    <span className="text-[#81d8d0] text-sm font-black">
+                      {product.discountPrice}{" "} AZN
                     </span>
-                  )}
-                </div>
+
+                    {/* Köhnə qiymət (Üstü xətli) */}
+                    <span className="line-through text-[11px] text-gray-400">
+                      {product.price} AZN
+                    </span>
+                  </>
+                ) : (
+                  // Ehtimal 2: Endirim YOXDURSA (Yalnız normal qiymət)
+                  <span className="text-gray-900 text-sm font-black">
+                    {product.price} AZN
+                  </span>
+                )}
+              </div>
               </div>
 
               <div className="py-6 md:py-8 space-y-6 flex-1">
