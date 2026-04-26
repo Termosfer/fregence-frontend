@@ -1,7 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios";
 import { toast } from "react-toastify";
-import type { AddToCartArgs, CartItem, CartMutationContext, CartResponse, Perfume } from "../types/perfume";
+import type {
+  AddToCartArgs,
+  CartItem,
+  CartMutationContext,
+  CartResponse,
+  Perfume,
+} from "../types/perfume";
 
 export const useCart = () => {
   const queryClient = useQueryClient();
@@ -25,9 +31,14 @@ export const useCart = () => {
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   // 2. Artırıb-azaltma / Əlavə etmə
-  const addToCartMutation = useMutation<void, Error, AddToCartArgs, CartMutationContext>({
+  const addToCartMutation = useMutation<
+    void,
+    Error,
+    AddToCartArgs,
+    CartMutationContext
+  >({
     mutationKey: ["cart-update"],
-    mutationFn: ({ perfumeId, quantity }) => 
+    mutationFn: ({ perfumeId, quantity }) =>
       api.post(`/cart/add?perfumeId=${perfumeId}&quantity=${quantity}`),
 
     onMutate: async ({ perfumeId, quantity, perfume }) => {
@@ -52,14 +63,14 @@ export const useCart = () => {
           );
         } else {
           const newItem: CartItem = {
-            cartItemId: Math.random(), 
+            cartItemId: Math.random(),
             perfumeId: perfumeId,
             perfumeName: perfume?.name || "Loading...",
             brand: perfume?.brand || "...",
             price: perfume?.price || 0,
             quantity: quantity,
             subTotal: (perfume?.price || 0) * quantity,
-            imageUrl: perfume?.imageUrl, 
+            imageUrl: perfume?.imageUrl,
           };
           newItems = [...(old.items || []), newItem];
         }
@@ -84,7 +95,7 @@ export const useCart = () => {
       if (context?.previousCart) {
         queryClient.setQueryData(["cart"], context.previousCart);
       }
-      toast.error("Something went wrong. Please try again.");;
+      toast.error("Something went wrong. Please try again.");
     },
 
     onSettled: () => {
@@ -96,9 +107,15 @@ export const useCart = () => {
   });
 
   // 3. Silmək Mutasiyası
-  const removeFromCartMutation = useMutation<void, Error, number, CartMutationContext>({
+  const removeFromCartMutation = useMutation<
+    void,
+    Error,
+    number,
+    CartMutationContext
+  >({
     mutationKey: ["cart-remove"],
-    mutationFn: (cartItemId: number) => api.delete(`/cart/remove/${cartItemId}`),
+    mutationFn: (cartItemId: number) =>
+      api.delete(`/cart/remove/${cartItemId}`),
 
     onMutate: async (cartItemId) => {
       await queryClient.cancelQueries({ queryKey: ["cart"] });
@@ -106,7 +123,9 @@ export const useCart = () => {
 
       queryClient.setQueryData<CartResponse>(["cart"], (old) => {
         if (!old) return old;
-        const filteredItems = old.items.filter(item => item.cartItemId !== cartItemId);
+        const filteredItems = old.items.filter(
+          (item) => item.cartItemId !== cartItemId,
+        );
         const newTotal = filteredItems.reduce((sum, i) => sum + i.subTotal, 0);
         return { ...old, items: filteredItems, totalAmount: newTotal };
       });
@@ -129,8 +148,10 @@ export const useCart = () => {
 
   const handleAddToCart = (product: Perfume) => {
     if (!token) return toast.error("Please log in first!");
-    
-    const alreadyInCart = cartItems.some(item => item.perfumeId === product.id);
+
+    const alreadyInCart = cartItems.some(
+      (item) => item.perfumeId === product.id,
+    );
     if (alreadyInCart) {
       return toast.info("This item is already in your cart.");
     }
@@ -139,10 +160,18 @@ export const useCart = () => {
       perfumeId: product.id,
       quantity: 1,
       perfume: product,
-      isNew: true 
+      isNew: true,
     });
   };
-
+  const clearCart = () => {
+    // 1. Dərhal ekrandakı (cache-dəki) datanı sıfırlayır (gözləmədən)
+    queryClient.setQueryData<CartResponse>(["cart"], {
+      items: [],
+      totalAmount: 0,
+    });
+    // 2. Arxa planda serverlə əmin olmaq üçün sinxronlaşdırır
+    queryClient.invalidateQueries({ queryKey: ["cart"] });
+  };
   return {
     cartItems,
     cartCount,
@@ -155,5 +184,6 @@ export const useCart = () => {
     addToCart: handleAddToCart,
     updateQuantity: addToCartMutation.mutate,
     removeFromCart: removeFromCartMutation.mutate,
+    clearCart,
   };
 };

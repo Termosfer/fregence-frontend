@@ -13,15 +13,10 @@ const ViewCart = () => {
     updateQuantity,
     isLoading,
     isUpdating,
-    updatingVariables, 
+    updatingVariables,
     isRemoving,
-    removingVariables, 
+    removingVariables,
   } = useCart();
-
-  // Kuryer hesablama məntiqi
-  const SHIPPING_LIMIT = 180;
-  const shippingCost = cartTotal < SHIPPING_LIMIT ? 10 : 0;
-  const finalTotal = cartTotal + shippingCost;
 
   // 1. Məhsulların yerinin dəyişməməsi üçün ID-yə görə sıralayırıq
   const sortedItems: CartItem[] = [...cartItems].sort(
@@ -233,37 +228,24 @@ const ViewCart = () => {
             </div>
             <div className="flex justify-between text-gray-600 font-medium">
               <span>Shipping</span>
-               <span className="text-green-600 font-bold font-[Jost] text-xs uppercase tracking-widest">
-                  Free
-                </span>
-              {/* {shippingCost === 0 ? (
-                <span className="text-green-600 font-bold font-[Jost] text-xs uppercase tracking-widest">
-                  Free
-                </span>
-              ) : (
-                <span className="text-green-600 font-bold font-[Jost]">
-                  +{shippingCost}
-                  <span className="text-xs">.00 Azn</span>
-                </span>
-              )} */}
+              <span className="text-green-600 font-bold font-[Jost] text-xs uppercase tracking-widest">
+                Free
+              </span>
             </div>
           </div>
 
           <div className="flex justify-between font-bold border-t border-gray-200 pt-6 text-2xl text-black">
             <span>Total</span>
             <span className="tracking-tight font-medium font-[Jost]">
-              {finalTotal}
+              {cartTotal}
               <span className="text-xs">.00 Azn</span>
             </span>
           </div>
 
-          {/* {shippingCost > 0 && (
-             <p className="mt-4 text-[10px] text-gray-400 uppercase tracking-widest text-center italic">
-                Add <span className="font-bold text-black">{SHIPPING_LIMIT - cartTotal} Azn</span> more for <span className="text-green-600 font-bold">Free</span> shipping
-             </p>
-          )} */}
-
-          <Link to="/checkout" className="relative inline-flex items-center justify-center w-full h-[60px] bg-black text-white rounded-2xl overflow-hidden group cursor-pointer mt-10 shadow-lg active:scale-[0.98] transition-transform">
+          <Link
+            to="/checkout"
+            className="relative inline-flex items-center justify-center w-full h-[60px] bg-black text-white rounded-2xl overflow-hidden group cursor-pointer mt-10 shadow-lg active:scale-[0.98] transition-transform"
+          >
             <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tracking-[3px] uppercase transition-transform duration-300 group-hover:-translate-y-full">
               Proceed to Check Out
             </span>
@@ -278,16 +260,8 @@ const ViewCart = () => {
               Guaranteed Safe Checkout
             </p>
             <div className="flex items-center justify-center gap-2">
-              <img
-                src={paymentMethods1}
-                alt="Visa"
-                className="h-6"
-              />
-              <img
-                src={paymentMethods}
-                alt="Mastercard"
-                className="h-6"
-              />
+              <img src={paymentMethods1} alt="Visa" className="h-6" />
+              <img src={paymentMethods} alt="Mastercard" className="h-6" />
             </div>
           </div>
         </div>
