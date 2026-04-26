@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,  useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
 import api from "../../api/axios";
 import type { AxiosError } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Login = () => {
+  const navigate = useNavigate();
+    const queryClient = useQueryClient(); // <--- 1. BUNU ƏLAVƏ EDİN
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -51,10 +54,12 @@ const Login = () => {
 
       toast.success(`Welcome , ${response.data.name}!`);
 
+       queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
       // Uğurlu girişdən sonra yönləndiririk
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1500);
+      navigate("/");
+    /*   setTimeout(() => {
+      }, 1500); */
     } catch (err) {
       // Səhv parol yazıldıqda (401, 400 və s.) birbaşa bura düşəcək
 

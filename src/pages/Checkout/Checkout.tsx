@@ -124,7 +124,6 @@ const CheckoutContent = () => {
       const clientSecret = paymentIntentRes.data.clientSecret;
 
       // Test üçün konsola çıxaraq ki, görək kod gəlirmi:
-      console.log("Stripe Client Secret:", clientSecret);
       // 2. STRIPE İLƏ KARTI TƏSDİQLƏYİRİK
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -158,8 +157,7 @@ const CheckoutContent = () => {
         });
 
         const orderId = res.data.id;
-        
-        console.log(orderId, "order");
+
 
         if (orderId) {
           toast.success("Order placed successfully!");

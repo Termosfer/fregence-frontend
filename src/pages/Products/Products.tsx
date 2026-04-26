@@ -132,7 +132,6 @@ const Products = () => {
     };
   }, [isFilterOpen]);
 
-  console.log(productsData, "data");
 
   return (
     <div className="py-10 font-[Playfair]">
