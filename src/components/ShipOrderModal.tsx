@@ -18,6 +18,8 @@ const ShipOrderModal = ({ isOpen, onClose, orderId, onConfirm, isLoading }: Ship
     estimatedTime: ""
   });
 
+  console.log(orderId,"id")
+
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {

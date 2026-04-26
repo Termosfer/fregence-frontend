@@ -1,40 +1,34 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios";
 import { toast } from "react-toastify";
-import type { ApiError, Order, OrderStatus, ShipOrderArgs } from "../types/perfume";
+import type { ApiError, Order, OrderFilterParams, OrderStatus, ShipOrderArgs } from "../types/perfume";
 import type { AxiosError } from "axios";
+import { useState } from "react";
+
 
 export const useOrder = () => {
   const queryClient = useQueryClient();
 
-  // --- USER ENDPOINTS ---
-
-  // 1. İstifadəçinin öz sifarişləri (GET /api/orders/my)
   const { data: myOrders = [], isLoading: isMyOrdersLoading } = useQuery<Order[]>({
     queryKey: ["my-orders"],
     queryFn: () => api.get("/orders/my").then((res) => res.data),
   });
 
-  // 2. Sifarişi tamamlamaq (POST /api/orders/checkout)
   const checkoutMutation = useMutation({
     mutationFn: (checkoutData: { address: string; phoneNumber: string; note?: string }) =>
       api.post("/orders/checkout", null, { params: checkoutData }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] }); // Səbəti təmizlə
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["my-orders"] });
       toast.success("Order placed successfully!");
     },
   });
 
-  // --- ADMIN ENDPOINTS ---
-
-  // 3. Bütün sifarişlər (GET /api/orders/admin/all)
   const { data: allOrders = [], isLoading: isAllOrdersLoading } = useQuery<Order[]>({
     queryKey: ["admin-all-orders"],
     queryFn: () => api.get("/orders/admin/all").then((res) => res.data),
   });
 
-  // 4. Statusu dəyişmək (PATCH /api/orders/admin/{id}/status)
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }: { id: number; status: OrderStatus }) =>
       api.patch(`/orders/admin/${id}/status?status=${status}`),
@@ -44,45 +38,91 @@ export const useOrder = () => {
     },
   });
 
-  // 5. Sifarişi yola salmaq (PATCH /api/orders/admin/{id}/ship)
-// useOrder.ts daxilində shipMutation hissəsi:
+  const shipMutation = useMutation<void, AxiosError<ApiError>, ShipOrderArgs>({
+    mutationFn: ({ id, courierName, courierPhone, estimatedTime }) =>
+      api.patch(`/orders/admin/${id}/ship`, null, {
+        params: { courierName, courierPhone, estimatedTime: `${estimatedTime}:00` },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-all-orders"] });
+      toast.success("Order is on its way!");
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "Shipping error");
+    },
+  });
 
-const shipMutation = useMutation<void, AxiosError<ApiError>, ShipOrderArgs>({
-  mutationFn: ({ 
-    id, 
-    courierName, 
-    courierPhone, 
-    estimatedTime 
-  }: { 
-    id: number; 
-    courierName: string; 
-    courierPhone: string; 
-    estimatedTime: string; 
-  }) =>
-    api.patch(`/orders/admin/${id}/ship`, null, {
-      params: { 
-        courierName, 
-        courierPhone, 
-        estimatedTime: `${estimatedTime}:00` // Backend LocalDateTime gözləyirsə saniyəni əlavə edirik
-      }
-    }),
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ["admin-all-orders"] });
-    toast.success("Order is on its way!");
+  // Tək sifariş silmə - OPTİMİSTİK
+const deleteOrderMutation = useMutation({
+  mutationFn: (id: number) => api.delete(`/orders/admin/${id}`),
+  onMutate: async (id) => {
+    await queryClient.cancelQueries({ queryKey: ["admin-all-orders"] });
+    const previous = queryClient.getQueryData<Order[]>(["admin-all-orders"]);
+    
+    // DƏRHAL sil
+    queryClient.setQueryData<Order[]>(["admin-all-orders"], (old) =>
+      old?.filter((o) => o.id !== id) ?? []
+    );
+    return { previous };
   },
-  onError: (error) => {
-    toast.error(error.response?.data?.message || "Shipping error");
-  }
+  onError: (_err, _id, context) => {
+    queryClient.setQueryData(["admin-all-orders"], context?.previous);
+    toast.error("Could not delete order.");
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries({ queryKey: ["admin-all-orders"] });
+  },
+});
+
+// Bütün sifarişləri silmə - OPTİMİSTİK
+const deleteAllOrdersMutation = useMutation({
+  mutationFn: () => api.delete("/orders/admin/all"),
+  onMutate: async () => {
+    await queryClient.cancelQueries({ queryKey: ["admin-all-orders"] });
+    const previous = queryClient.getQueryData<Order[]>(["admin-all-orders"]);
+    
+    // DƏRHAL hamısını sil
+    queryClient.setQueryData<Order[]>(["admin-all-orders"], []);
+    return { previous };
+  },
+  onError: (_err, _vars, context) => {
+    queryClient.setQueryData(["admin-all-orders"], context?.previous);
+    toast.error("Could not delete orders.");
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries({ queryKey: ["admin-all-orders"] });
+    toast.success("All orders deleted.");
+  },
+});
+
+// Filter - onSuccess-də dərhal state yenilə
+const [localFilteredOrders, setLocalFilteredOrders] = useState<Order[]>([]);
+
+const filterOrdersMutation = useMutation({
+  mutationFn: (params: OrderFilterParams) =>
+    api.get("/orders/admin/filter", { params }).then((res) => res.data),
+  onSuccess: (data) => {
+    setLocalFilteredOrders(data);
+  },
+  onError: () => toast.error("Filter failed."),
 });
 
   return {
     myOrders,
     allOrders,
+    /* filteredOrders: filterOrdersMutation.data as Order[] | undefined, */
     isLoading: isMyOrdersLoading || isAllOrdersLoading,
+    isFiltering: filterOrdersMutation.isPending,
     checkout: checkoutMutation.mutate,
     isCheckingOut: checkoutMutation.isPending,
     updateStatus: updateStatusMutation.mutate,
     shipOrder: shipMutation.mutate,
-    isShipping: shipMutation.isPending 
+    isShipping: shipMutation.isPending,
+    deleteOrder: deleteOrderMutation.mutate,
+    isDeletingOrder: deleteOrderMutation.isPending,
+    deleteAllOrders: deleteAllOrdersMutation.mutate,
+    isDeletingAll: deleteAllOrdersMutation.isPending,
+    filterOrders: filterOrdersMutation.mutate,
+    filteredOrders: localFilteredOrders,
   };
 };

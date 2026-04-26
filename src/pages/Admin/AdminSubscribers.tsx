@@ -14,42 +14,64 @@ const AdminSubscribers = () => {
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const [filterDomain, setFilterDomain] = useState("ALL");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+  const [confirmDeleteEmail, setConfirmDeleteEmail] = useState<string>("");
 
-  // 1. URL-dəki axtarış sözünü (Header-dən gələn) tuturuq
   const query = searchParams.get("query") || "";
 
-  // 2. Abunəçiləri API-dan çəkirik
   const { data: subscribers = [], isLoading } = useQuery<Subscriber[]>({
     queryKey: ["admin-subscribers"],
     queryFn: () => api.get("/subscribers").then((res) => res?.data.content || res?.data),
   });
 
-  // 3. Silmə əməliyyatı
   const deleteMutation = useMutation({
     mutationFn: (id: number) => api.delete(`/subscribers/${id}`),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["admin-subscribers"] });
+      const previous = queryClient.getQueryData<Subscriber[]>(["admin-subscribers"]);
+      queryClient.setQueryData<Subscriber[]>(["admin-subscribers"], (old) =>
+        old?.filter((s) => s.id !== id) ?? []
+      );
+      return { previous };
+    },
+    onError: (_err, _id, context) => {
+      queryClient.setQueryData(["admin-subscribers"], context?.previous);
+      toast.error("Could not remove subscriber.");
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-subscribers"] });
-      toast.info("Subscriber removed");
-    }
+      toast.info("Subscriber removed.");
+    },
   });
 
-  // 4. MƏNTİQ: Həm Header axtarışı, həm də Domen filtri eyni anda tətbiq olunur
   const filteredSubscribers = subscribers.filter((sub) => {
     const matchesSearch = sub.email.toLowerCase().includes(query.toLowerCase());
-    
     if (filterDomain === "ALL") return matchesSearch;
     if (filterDomain === "GMAIL") return matchesSearch && sub.email.includes("@gmail.com");
     if (filterDomain === "OUTLOOK") return matchesSearch && (sub.email.includes("@outlook.com") || sub.email.includes("@hotmail.com"));
     if (filterDomain === "OTHER") return matchesSearch && !sub.email.includes("@gmail.com") && !sub.email.includes("@outlook.com") && !sub.email.includes("@hotmail.com");
-    
     return matchesSearch;
   });
 
-if (isLoading) return <div className="py-20 text-center animate-pulse font-bold">LOADING...</div>;
+  const handleDeleteClick = (sub: Subscriber) => {
+    setConfirmDeleteId(sub.id);
+    setConfirmDeleteEmail(sub.email);
+  };
+
+  const handleConfirmDelete = () => {
+    if (confirmDeleteId) {
+      deleteMutation.mutate(confirmDeleteId);
+      setConfirmDeleteId(null);
+      setConfirmDeleteEmail("");
+    }
+  };
+
+  if (isLoading)
+    return <div className="py-20 text-center animate-pulse font-bold">LOADING...</div>;
 
   return (
     <div className="space-y-8 font-[Playfair]">
-      {/* BAŞLIQ HİSSƏSİ */}
+      {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-6">
         <div>
           <h1 className="text-3xl font-bold uppercase tracking-tighter">Mailing List</h1>
@@ -57,10 +79,8 @@ if (isLoading) return <div className="py-20 text-center animate-pulse font-bold"
             {filteredSubscribers.length} verified subscribers
           </p>
         </div>
-
-        {/* DOMEN FİLTRI (Axtarış Header-ə getdiyi üçün bura sadələşdi) */}
         <div className="relative min-w-[180px]">
-          <select 
+          <select
             value={filterDomain}
             onChange={(e) => setFilterDomain(e.target.value)}
             className="w-full bg-white border border-gray-100 rounded-xl py-2.5 pl-4 pr-10 text-[10px] font-bold uppercase tracking-widest shadow-sm outline-none cursor-pointer appearance-none hover:border-black transition-all"
@@ -74,7 +94,7 @@ if (isLoading) return <div className="py-20 text-center animate-pulse font-bold"
         </div>
       </div>
 
-      {/* ABUNƏÇİ KARTLARI */}
+      {/* CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredSubscribers.length === 0 ? (
           <div className="col-span-full py-20 text-center text-gray-400 italic bg-white rounded-[2rem] border border-dashed border-gray-100">
@@ -82,8 +102,8 @@ if (isLoading) return <div className="py-20 text-center animate-pulse font-bold"
           </div>
         ) : (
           filteredSubscribers.map((sub) => (
-            <div 
-              key={sub.id} 
+            <div
+              key={sub.id}
               className="bg-white p-6 rounded-2xl border border-gray-50 shadow-sm hover:shadow-xl hover:scale-[1.02] hover:border-black transition-all duration-500 group flex items-center justify-between"
             >
               <div className="flex items-center gap-4 min-w-0">
@@ -98,11 +118,9 @@ if (isLoading) return <div className="py-20 text-center animate-pulse font-bold"
                   </div>
                 </div>
               </div>
-              
-              <button 
-                onClick={() => window.confirm("Unsubscribe this email?") && deleteMutation.mutate(sub.id)}
+              <button
+                onClick={() => handleDeleteClick(sub)}
                 className="p-2.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
-                title="Remove"
               >
                 <FiTrash2 size={18} />
               </button>
@@ -110,6 +128,35 @@ if (isLoading) return <div className="py-20 text-center animate-pulse font-bold"
           ))
         )}
       </div>
+
+      {/* DELETE MODAL */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl space-y-4 mx-4">
+            <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-2">
+              <FiTrash2 size={20} className="text-red-500" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900">Remove subscriber?</h3>
+            <p className="text-sm text-gray-500">
+              <span className="font-bold text-gray-800">{confirmDeleteEmail}</span> will be removed from the mailing list.
+            </p>
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => { setConfirmDeleteId(null); setConfirmDeleteEmail(""); }}
+                className="cursor-pointer flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-600 hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="cursor-pointer flex-1 py-2.5 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 transition"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

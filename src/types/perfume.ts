@@ -74,6 +74,15 @@ export interface PasswordUpdateData {
 export interface ApiError {
   message: string;
 }
+export interface OrderFilterParams {
+  customerName?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  startDate?: string;
+  endDate?: string;
+  sortBy?: "orderDate" | "totalAmount";
+  sortDir?: "asc" | "desc";
+}
 
 export interface OrderItem {
   id: number;
@@ -114,6 +123,9 @@ export interface Order {
   status: OrderStatus;
   items: OrderItem[];
   orderNote?: string;
+  phoneNumber: string;
+  customerName: string;
+  customerEmail: string;
   address: string;
   // YENİ SAHƏLƏR:
   courierName?: string;
@@ -122,6 +134,14 @@ export interface Order {
   preferredDeliveryTime?: string;
 }
 
+export interface OrderFilters {
+  search: string;
+  status: string;
+  minPrice: number | undefined;
+  maxPrice: number | undefined;
+  sortBy: "orderDate" | "totalAmount";
+  sortDir: "asc" | "desc";
+}
 
 export interface AddProductFormInput {
   name: string;
