@@ -6,7 +6,7 @@ import type { Perfume, WishlistMutationContext } from "../types/perfume";
 export const useWishlist = () => {
   const queryClient = useQueryClient();
   const token = localStorage.getItem("token");
-
+  /* const token = useAuth(); */
   // 1. Wishlist-i çəkirik
   const { data: wishlist = [], isLoading } = useQuery<Perfume[]>({
     queryKey: ["wishlist"],
@@ -28,18 +28,31 @@ export const useWishlist = () => {
   });
 
   // 3. Əlavə etmək üçün Mutation (Optimistic)
-  const addMutation = useMutation<void, Error, Perfume, WishlistMutationContext>({
+  const addMutation = useMutation<
+    void,
+    Error,
+    Perfume,
+    WishlistMutationContext
+  >({
     mutationFn: (product: Perfume) => api.post(`/wishlist/add/${product.id}`),
     onMutate: async (newProduct: Perfume) => {
       await queryClient.cancelQueries({ queryKey: ["wishlist"] });
       await queryClient.cancelQueries({ queryKey: ["wishlistCount"] });
 
-      const previousWishlist = queryClient.getQueryData<Perfume[]>(["wishlist"]);
+      const previousWishlist = queryClient.getQueryData<Perfume[]>([
+        "wishlist",
+      ]);
       const previousCount = queryClient.getQueryData<number>(["wishlistCount"]);
 
       // Cache-i anında yeniləyirik
-      queryClient.setQueryData<Perfume[]>(["wishlist"], (old) => [...(old || []), newProduct]);
-      queryClient.setQueryData<number>(["wishlistCount"], (old) => (old || 0) + 1);
+      queryClient.setQueryData<Perfume[]>(["wishlist"], (old) => [
+        ...(old || []),
+        newProduct,
+      ]);
+      queryClient.setQueryData<number>(
+        ["wishlistCount"],
+        (old) => (old || 0) + 1,
+      );
 
       return { previousWishlist, previousCount };
     },
@@ -58,20 +71,30 @@ export const useWishlist = () => {
   });
 
   // 4. Silmək üçün Mutation (Optimistic)
-  const removeMutation = useMutation<void, Error, number, WishlistMutationContext>({
-    mutationFn: (perfumeId: number) => api.delete(`/wishlist/remove/${perfumeId}`),
+  const removeMutation = useMutation<
+    void,
+    Error,
+    number,
+    WishlistMutationContext
+  >({
+    mutationFn: (perfumeId: number) =>
+      api.delete(`/wishlist/remove/${perfumeId}`),
     onMutate: async (perfumeId: number) => {
       await queryClient.cancelQueries({ queryKey: ["wishlist"] });
       await queryClient.cancelQueries({ queryKey: ["wishlistCount"] });
 
-      const previousWishlist = queryClient.getQueryData<Perfume[]>(["wishlist"]);
+      const previousWishlist = queryClient.getQueryData<Perfume[]>([
+        "wishlist",
+      ]);
       const previousCount = queryClient.getQueryData<number>(["wishlistCount"]);
 
       // Cache-dən anında silirik
-      queryClient.setQueryData<Perfume[]>(["wishlist"], (old) => 
-        old?.filter((item: Perfume) => item.id !== perfumeId)
+      queryClient.setQueryData<Perfume[]>(["wishlist"], (old) =>
+        old?.filter((item: Perfume) => item.id !== perfumeId),
       );
-      queryClient.setQueryData<number>(["wishlistCount"], (old) => Math.max(0, (old || 0) - 1));
+      queryClient.setQueryData<number>(["wishlistCount"], (old) =>
+        Math.max(0, (old || 0) - 1),
+      );
 
       return { previousWishlist, previousCount };
     },
@@ -109,6 +132,6 @@ export const useWishlist = () => {
     isLoading,
     addToWishlist,
     removeFromWishlist: removeMutation.mutate,
-    isInWishlist
+    isInWishlist,
   };
 };

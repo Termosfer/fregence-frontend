@@ -12,7 +12,7 @@ import type {
 export const useCart = () => {
   const queryClient = useQueryClient();
   const token = localStorage.getItem("token");
-
+  /* const token = useAuth(); */
   // 1. Səbəti gətir
   const { data: responseData, isLoading } = useQuery<CartResponse>({
     queryKey: ["cart"],

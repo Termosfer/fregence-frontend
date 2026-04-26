@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link,  useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
 import api from "../../api/axios";
@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const Login = () => {
   const navigate = useNavigate();
-    const queryClient = useQueryClient(); // <--- 1. BUNU ƏLAVƏ EDİN
+  const queryClient = useQueryClient(); // <--- 1. BUNU ƏLAVƏ EDİN
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -51,18 +51,14 @@ const Login = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
       localStorage.setItem("userName", response.data.name.split(" ")[0]);
-
+      window.dispatchEvent(new Event("auth-change"));
       toast.success(`Welcome , ${response.data.name}!`);
 
-       queryClient.invalidateQueries({ queryKey: ["cart"] });
-      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      queryClient.fetchQuery({ queryKey: ["cart"] });
+      queryClient.fetchQuery({ queryKey: ["wishlist"] });
       // Uğurlu girişdən sonra yönləndiririk
       navigate("/");
-    /*   setTimeout(() => {
-      }, 1500); */
     } catch (err) {
-      // Səhv parol yazıldıqda (401, 400 və s.) birbaşa bura düşəcək
-
       const error = err as AxiosError<{ message: string }>;
       if (error.response?.status === 401 || error.response?.status === 400) {
         setServerError("Email or password is wrong");
@@ -89,7 +85,7 @@ const Login = () => {
             <input
               type="email"
               value={email}
-               autoComplete="current-email"
+              autoComplete="current-email"
               onChange={(e) => {
                 setEmail(e.target.value);
                 // Yazmağa başlayan kimi həm lokal, həm server xətasını silirik
