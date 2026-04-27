@@ -101,8 +101,13 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
 
     const formData = new FormData();
     
+ const perfumeData = {
+    ...values,
+    imageUrl: initialData?.imageUrl || null // Köhnə şəkli qoruyuruq
+  };
+
     // Backend @RequestPart("perfume") gözlədiyi üçün JSON Blob yaradırıq
-    const jsonBlob = new Blob([JSON.stringify(values)], { type: "application/json" });
+    const jsonBlob = new Blob([JSON.stringify(perfumeData)], { type: "application/json" });
     formData.append("perfume", jsonBlob);
     
     if (imageFile) {
@@ -229,12 +234,12 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
 
         {/* Footer */}
         <div className="p-6 border-t bg-[#F8F9FA] flex gap-4">
-          <button type="button" onClick={onClose} className="flex-1 py-4 text-[10px] font-bold uppercase border border-gray-200 text-gray-400 rounded-2xl bg-white hover:text-black hover:border-black transition-all">
+          <button type="button" onClick={onClose} className="cursor-pointer flex-1 py-4 text-[10px] font-bold uppercase border border-gray-200 text-gray-400 rounded-2xl bg-white hover:text-black hover:border-black transition-all">
             Cancel
           </button>
           <button 
             type="submit" form="add-form" disabled={mutation.isPending || isCompressing}
-            className="flex-1 py-4 text-[10px] font-bold uppercase bg-black text-white rounded-2xl hover:bg-gray-800 transition-all flex items-center justify-center gap-2 disabled:bg-gray-200"
+            className="cursor-pointer flex-1 py-4 text-[10px] font-bold uppercase bg-black text-white rounded-2xl hover:bg-gray-800 transition-all flex items-center justify-center gap-2 disabled:bg-gray-200"
           >
             {mutation.isPending ? <FiLoader className="animate-spin" size={16} /> : (initialData ? "Update" : "Save")}
           </button>

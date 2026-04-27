@@ -7,13 +7,15 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  define: {
+    // BU SƏTRİ ƏLAVƏ ET:
+    global: 'window',
+  },
   build: {
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // Bütün kitabxanaları tək bir 'vendor' faylına yığırıq
-            // Bu, 'empty chunk' xətalarının qarşısını alır
             return 'vendor';
           }
         },

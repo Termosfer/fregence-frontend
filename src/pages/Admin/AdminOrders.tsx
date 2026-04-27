@@ -17,6 +17,7 @@ import {
 } from "react-icons/fi";
 import ShipOrderModal from "../../components/ShipOrderModal";
 import type { Order, OrderFilters, OrderItem } from "../../types/perfume";
+import { useOutletContext } from "react-router-dom";
 
 const AdminOrders = () => {
   const {
@@ -29,7 +30,7 @@ const AdminOrders = () => {
     isShipping,
     isDeletingAll,
   } = useOrder();
-  console.log(allOrders);
+  
   const [openOrderId, setOpenOrderId] = useState<number | null>(null);
   const [isShipModalOpen, setIsShipModalOpen] = useState(false);
   const [targetOrderId, setTargetOrderId] = useState<number | null>(null);
@@ -38,6 +39,8 @@ const AdminOrders = () => {
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isFiltered, setIsFiltered] = useState(false);
+const query = useOutletContext<string>(); // Bunu əlavə et
+
 
   // FİLTR STATE (Tiplərlə)
   const [filters, setFilters] = useState<OrderFilters>({
@@ -56,38 +59,33 @@ const AdminOrders = () => {
   };
 
   // ANLIQ FİLTRLƏMƏ VƏ SIRALAMA
-  const displayedOrders = [...allOrders] // Orijinal massivi pozmamaq üçün kopyalayırıq
-    .filter((order: Order) => {
-      const searchLower = filters.search.toLowerCase();
-      const matchesSearch =
-        order.customerName.toLowerCase().includes(searchLower) ||
-        order.customerEmail.toLowerCase().includes(searchLower) ||
-        order.phoneNumber.includes(searchLower);
+  const displayedOrders = [...allOrders]
+  .filter((order: Order) => {
+    // A) Global Axtarış (Layout-dakı search bar üçün)
+    const q = query.toLowerCase();
+    const matchesGlobal = 
+      order.customerName.toLowerCase().includes(q) ||
+      order.customerEmail.toLowerCase().includes(q) ||
+      order.phoneNumber.includes(q) ||
+      order.id.toString().includes(q);
 
-      const matchesStatus =
-        filters.status === "ALL" || order.status === filters.status;
-      const matchesMinPrice = filters.minPrice
-        ? order.totalAmount >= filters.minPrice
-        : true;
-      const matchesMaxPrice = filters.maxPrice
-        ? order.totalAmount <= filters.maxPrice
-        : true;
+    // B) Lokal Filtr (Səhifədəki filtr pəncərəsi üçün)
+    const searchLower = filters.search.toLowerCase();
+    const matchesLocalSearch = 
+      order.customerName.toLowerCase().includes(searchLower) || 
+      order.customerEmail.toLowerCase().includes(searchLower);
+    
+    const matchesStatus = filters.status === "ALL" || order.status === filters.status;
+    const matchesMinPrice = filters.minPrice ? order.totalAmount >= filters.minPrice : true;
+    const matchesMaxPrice = filters.maxPrice ? order.totalAmount <= filters.maxPrice : true;
 
-      return (
-        matchesSearch && matchesStatus && matchesMinPrice && matchesMaxPrice
-      );
-    })
-    .sort((a: Order, b: Order) => {
-      const dir = filters.sortDir === "asc" ? 1 : -1;
-      if (filters.sortBy === "totalAmount") {
-        return (a.totalAmount - b.totalAmount) * dir;
-      }
-      // Tarixə görə sıralama (Yeni gələn yuxarıda olsun deyə)
-      return (
-        (new Date(a.orderDate).getTime() - new Date(b.orderDate).getTime()) *
-        dir
-      );
-    });
+    return matchesGlobal && matchesLocalSearch && matchesStatus && matchesMinPrice && matchesMaxPrice;
+  })
+  .sort((a: Order, b: Order) => {
+    const dir = filters.sortDir === "asc" ? 1 : -1;
+    if (filters.sortBy === "totalAmount") return (a.totalAmount - b.totalAmount) * dir;
+    return (new Date(a.orderDate).getTime() - new Date(b.orderDate).getTime()) * dir;
+  });
 
   const handleClearFilter = () => {
     setFilters({
@@ -104,9 +102,54 @@ const AdminOrders = () => {
 
   if (isLoading)
     return (
-      <div className="py-20 text-center animate-pulse font-bold tracking-widest text-gray-400">
-        LOADING ORDERS...
+      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-8 font-[Playfair]">
+      {/* Ürək kimi döyünən Logo Area */}
+      <div className="relative flex items-center justify-center">
+        
+        {/* Dalğa effekti (Logonun arxasından yayılan halqalar) */}
+        <div className="absolute inset-0 rounded-3xl bg-teal-500/20 animate-ping shadow-2xl"></div>
+        <div className="absolute inset-0 rounded-3xl bg-teal-500/10 animate-[ping_2s_linear_infinite] shadow-xl"></div>
+
+        {/* Ana Logo Bloqu */}
+        <div className="relative w-20 h-20 bg-[#0F172A] text-white flex items-center justify-center rounded-3xl shadow-2xl z-10 animate-[heartbeat_1.5s_ease-in-out_infinite]">
+          <div className="flex flex-col items-center">
+            <span className="text-2xl font-black tracking-tighter italic">Mi</span>
+            <div className="w-4 h-[1px] bg-teal-500 mt-0.5"></div>
+          </div>
+        </div>
       </div>
+
+      {/* Yazı Hissəsi */}
+      <div className="text-center space-y-2">
+        <h2 className="text-sm font-black uppercase tracking-[0.3em] text-gray-900 animate-pulse">
+          Mi-Parfum
+        </h2>
+        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-teal-600/60">
+          Syncing Order Records...
+        </p>
+      </div>
+
+      {/* Arxa planda solğun skeleton cədvəl (istifadəçiyə dərinlik hissi vermək üçün) */}
+      <div className="absolute inset-0 -z-10 opacity-[0.03] pointer-events-none px-10 pt-32">
+        <div className="space-y-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-16 bg-black rounded-3xl w-full"></div>
+          ))}
+        </div>
+      </div>
+
+      {/* Ürək döyüntüsü üçün lazım olan xüsusi CSS (Tailwind ilə birlikdə) */}
+      <style>{`
+        @keyframes heartbeat {
+          0% { transform: scale(1); }
+          15% { transform: scale(1.12); }
+          30% { transform: scale(1); }
+          45% { transform: scale(1.15); }
+          70% { transform: scale(1); }
+          100% { transform: scale(1); }
+        }
+      `}</style>
+    </div>
     );
 
   return (
@@ -187,18 +230,8 @@ const AdminOrders = () => {
                   </div>
                 </div>
                 <div className="flex gap-2 mt-8 pt-4 border-t border-gray-50">
-                  <button
-                    onClick={handleClearFilter}
-                    className="cursor-pointer px-4 py-3 text-[10px] font-bold uppercase text-gray-400 hover:text-black"
-                  >
-                    Reset
-                  </button>
-                  <button
-                    onClick={() => setIsFilterOpen(false)}
-                    className="cursor-pointer flex-1 py-3 bg-black text-white rounded-xl text-[10px] font-bold uppercase tracking-widest"
-                  >
-                    Close
-                  </button>
+                  <button onClick={handleClearFilter} className="cursor-pointer px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all">Reset</button>
+                  <button onClick={() => setIsFilterOpen(false)} className="cursor-pointer flex-1 py-3 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Apply & Close</button>
                 </div>
               </div>
             )}

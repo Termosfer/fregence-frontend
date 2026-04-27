@@ -13,7 +13,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 1. ADMIN YOLLARI - AdminRoute ilə qorunur */}
         <Route 
           path="/admin/*" 
           element={
@@ -29,10 +28,8 @@ function App() {
            <Route path="contacts" element={<AdminMessages/>} />
            <Route path="subscribers" element={<AdminSubscribers/>} />
            <Route path="users" element={<AdminUsers/>} />
-           {/* Digər admin səhifələri... */}
         </Route>
 
-        {/* 2. MAĞAZA YOLLARI */}
         <Route path="/*" element={<Layout />} />
       </Routes>
     </BrowserRouter>
