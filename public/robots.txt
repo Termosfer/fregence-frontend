@@ -1,0 +1,10 @@
+# Bütün axtarış botlarına icazə verilir
+User-agent: *
+Allow: /
+
+# Admin paneli kimi gizli yerləri indeksləməsin deyə (opsional)
+Disallow: /admin
+Disallow: /login
+
+# Sənin saytının xəritəsi (əgər gələcəkdə yaratsan)
+Sitemap: https://miparfume.netlify.app/sitemap.xml
