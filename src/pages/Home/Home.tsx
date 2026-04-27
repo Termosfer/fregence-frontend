@@ -240,6 +240,7 @@ const Home = () => {
               >
                 <img
                   src={card.img}
+                  alt={card.title}
                   className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
@@ -420,6 +421,7 @@ const Home = () => {
             <div className="aspect-[4/5] rounded-[3rem] overflow-hidden">
               <img
                 src={img13}
+                alt="image"
                 className="w-full h-full object-cover scale-110 hover:scale-100 transition-transform duration-1000"
               />
             </div>

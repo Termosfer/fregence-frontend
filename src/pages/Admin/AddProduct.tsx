@@ -152,7 +152,7 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
             <div className={`relative border-2 border-dashed border-gray-100 rounded-3xl flex flex-col items-center justify-center transition-all bg-gray-50/50 hover:border-black ${!imagePreview ? 'py-16' : 'p-2'}`}>
               {imagePreview ? (
                 <div className="relative w-full aspect-square">
-                  <img src={imagePreview} className="w-full h-full object-contain rounded-2xl" alt="Preview" />
+                  <img src={imagePreview}  className="w-full h-full object-contain rounded-2xl" alt="upload image" />
                 </div>
               ) : (
                 <div className="text-center text-gray-300">

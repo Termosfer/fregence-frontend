@@ -349,7 +349,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                                     <div className="w-14 h-14 bg-gray-50 rounded-xl overflow-hidden p-1 flex-shrink-0">
                                       <img
                                         src={item.imageUrl}
-                                        alt=""
+                                        alt={item.brand}
                                         className="w-full h-full object-contain"
                                       />
                                     </div>

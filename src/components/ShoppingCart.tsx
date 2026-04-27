@@ -119,7 +119,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                     <div className="w-20 h-24 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
                       <img
                         src={item.imageUrl}
-                        alt=""
+                        alt={item.brand}
                         className="w-full h-full object-fill p-2"
                       />
                     </div>

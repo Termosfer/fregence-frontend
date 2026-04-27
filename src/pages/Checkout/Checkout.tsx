@@ -451,7 +451,7 @@ const CheckoutContent = () => {
                       <img
                         src={item.imageUrl}
                         className="max-h-full max-w-full object-contain"
-                        alt=""
+                        alt={item.brand}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
