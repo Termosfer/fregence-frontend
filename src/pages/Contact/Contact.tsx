@@ -97,7 +97,7 @@ const Contact = () => {
           <div className="lg:col-span-5 space-y-12">
             <div className="space-y-6">
               <h2 className="text-3xl font-bold uppercase tracking-tight text-gray-800">The Concierge</h2>
-              <p className="text-gray-400 text-lg leading-relaxed italic">
+              <p className="text-neutral  text-lg leading-relaxed italic">
                 Our fragrance experts are at your service for consultations, gifting advice, and order inquiries.
               </p>
             </div>
@@ -109,7 +109,7 @@ const Contact = () => {
                     <item.icon size={18} />
                   </div>
                   <div>
-                    <h4 className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 mb-1">{item.title}</h4>
+                    <h4 className="text-[10px] font-black uppercase tracking-[3px] text-neutral  mb-1">{item.title}</h4>
                     <p className="text-sm font-bold text-gray-800 tracking-wide">{item.text}</p>
                   </div>
                 </div>
@@ -121,7 +121,7 @@ const Contact = () => {
           <div className="lg:col-span-7 bg-[#FAFAF9] p-8 md:p-16 rounded-[2.5rem] border border-gray-100 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-10">
               <div className="group relative">
-                <label className="text-[10px] font-black uppercase text-gray-400  tracking-[3px] mb-2 block group-focus-within:text-black transition-colors font-[Jost]">Full Name</label>
+                <label className="text-[10px] font-black uppercase text-neutral   tracking-[3px] mb-2 block group-focus-within:text-black transition-colors font-[Jost]">Full Name</label>
                 <input 
                   type="text" 
                   name="name"
@@ -133,7 +133,7 @@ const Contact = () => {
               </div>
 
               <div className="group relative">
-                <label className="text-[10px] font-black uppercase text-gray-400 tracking-[3px] mb-2 block group-focus-within:text-black transition-colors font-[Jost]">Email Address</label>
+                <label className="text-[10px] font-black uppercase text-neutral  tracking-[3px] mb-2 block group-focus-within:text-black transition-colors font-[Jost]">Email Address</label>
                 <input 
                   type="email" 
                   name="email"
@@ -145,7 +145,7 @@ const Contact = () => {
               </div>
 
               <div className="group relative">
-                <label className="text-[10px] font-black uppercase text-gray-400 tracking-[3px] mb-2 block group-focus-within:text-black transition-colors font-[Jost]">Your Message</label>
+                <label className="text-[10px] font-black uppercase text-neutral  tracking-[3px] mb-2 block group-focus-within:text-black transition-colors font-[Jost]">Your Message</label>
                 <textarea 
                   name="message"
                   rows={3} 

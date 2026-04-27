@@ -107,7 +107,7 @@ const Recomendation = () => {
               </div>
 
               <div className="mt-5 text-center px-2">
-                <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">{product.brand}</p>
+                <p className="text-[10px] text-neutral  uppercase tracking-widest mb-1">{product.brand}</p>
                 <h5 className="text-sm md:text-base font-bold mb-2 truncate text-gray-800">{product.name}</h5>
                 <p className="text-[#81d8d0] font-bold text-lg">{product.price}.00 AZN</p>
               </div>

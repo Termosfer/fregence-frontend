@@ -83,7 +83,7 @@ const Profile = () => {
             </h2>
             <form onSubmit={handleInfoUpdate} className="space-y-8 flex-1">
               <div className="group">
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2">Full Name</label>
+                <label className="block text-[10px] font-black text-neutral  uppercase tracking-[2px] mb-2">Full Name</label>
                 <input 
                   value={profile.name} 
                   autoComplete="new-name"
@@ -92,7 +92,7 @@ const Profile = () => {
                 />
               </div>
               <div className="group">
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2">Email Address</label>
+                <label className="block text-[10px] font-black text-neutral  uppercase tracking-[2px] mb-2">Email Address</label>
                 <input 
                   type="email" 
                   value={profile.email} 
@@ -121,7 +121,7 @@ const Profile = () => {
             </h2>
             <form onSubmit={handlePasswordUpdate} className="space-y-8 flex-1">
               <div className="relative group">
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2">Current Password</label>
+                <label className="block text-[10px] font-black text-neutral  uppercase tracking-[2px] mb-2">Current Password</label>
                 <input 
                   type={showOld ? "text" : "password"} 
                   autoComplete="current-password"
@@ -129,10 +129,10 @@ const Profile = () => {
                   onChange={(e) => setPassData({ ...passData, oldPassword: e.target.value })} 
                   className="w-full border-b border-gray-100 py-2 pr-10 outline-none focus:border-black transition-all bg-transparent text-sm" 
                 />
-                <button aria-label="show password" type="button" onClick={() => setShowOld(!showOld)} className="absolute right-0 bottom-2 text-gray-400">{showOld ? <FiEyeOff /> : <FiEye />}</button>
+                <button aria-label="show password" type="button" onClick={() => setShowOld(!showOld)} className="absolute right-0 bottom-2 text-neutral ">{showOld ? <FiEyeOff /> : <FiEye />}</button>
               </div>
               <div className="relative group">
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2">New Password</label>
+                <label className="block text-[10px] font-black text-neutral  uppercase tracking-[2px] mb-2">New Password</label>
                 <input 
                   type={showNew ? "text" : "password"} 
                   autoComplete="new-password"
@@ -140,7 +140,7 @@ const Profile = () => {
                   onChange={(e) => setPassData({ ...passData, newPassword: e.target.value })} 
                   className="w-full border-b border-gray-100 py-2 pr-10 outline-none focus:border-black transition-all bg-transparent text-sm" 
                 />
-                <button aria-label="show password" type="button" onClick={() => setShowNew(!showNew)} className="absolute right-0 bottom-2 text-gray-400">{showNew ? <FiEyeOff /> : <FiEye />}</button>
+                <button aria-label="show password" type="button" onClick={() => setShowNew(!showNew)} className="absolute right-0 bottom-2 text-neutral ">{showNew ? <FiEyeOff /> : <FiEye />}</button>
               </div>
               <div>
                 <button disabled={isChangingPassword} className="w-full bg-white text-black border-2 border-black py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[3px] hover:bg-black hover:text-white transition-all disabled:opacity-30 cursor-pointer flex justify-center items-center gap-2">

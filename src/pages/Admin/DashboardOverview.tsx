@@ -114,7 +114,7 @@ const DashboardOverview = () => {
           <h1 className="text-3xl font-bold uppercase tracking-tighter text-gray-900">
             Dashboard Overview
           </h1>
-          <p className="text-gray-400 text-sm uppercase tracking-widest mt-1">
+          <p className="text-neutral  text-sm uppercase tracking-widest mt-1">
             Real-time store performance
           </p>
         </div>
@@ -136,7 +136,7 @@ const DashboardOverview = () => {
               {stat.icon}
             </div>
             <div>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-1">
+              <p className="text-[10px] font-black text-neutral  uppercase tracking-[2px] mb-1">
                 {stat.label}
               </p>
               <h3 className="text-2xl font-bold text-gray-800 tracking-tight">
@@ -158,7 +158,7 @@ const DashboardOverview = () => {
             <h2 className="text-4xl font-bold mt-8 mb-4 max-w-md leading-tight tracking-tighter">
               {stats?.topSellingPerfume}
             </h2>
-            <p className="text-gray-400 uppercase tracking-widest text-xs font-medium">
+            <p className="text-neutral  uppercase tracking-widest text-xs font-medium">
               The most popular fragrance in your collection this month.
             </p>
           </div>
@@ -173,7 +173,7 @@ const DashboardOverview = () => {
 
         {/* Quick Actions / System Health */}
         <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 flex flex-col justify-between shadow-sm">
-          <h4 className="text-xs font-black uppercase tracking-[3px] text-gray-400 border-b pb-4 mb-6">
+          <h4 className="text-xs font-black uppercase tracking-[3px] text-neutral  border-b pb-4 mb-6">
             Recent Reports
           </h4>
           <div className="space-y-6">

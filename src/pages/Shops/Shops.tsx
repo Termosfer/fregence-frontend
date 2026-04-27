@@ -40,7 +40,7 @@ const Shops = () => {
     return (
       <div className="py-40 text-center text-red-500 font-bold font-[Playfair]">
         <h2 className="text-2xl uppercase">Connection Error</h2>
-        <p className="text-gray-400 mt-2 font-light italic">Please check your internet connection and try again.</p>
+        <p className="text-neutral  mt-2 font-light italic">Please check your internet connection and try again.</p>
       </div>
     );
   }
@@ -104,7 +104,7 @@ const Shops = () => {
                     <h3 className="text-lg font-bold text-gray-800 uppercase tracking-widest mb-1">
                       {brand.name}
                     </h3>
-                    <div className="flex items-center justify-center gap-2 text-gray-400">
+                    <div className="flex items-center justify-center gap-2 text-neutral ">
                       <span className="text-[10px] font-black uppercase tracking-widest">
                         {brand.count} Fragrances
                       </span>
@@ -125,7 +125,7 @@ const Shops = () => {
 
       {/* EMPTY STATE */}
       {!isLoading && brandsArray.length === 0 && (
-        <div className="py-20 text-center text-gray-400 italic font-light animate-fade-in">
+        <div className="py-20 text-center text-neutral  italic font-light animate-fade-in">
           No collections found at the moment.
         </div>
       )}

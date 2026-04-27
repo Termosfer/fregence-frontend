@@ -74,7 +74,7 @@ const ViewCart = () => {
         <div className="flex-1 overflow-x-auto text-left">
           <table className="w-full border-collapse">
             <thead className="hidden md:table-header-group border-b border-gray-100">
-              <tr className="text-left text-gray-400 uppercase tracking-[2px] text-[10px] font-bold">
+              <tr className="text-left text-neutral  uppercase tracking-[2px] text-[10px] font-bold">
                 <th className="py-6">Product Details</th>
                 <th className="py-6 text-center">Quantity</th>
                 <th className="py-6 text-right">Subtotal</th>
@@ -105,7 +105,7 @@ const ViewCart = () => {
                         </div>
 
                         <div className="space-y-1 text-left">
-                          <p className="text-[10px] text-gray-400 uppercase tracking-[2px] font-bold">
+                          <p className="text-[10px] text-neutral  uppercase tracking-[2px] font-bold">
                             {item.brand}
                           </p>
                           <h2 className="font-bold text-lg text-gray-800 leading-tight">
@@ -186,7 +186,7 @@ const ViewCart = () => {
 
                     {/* TOTAL PRICE */}
                     <td className="py-8 block md:table-cell text-left md:text-right font-medium text-base text-gray-800 font-[Jost]">
-                      <span className="md:hidden font-bold text-gray-400 mr-2 text-xs uppercase tracking-widest">
+                      <span className="md:hidden font-bold text-neutral  mr-2 text-xs uppercase tracking-widest">
                         Total:
                       </span>
                       {item.subTotal}
@@ -203,7 +203,7 @@ const ViewCart = () => {
             className="relative inline-block w-fit overflow-hidden group tracking-widest cursor-pointer mt-10 text-white"
           >
             <span className="absolute bottom-0 left-0 h-[1px] w-full bg-[#00000080] scale-x-100 group-hover:scale-x-0 transition-transform duration-300"></span>
-            <span className="relative block text-xs font-bold text-gray-400 px-1 transition-transform duration-300 group-hover:-translate-y-full">
+            <span className="relative block text-xs font-bold text-neutral  px-1 transition-transform duration-300 group-hover:-translate-y-full">
               CONTINUE SHOPPING
             </span>
             <span className="absolute inset-0 text-xs font-bold text-black px-1 translate-y-full transition-transform duration-300 group-hover:translate-y-0">
@@ -256,7 +256,7 @@ const ViewCart = () => {
 
           {/* PAYMENT */}
           <div className="mt-10 text-center">
-            <p className="text-[10px] text-gray-400 font-bold uppercase mb-4 tracking-[2px]">
+            <p className="text-[10px] text-neutral  font-bold uppercase mb-4 tracking-[2px]">
               Guaranteed Safe Checkout
             </p>
             <div className="flex items-center justify-center gap-2">

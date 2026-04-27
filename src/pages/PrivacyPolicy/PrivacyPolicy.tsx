@@ -53,7 +53,7 @@ const PrivacyPolicy = () => {
             transition={{ delay: 0.2 }}
             className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-gray-900"
           >
-            Privacy <span className="italic font-light text-gray-400">Policy</span>
+            Privacy <span className="italic font-light text-neutral ">Policy</span>
           </motion.h1>
           <motion.div 
             initial={{ width: 0 }}
@@ -76,7 +76,7 @@ const PrivacyPolicy = () => {
             >
               <div className="flex items-center gap-4">
                 <span className="text-xs font-black text-[#81d8d0]">{section.id}</span>
-                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-black group-hover:text-white transition-all duration-500 shadow-inner">
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-neutral  group-hover:bg-black group-hover:text-white transition-all duration-500 shadow-inner">
                   {section.icon}
                 </div>
               </div>
@@ -117,7 +117,7 @@ const PrivacyPolicy = () => {
           {/* Contact for Privacy */}
           <div className="p-10 bg-white rounded-[2rem] border border-gray-100 text-center space-y-4 shadow-sm">
              <h4 className="text-xs font-black uppercase tracking-[4px]">Privacy Concierge</h4>
-             <p className="text-sm text-gray-400 italic">For any questions regarding your data, please reach out to us at:</p>
+             <p className="text-sm text-neutral  italic">For any questions regarding your data, please reach out to us at:</p>
              <p className="text-lg font-bold text-[#81d8d0] underline cursor-pointer">privacy@miparfum.com</p>
           </div>
         </div>

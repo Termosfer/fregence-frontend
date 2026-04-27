@@ -60,7 +60,7 @@ const OrderSuccess = () => {
           className="text-4xl md:text-5xl font-bold uppercase tracking-tighter text-gray-900"
         >
           Thank you for <br /> your{" "}
-          <span className="italic font-light text-gray-400">purchase</span>
+          <span className="italic font-light text-neutral ">purchase</span>
         </motion.h1>
 
         <motion.p
@@ -82,7 +82,7 @@ const OrderSuccess = () => {
       >
         <div className="space-y-6">
           <div className="flex justify-between items-center border-b border-gray-200 pb-4">
-            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+            <span className="text-[10px] font-black uppercase tracking-widest text-neutral ">
               Order Number
             </span>
             <span className="font-bold text-black">#{orderId || "N/A"}</span>

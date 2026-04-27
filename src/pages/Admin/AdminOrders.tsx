@@ -160,7 +160,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
           <h1 className="text-3xl font-bold uppercase tracking-tight text-gray-900">
             Orders Hub
           </h1>
-          <p className="text-[10px] text-gray-400 font-black uppercase tracking-[2px] mt-1">
+          <p className="text-[10px] text-neutral  font-black uppercase tracking-[2px] mt-1">
             {displayedOrders.length} records in queue
           </p>
         </div>
@@ -178,7 +178,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
             {isFilterOpen && (
               <div className="absolute right-0 top-full mt-3 w-[350px] md:w-[450px] bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center justify-between mb-5">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-neutral ">
                     Filters
                   </p>
                   <button aria-label="fix"
@@ -230,7 +230,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                   </div>
                 </div>
                 <div className="flex gap-2 mt-8 pt-4 border-t border-gray-50">
-                  <button onClick={handleClearFilter} className="cursor-pointer px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all">Reset</button>
+                  <button onClick={handleClearFilter} className="cursor-pointer px-4 py-3 text-[10px] font-black uppercase tracking-widest text-neutral  hover:text-black transition-all">Reset</button>
                   <button onClick={() => setIsFilterOpen(false)} className="cursor-pointer flex-1 py-3 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Apply & Close</button>
                 </div>
               </div>
@@ -251,7 +251,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/50 text-[10px] font-black uppercase tracking-[2px] text-gray-400 border-b border-gray-100">
+              <tr className="bg-gray-50/50 text-[10px] font-black uppercase tracking-[2px] text-neutral  border-b border-gray-100">
                 <th className="px-8 py-6">Ref ID</th>
                 <th className="px-6 py-6">Client</th>
                 <th className="px-6 py-6">Placed At</th>
@@ -276,7 +276,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                         <p className="text-sm font-bold text-gray-800 leading-none mb-1">
                           {order.customerName}
                         </p>
-                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">
+                        <p className="text-[10px] text-neutral  font-bold uppercase tracking-tight">
                           {order.phoneNumber}
                         </p>
                       </td>
@@ -336,7 +336,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-in fade-in slide-in-from-top-4 duration-500">
                             {/* 1. SÜTUN: MEHSULLAR (ƏN ÖNƏMLİ HİSSƏ) */}
                             <div className="space-y-4">
-                              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] flex items-center gap-2 mb-4">
+                              <h4 className="text-[10px] font-black text-neutral  uppercase tracking-[2px] flex items-center gap-2 mb-4">
                                 <FiShoppingBag className="text-black" /> Items
                                 Information
                               </h4>
@@ -360,7 +360,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                                       <p className="text-sm font-bold text-gray-800 truncate">
                                         {item.perfumeName}
                                       </p>
-                                      <p className="text-[11px] font-bold text-gray-400 mt-1">
+                                      <p className="text-[11px] font-bold text-neutral  mt-1">
                                         {item.quantity} x {item.price} AZN
                                       </p>
                                     </div>
@@ -371,25 +371,25 @@ const query = useOutletContext<string>(); // Bunu əlavə et
 
                             {/* 2. SÜTUN: MÜŞTƏRİ MƏLUMATLARI */}
                             <div className="space-y-6">
-                              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-4">
+                              <h4 className="text-[10px] font-black text-neutral  uppercase tracking-[2px] mb-4">
                                 Contact Info
                               </h4>
                               <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm space-y-4">
                                 <div className="space-y-3">
                                   <div className="flex items-center gap-3 text-sm font-bold text-gray-800">
-                                    <FiUser className="text-gray-400" />{" "}
+                                    <FiUser className="text-neutral " />{" "}
                                     {order.customerName}
                                   </div>
                                   <div className="flex items-center gap-3 text-sm font-medium text-gray-600">
-                                    <FiMail className="text-gray-400" />{" "}
+                                    <FiMail className="text-neutral " />{" "}
                                     {order.customerEmail}
                                   </div>
                                   <div className="flex items-center gap-3 text-sm font-medium text-gray-600">
-                                    <FiPhone className="text-gray-400" />{" "}
+                                    <FiPhone className="text-neutral " />{" "}
                                     {order.phoneNumber}
                                   </div>
                                   <div className="flex items-start gap-3 text-sm font-medium text-gray-600  border-t border-gray-50">
-                                    <FiMapPin className="text-gray-400 mt-1" />{" "}
+                                    <FiMapPin className="text-neutral  mt-1" />{" "}
                                     {order.address}
                                   </div>
                                 </div>
@@ -419,7 +419,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
 
                             {/* 3. SÜTUN: KURYER VƏ ÇATDIRILMA */}
                             <div className="space-y-6">
-                              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-4">
+                              <h4 className="text-[10px] font-black text-neutral  uppercase tracking-[2px] mb-4">
                                 Logistics
                               </h4>
                               {order.courierName ? (
@@ -468,7 +468,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                                   <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center text-gray-300">
                                     <FiTruck size={28} />
                                   </div>
-                                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                                  <p className="text-xs font-bold text-neutral  uppercase tracking-widest">
                                     Waiting for Assignment
                                   </p>
                                   <button
@@ -507,7 +507,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDeleteId(null)}
-                className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase text-gray-400"
+                className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase text-neutral "
               >
                 Cancel
               </button>
@@ -545,7 +545,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDeleteAll(false)}
-                className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase text-gray-400"
+                className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase text-neutral "
               >
                 Cancel
               </button>

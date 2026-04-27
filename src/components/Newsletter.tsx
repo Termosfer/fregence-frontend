@@ -58,9 +58,9 @@ const Newsletter = () => {
           </div>
           <div className="text-center md:text-left space-y-2">
             <h2 className="text-gray-900 text-2xl md:text-4xl font-bold uppercase tracking-tighter leading-none">
-              Sign Up <br /> <span className="italic font-light text-gray-400">for Newsletter</span>
+              Sign Up <br /> <span className="italic font-light text-neutral ">for Newsletter</span>
             </h2>
-            <p className="text-gray-400 text-sm md:text-base font-medium italic">
+            <p className="text-neutral  text-sm md:text-base font-medium italic">
               Receive the latest updates on niche fragrances and exclusive events.
             </p>
           </div>
@@ -82,7 +82,7 @@ const Newsletter = () => {
               disabled={mutation.isPending}
               className="ml-4 flex items-center gap-2 group/btn"
             >
-              <span className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 group-hover/btn:text-black transition-colors cursor-pointer">
+              <span className="text-[10px] font-black uppercase tracking-[3px] text-neutral  group-hover/btn:text-black transition-colors cursor-pointer">
                 {mutation.isPending ? "Wait..." : "Subscribe"}
               </span>
               {mutation.isPending ? (

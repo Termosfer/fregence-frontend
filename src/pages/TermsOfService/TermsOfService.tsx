@@ -47,7 +47,7 @@ const TermsOfService = () => {
             transition={{ delay: 0.2 }}
             className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-gray-900"
           >
-            Terms of <span className="italic font-light text-gray-400">Service</span>
+            Terms of <span className="italic font-light text-neutral ">Service</span>
           </motion.h1>
           <div className="mt-8 flex justify-center gap-2">
             <div className="w-12 h-[1px] bg-black"></div>
@@ -66,7 +66,7 @@ const TermsOfService = () => {
               whileHover={{ y: -5 }}
               className="p-10 bg-[#FAFAF9] rounded-[2.5rem] border border-gray-50 space-y-6 transition-all duration-500 hover:shadow-xl hover:bg-white group"
             >
-              <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-xl text-gray-400 group-hover:text-[#81d8d0] transition-colors shadow-sm border border-gray-100">
+              <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-xl text-neutral  group-hover:text-[#81d8d0] transition-colors shadow-sm border border-gray-100">
                 {item.icon}
               </div>
               <div className="space-y-2">
@@ -132,7 +132,7 @@ const TermsOfService = () => {
         <div className="mt-32 p-12 bg-black text-white rounded-[3rem] text-center space-y-6 shadow-2xl">
           <FiFileText className="mx-auto text-[#81d8d0]" size={32} />
           <h3 className="text-xl font-bold uppercase tracking-[4px]">Legal Integrity</h3>
-          <p className="text-gray-400 text-sm italic max-w-md mx-auto">
+          <p className="text-neutral  text-sm italic max-w-md mx-auto">
             Our terms are designed to protect both the craftsmanship of our atelier and the rights of our esteemed clientele.
           </p>
           <div className="pt-4">

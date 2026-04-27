@@ -117,7 +117,7 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
                     </span>
 
                     {/* Köhnə qiymət (Üstü xətli) */}
-                    <span className="line-through text-[11px] text-gray-400">
+                    <span className="line-through text-[11px] text-neutral">
                       {item.price} AZN
                     </span>
                   </>
@@ -159,7 +159,7 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
               className={`w-9 h-9 border rounded-md transition-all duration-300 font-bold text-xs uppercase tracking-widest ${
                 isActive
                   ? "bg-black text-white border-black scale-105 shadow-md"
-                  : "bg-white text-gray-400 border-gray-100 hover:border-black hover:text-black"
+                  : "bg-white text-neutral  border-gray-100 hover:border-black hover:text-black"
               }`}
             >
               {(p as number) + 1}

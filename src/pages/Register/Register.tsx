@@ -96,7 +96,7 @@ const Register = () => {
           {/* Full Name */}
           <div className="flex flex-col gap-1">
             <div className="relative">
-              <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral " />
               <input
                 type="text"
                 name="name"
@@ -121,7 +121,7 @@ const Register = () => {
           {/* Email */}
           <div className="flex flex-col gap-1">
             <div className="relative">
-              <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral " />
               <input
                 type="email"
                 name="email"
@@ -146,7 +146,7 @@ const Register = () => {
           {/* Password */}
           <div className="flex flex-col gap-1">
             <div className="relative">
-              <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral " />
               <input
                 type={showPass ? "text" : "password"}
                 name="password"

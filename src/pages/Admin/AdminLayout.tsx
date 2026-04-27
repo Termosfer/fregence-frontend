@@ -158,7 +158,7 @@ const AdminLayout = () => {
               key={item.path}
               to={item.path}
               className={`flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 group ${
-                location.pathname === item.path ? "bg-white text-black shadow-lg" : "text-gray-400 hover:bg-white/5 hover:text-white"
+                location.pathname === item.path ? "bg-white text-black shadow-lg" : "text-neutral  hover:bg-white/5 hover:text-white"
               }`}
             >
               <span className={`text-lg ${location.pathname === item.path ? "text-black" : "group-hover:text-white"}`}>{item.icon}</span>
@@ -168,7 +168,7 @@ const AdminLayout = () => {
         </nav>
 
         <div className="p-4 border-t border-white/5 space-y-2">
-          <Link to="/" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white transition-all text-xs font-bold uppercase tracking-widest">
+          <Link to="/" className="flex items-center gap-3 px-4 py-3 text-neutral  hover:text-white transition-all text-xs font-bold uppercase tracking-widest">
             <FiHome /> Back to Website
           </Link>
           <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-red-400 hover:bg-red-500/10 rounded-xl transition-all text-xs font-bold uppercase tracking-widest cursor-pointer">
@@ -180,7 +180,7 @@ const AdminLayout = () => {
       <div className="flex-1 ml-64 flex flex-col min-h-screen">
         <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-10 sticky top-0 z-[90]">
           <div className="relative w-full max-w-md group">
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors" />
+            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral  group-focus-within:text-black transition-colors" />
             <input
               type="text"
               placeholder="Search products, orders, customers..."
@@ -195,7 +195,7 @@ const AdminLayout = () => {
             <div className="relative" ref={dropdownRef}>
               <div 
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="relative cursor-pointer text-gray-400 hover:text-black transition-all p-2"
+                className="relative cursor-pointer text-neutral  hover:text-black transition-all p-2"
               >
                 <FiBell size={20} />
                 {notifications.length > 0 && (
@@ -217,7 +217,7 @@ const AdminLayout = () => {
                     {notifications.length === 0 ? (
                       <div className="p-10 text-center">
                         <FiBell className="mx-auto text-gray-200 mb-2" size={24} />
-                        <p className="text-[11px] text-gray-400 font-medium">No new alerts at the moment.</p>
+                        <p className="text-[11px] text-neutral  font-medium">No new alerts at the moment.</p>
                       </div>
                     ) : (
                       notifications?.map((note, index) => (
@@ -226,7 +226,7 @@ const AdminLayout = () => {
                             <div className="w-2 h-2 bg-teal-500 rounded-full mt-1.5 shrink-0" />
                             <div>
                               <p className="text-xs text-gray-700 leading-relaxed font-medium">{note}</p>
-                              <span className="text-[9px] text-gray-400 font-bold mt-1 block uppercase">New Update</span>
+                              <span className="text-[9px] text-neutral  font-bold mt-1 block uppercase">New Update</span>
                             </div>
                           </div>
                         </div>

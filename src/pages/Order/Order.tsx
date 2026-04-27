@@ -97,7 +97,7 @@ const OrderHistory = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
             <h1 className="text-4xl font-bold uppercase tracking-tighter text-gray-900">My Orders</h1>
-            <p className="text-gray-400 text-sm mt-2 uppercase tracking-widest">Review your past purchases and tracking</p>
+            <p className="text-neutral  text-sm mt-2 uppercase tracking-widest">Review your past purchases and tracking</p>
           </div>
           <div className="bg-white px-6 py-2 rounded-full shadow-sm border border-gray-100 text-[10px] font-black uppercase tracking-widest">
             Total: {orders.length}
@@ -139,15 +139,15 @@ const OrderHistory = () => {
                       
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-2 ">
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Order ID</span>
+                          <span className="text-[10px] text-neutral  font-black uppercase tracking-widest">Order ID</span>
                           <span className="text-sm font-bold text-gray-800">#{order.id}</span>
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Date</span>
+                          <span className="text-[10px] text-neutral  font-black uppercase tracking-widest">Date</span>
                           <span className="text-sm font-bold text-gray-800">{new Date(order.orderDate).toLocaleDateString('en-GB')}</span>
                         </div>
                         <div className="flex flex-col hidden sm:flex">
-                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Total</span>
+                          <span className="text-[10px] text-neutral  font-black uppercase tracking-widest">Total</span>
                           <span className="text-xs font-bold text-[#81d8d0] tracking-tighter font-[Jost]">{order.totalAmount} AZN</span>
                         </div>
                       </div>
@@ -202,7 +202,7 @@ const OrderHistory = () => {
                       )}
 
                       {/* 2. MƏHSUL SİYAHISI */}
-                      <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[3px] mb-6 mt-4">Order Items</h3>
+                      <h3 className="text-[10px] font-black text-neutral  uppercase tracking-[3px] mb-6 mt-4">Order Items</h3>
                       <div className="space-y-4">
                         {order?.items?.map((item: OrderItem) => (
                           <div key={item.id} className="flex items-center justify-between p-4 rounded-2xl bg-[#fafafa] border border-gray-100">
@@ -212,7 +212,7 @@ const OrderHistory = () => {
                               </div>
                               <div>
                                 <p className="text-sm font-bold uppercase text-gray-800 leading-tight">{item.perfumeName}</p>
-                                <p className="text-[10px] text-gray-400 font-bold uppercase mt-1 tracking-widest">
+                                <p className="text-[10px] text-neutral  font-bold uppercase mt-1 tracking-widest">
                                   Qty: <span className="text-black">{item.quantity}</span> • Unit Price: <span className="text-black font-[Jost]">{item.price} AZN</span>
                                 </p>
                               </div>

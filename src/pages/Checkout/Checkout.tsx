@@ -206,7 +206,7 @@ const CheckoutContent = () => {
             transition={{ repeat: Infinity, duration: 2 }}
             className="flex flex-col items-center gap-3"
           >
-            <div className="flex items-center gap-2 text-gray-400">
+            <div className="flex items-center gap-2 text-neutral ">
               <FiShield className="text-[#81d8d0] animate-pulse" />
               <span className="text-[11px] font-black uppercase tracking-[6px]">
                 Securing Checkout
@@ -231,7 +231,7 @@ const CheckoutContent = () => {
           <h2 className="text-2xl font-bold text-gray-800 uppercase tracking-tighter mb-4">
             Your bag is empty
           </h2>
-          <p className="text-gray-400 italic mb-8">
+          <p className="text-neutral  italic mb-8">
             You need to add at least one fragrance to your bag to proceed.
           </p>
           <Link
@@ -257,7 +257,7 @@ const CheckoutContent = () => {
           <h1 className="text-3xl md:text-4xl font-bold uppercase tracking-tighter text-gray-900">
             Secure Checkout
           </h1>
-          <p className="text-gray-400 text-sm mt-2 tracking-widest uppercase font-bold">
+          <p className="text-neutral  text-sm mt-2 tracking-widest uppercase font-bold">
             Complete your fragrance journey
           </p>
         </div>
@@ -364,7 +364,7 @@ const CheckoutContent = () => {
                           name="deliveryTime"
                           value={formData.deliveryTime}
                           onChange={handleChange}
-                          className={`w-full pl-7 pb-2 border-b outline-none transition-all text-sm text-gray-400 bg-transparent ${errors.deliveryTime ? "border-red-500" : "border-gray-200 focus:border-black cursor-pointer"}`}
+                          className={`w-full pl-7 pb-2 border-b outline-none transition-all text-sm text-neutral  bg-transparent ${errors.deliveryTime ? "border-red-500" : "border-gray-200 focus:border-black cursor-pointer"}`}
                         />
                       </div>
                       {errors.deliveryTime && (
@@ -410,7 +410,7 @@ const CheckoutContent = () => {
                     }}
                   />
                 </div>
-                <div className="mt-4 flex items-center gap-2 text-gray-400 text-[10px] font-bold uppercase tracking-widest">
+                <div className="mt-4 flex items-center gap-2 text-neutral  text-[10px] font-bold uppercase tracking-widest">
                   <FiLock /> Secure encrypted transaction by Stripe
                 </div>
               </div>
@@ -436,7 +436,7 @@ const CheckoutContent = () => {
                 <h2 className="text-sm font-bold uppercase tracking-[2px] flex items-center gap-2 text-gray-800">
                   <FiShoppingBag /> Summary
                 </h2>
-                <span className="bg-[#FAFAF9] text-gray-400 px-3 py-1 rounded-full text-[10px] font-black border border-gray-50">
+                <span className="bg-[#FAFAF9] text-neutral  px-3 py-1 rounded-full text-[10px] font-black border border-gray-50">
                   {cartCount} ITEMS
                 </span>
               </div>
@@ -458,11 +458,11 @@ const CheckoutContent = () => {
                       <h4 className="text-[11px] font-bold text-gray-800 truncate uppercase tracking-tighter">
                         {item.perfumeName}
                       </h4>
-                      <p className="text-[9px] text-gray-400 uppercase tracking-widest">
+                      <p className="text-[9px] text-neutral  uppercase tracking-widest">
                         {item.brand}
                       </p>
                       <div className="flex justify-between items-center mt-1">
-                        <span className="text-[10px] text-gray-400 font-bold uppercase">
+                        <span className="text-[10px] text-neutral  font-bold uppercase">
                           Qty: {item.quantity}
                         </span>
                         <span className="text-xs font-bold font-[Jost] text-black">
@@ -503,7 +503,7 @@ const CheckoutContent = () => {
                 <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#81d8d0] shadow-sm border border-gray-100 flex-shrink-0">
                   <FiShoppingBag size={14} />
                 </div>
-                <p className="text-[10px] text-gray-400 leading-relaxed font-bold uppercase tracking-wider">
+                <p className="text-[10px] text-neutral  leading-relaxed font-bold uppercase tracking-wider">
                   Your order qualifies for{" "}
                   <span className="text-green-600 font-bold">FREE</span>{" "}
                   shipping.

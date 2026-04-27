@@ -165,7 +165,7 @@ const AdminSubscribers = () => {
           <h1 className="text-3xl font-bold uppercase tracking-tight text-gray-900">
             Mailing List
           </h1>
-          <p className="text-[10px] text-gray-400 font-black uppercase tracking-[2px] mt-1">
+          <p className="text-[10px] text-neutral  font-black uppercase tracking-[2px] mt-1">
             {displayedSubscribers.length} active subscribers found
           </p>
         </div>
@@ -188,20 +188,20 @@ const AdminSubscribers = () => {
             {isFilterOpen && (
               <div className="absolute right-0 top-full mt-3 w-[320px] md:w-[400px] bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center justify-between mb-5">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-neutral ">
                     Search Subscribers
                   </p>
                   <button aria-label="fix"
                     onClick={() => setIsFilterOpen(false)}
                     className="cursor-pointer"
                   >
-                    <FiX size={16} className="text-gray-400 hover:text-black" />
+                    <FiX size={16} className="text-neutral  hover:text-black" />
                   </button>
                 </div>
 
                 <div className="space-y-4">
                   <div className="flex flex-col gap-1">
-                    <label className="text-[9px] font-black uppercase text-gray-400">
+                    <label className="text-[9px] font-black uppercase text-neutral ">
                       Email Address
                     </label>
                     <input
@@ -217,7 +217,7 @@ const AdminSubscribers = () => {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-[9px] font-black uppercase text-gray-400">
+                    <label className="text-[9px] font-black uppercase text-neutral ">
                       Email Provider
                     </label>
                     <select
@@ -242,7 +242,7 @@ const AdminSubscribers = () => {
                 <div className="flex gap-2 mt-8 pt-4 border-t border-gray-50">
                   <button
                     onClick={handleClearFilter}
-                    className="cursor-pointer px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all"
+                    className="cursor-pointer px-4 py-3 text-[10px] font-black uppercase tracking-widest text-neutral  hover:text-black transition-all"
                   >
                     Reset
                   </button>
@@ -272,7 +272,7 @@ const AdminSubscribers = () => {
               className="bg-white p-6 rounded-[2rem] border border-gray-50 shadow-sm hover:shadow-xl hover:border-black transition-all duration-500 group flex items-center justify-between"
             >
               <div className="flex items-center gap-4 min-w-0">
-                <div className="w-12 h-12 rounded-2xl bg-gray-50 text-gray-400 flex items-center justify-center group-hover:bg-[#0F172A] group-hover:text-[#81d8d0] transition-all shadow-inner group-hover:rotate-6">
+                <div className="w-12 h-12 rounded-2xl bg-gray-50 text-neutral  flex items-center justify-center group-hover:bg-[#0F172A] group-hover:text-[#81d8d0] transition-all shadow-inner group-hover:rotate-6">
                   <FiMail size={20} />
                 </div>
                 <div className="min-w-0">
@@ -281,7 +281,7 @@ const AdminSubscribers = () => {
                   </p>
                   <div className="flex items-center gap-1 mt-0.5">
                     <FiUserCheck size={10} className="text-teal-500" />
-                    <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest">
+                    <span className="text-[9px] text-neutral  font-black uppercase tracking-widest">
                       Active Member
                     </span>
                   </div>
@@ -325,7 +325,7 @@ const AdminSubscribers = () => {
                   setConfirmDeleteId(null);
                   setConfirmDeleteEmail("");
                 }}
-                className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-gray-50 transition-all"
+                className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-neutral  hover:bg-gray-50 transition-all"
               >
                 Cancel
               </button>

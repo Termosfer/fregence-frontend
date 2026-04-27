@@ -245,7 +245,7 @@ const Products = () => {
               <MdFilterList size={20} /> Filter
             </button>
 
-            <p className="hidden md:block text-gray-400 italic text-sm">
+            <p className="hidden md:block text-neutral  italic text-sm">
               {productsData?.totalElements} products found
             </p>
 

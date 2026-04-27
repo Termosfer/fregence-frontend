@@ -163,7 +163,7 @@ const AdminUsers = () => {
           <h1 className="text-3xl font-bold uppercase tracking-tight text-gray-900">
             User Management
           </h1>
-          <p className="text-[10px] text-gray-400 font-black uppercase tracking-[2px] mt-1">
+          <p className="text-[10px] text-neutral  font-black uppercase tracking-[2px] mt-1">
             {displayedUsers.length} accounts in system
           </p>
         </div>
@@ -183,12 +183,12 @@ const AdminUsers = () => {
           {isFilterOpen && (
             <div className="absolute right-0 top-full mt-3 w-[350px] bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-6 animate-in slide-in-from-top-2 duration-200">
               <div className="flex items-center justify-between mb-5">
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                <p className="text-[10px] font-black uppercase tracking-widest text-neutral ">
                   Filters
                 </p>
                 <button aria-label="fix"
                   onClick={() => setIsFilterOpen(false)}
-                  className="cursor-pointer text-gray-400 hover:text-black"
+                  className="cursor-pointer text-neutral  hover:text-black"
                 >
                   <FiX size={16} />
                 </button>
@@ -239,7 +239,7 @@ const AdminUsers = () => {
               <div className="flex gap-2 mt-8 pt-4 border-t border-gray-50">
                 <button
                   onClick={handleClearFilter}
-                  className="cursor-pointer px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all"
+                  className="cursor-pointer px-4 py-3 text-[10px] font-black uppercase tracking-widest text-neutral  hover:text-black transition-all"
                 >
                   Reset
                 </button>
@@ -260,7 +260,7 @@ const AdminUsers = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/50 border-b text-[10px] font-black uppercase tracking-[2px] text-gray-400">
+              <tr className="bg-gray-50/50 border-b text-[10px] font-black uppercase tracking-[2px] text-neutral ">
                 <th className="px-8 py-6">Member</th>
                 <th className="px-6 py-6">Email</th>
                 <th className="px-6 py-6">Role</th>
@@ -364,7 +364,7 @@ const AdminUsers = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDeleteId(null)}
-                className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase text-gray-400 hover:bg-gray-50"
+                className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase text-neutral  hover:bg-gray-50"
               >
                 Cancel
               </button>

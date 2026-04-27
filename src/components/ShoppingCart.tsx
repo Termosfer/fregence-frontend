@@ -86,7 +86,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
       
         <div className="flex-1 min-h-0 overflow-y-auto">
           {cartItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-400">
+            <div className="flex flex-col items-center justify-center h-64 text-neutral ">
               <div className="relative mb-6">
                 <div className="absolute -inset-5 bg-gray-50 rounded-full animate-pulse"></div>
                 <RiShoppingBag2Fill
@@ -128,7 +128,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                       <h2 className="text-sm font-bold text-gray-800 uppercase leading-tight">
                         {item.perfumeName}
                       </h2>
-                      <p className="text-gray-400 text-xs mb-3 uppercase">
+                      <p className="text-neutral  text-xs mb-3 uppercase">
                         {item.brand}
                       </p>
 
@@ -194,7 +194,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
         <div className="p-4 md:p-6 border-t border-gray-100 bg-white shadow-[0_-10px_20px_rgba(0,0,0,0.02)] flex-shrink-0">
           <div className="flex flex-col mb-6">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400">
+              <h2 className="font-bold text-sm uppercase tracking-widest text-neutral ">
                 Shipping
               </h2>
               <p className="font-medium font-[Jost] text-gray-800">
@@ -207,7 +207,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
               </p>
             </div>
             <div className="flex items-center justify-between">
-              <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400">
+              <h2 className="font-bold text-sm uppercase tracking-widest text-neutral ">
                 Estimated Total
               </h2>
               <p className="font-medium font-[Jost] text-lg text-gray-800">
@@ -217,7 +217,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
             </div>
             
             {/* {shippingCost > 0 && (
-              <p className="mt-3 text-[10px] text-gray-400 uppercase tracking-widest text-center italic">
+              <p className="mt-3 text-[10px] text-neutral  uppercase tracking-widest text-center italic">
                 Add <span className="font-bold text-black">{SHIPPING_LIMIT - cartTotal} Azn</span> more for <span className="text-green-600 font-bold">Free</span> shipping
               </p>
             )} */}

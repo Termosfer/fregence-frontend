@@ -103,10 +103,10 @@ const handleMainAction  = () => {
         {isLoading ? (
           <div className="w-full h-[400px] flex flex-col items-center justify-center gap-4 bg-white">
             <FiLoader className="animate-spin text-gray-300" size={40} />
-            <p className="text-gray-400 uppercase tracking-widest text-[10px] font-bold">Essence Loading...</p>
+            <p className="text-neutral  uppercase tracking-widest text-[10px] font-bold">Essence Loading...</p>
           </div>
         ) : isError || !product ? (
-          <div className="w-full h-[400px] flex items-center justify-center text-gray-400 bg-white">Unable to load product.</div>
+          <div className="w-full h-[400px] flex items-center justify-center text-neutral  bg-white">Unable to load product.</div>
         ) : (
           <>
             {/* LEFT: IMAGE SECTION - Mobildə hündürlüyü məhdudlaşdırırıq */}
@@ -149,7 +149,7 @@ const handleMainAction  = () => {
                     </span>
 
                     {/* Köhnə qiymət (Üstü xətli) */}
-                    <span className="line-through text-[11px] text-gray-400">
+                    <span className="line-through text-[11px] text-neutral ">
                       {product.price} AZN
                     </span>
                   </>
@@ -170,11 +170,11 @@ const handleMainAction  = () => {
                 {/* ML & Gender grid */}
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
                    <div className="bg-gray-50 p-3 md:p-4 rounded-xl border border-gray-100">
-                      <span className="text-[8px] md:text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">Volume</span>
+                      <span className="text-[8px] md:text-[9px] font-black text-neutral  uppercase tracking-widest block mb-1">Volume</span>
                       <span className="text-xs md:text-sm font-bold text-gray-800">{product.ml} ML</span>
                    </div>
                    <div className="bg-gray-50 p-3 md:p-4 rounded-xl border border-gray-100">
-                      <span className="text-[8px] md:text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">Gender</span>
+                      <span className="text-[8px] md:text-[9px] font-black text-neutral  uppercase tracking-widest block mb-1">Gender</span>
                       <span className="text-xs md:text-sm font-bold text-gray-800 uppercase tracking-tighter">{product.gender}</span>
                    </div>
                 </div>
@@ -188,7 +188,7 @@ const handleMainAction  = () => {
                   <button  arial-label="decrease quantity"
                     onClick={() => handleQtyChange(-1)} 
                     disabled={isThisItemUpdating}
-                    className="cursor-pointer text-gray-400 hover:text-black transition-colors"
+                    className="cursor-pointer text-neutral  hover:text-black transition-colors"
                   >
                     <FiMinus size={16} />
                   </button>
@@ -198,7 +198,7 @@ const handleMainAction  = () => {
                   <button  aria-label="increase quantity"
                     onClick={() => handleQtyChange(1)} 
                     disabled={isThisItemUpdating}
-                    className="cursor-pointer text-gray-400 hover:text-black transition-colors"
+                    className="cursor-pointer text-neutral  hover:text-black transition-colors"
                   >
                     <FiPlus size={16} />
                   </button>

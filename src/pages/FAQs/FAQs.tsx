@@ -75,7 +75,7 @@ const FAQs = () => {
             transition={{ delay: 0.2 }}
             className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-gray-900"
           >
-            How can we <span className="italic font-light text-gray-400">help?</span>
+            How can we <span className="italic font-light text-neutral ">help?</span>
           </motion.h1>
         </div>
       </section>
@@ -105,7 +105,7 @@ const FAQs = () => {
                       <span className="font-bold text-sm md:text-base uppercase tracking-tight pr-4">
                         {item.q}
                       </span>
-                      <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? "bg-black text-white rotate-180" : "bg-white text-gray-400"}`}>
+                      <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? "bg-black text-white rotate-180" : "bg-white text-neutral "}`}>
                         {isOpen ? <FiMinus size={14} /> : <FiPlus size={14} />}
                       </div>
                     </button>
@@ -140,7 +140,7 @@ const FAQs = () => {
           </div>
           <div className="space-y-3">
             <h2 className="text-3xl font-bold uppercase tracking-tight">Still have questions?</h2>
-            <p className="text-gray-400 italic">
+            <p className="text-neutral  italic">
               Our concierge team is available 24/7 to assist you with any inquiries.
             </p>
           </div>

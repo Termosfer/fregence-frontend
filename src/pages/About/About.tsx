@@ -45,7 +45,7 @@ const About = () => {
             Est. 2025 — The Essence of Art
           </motion.span>
           <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-gray-900">
-            Our <span className="italic font-light text-gray-400">Atelier</span>
+            Our <span className="italic font-light text-neutral ">Atelier</span>
           </h1>
         </div>
       </section>
@@ -67,7 +67,7 @@ const About = () => {
               Founded on the belief that a fragrance should be more than a scent—it should be a masterpiece. We began our journey in a small atelier, 
               obsessing over the alchemy of rare oils and the emotions they evoke.
             </p>
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-neutral  text-sm leading-relaxed">
               Praesent metus tellus, elementum eu, semper a, adipiscing nec, purus. Vestibulum volutpat pretium libero. 
               In ut quam vitae odio lacinia tincidunt. Etiam ut purus mattis mauris sodales aliquam. 
               Aenean massa. In dui magna, posuere eget, vestibulum et, tempor auctor, justo.
@@ -105,7 +105,7 @@ const About = () => {
               We are a collective of visionaries, chemists, and dreamers. Our team is dedicated to pushing the boundaries 
               of modern perfumery while respecting the ancient traditions of scent extraction.
             </p>
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-neutral  text-sm leading-relaxed">
               Etiam ut purus mattis mauris sodales aliquam. Aenean massa. In dui magna, posuere eget, vestibulum et, 
               tempor auctor, justo. Vivamus consectetuer hendrerit lacus. In hac habitasse platea dictumst. 
               Ut tincidunt tincidunt erat.
@@ -118,7 +118,7 @@ const About = () => {
       <section className="py-32 px-4 sm:px-8 lg:px-20 bg-white text-center">
         <div className="max-w-3xl mx-auto mb-20 space-y-4">
           <h2 className="text-4xl font-bold uppercase tracking-tighter">Our Philosophies</h2>
-          <p className="text-gray-400 text-sm italic uppercase tracking-widest">The pillars that define M-Parfum</p>
+          <p className="text-neutral  text-sm italic uppercase tracking-widest">The pillars that define M-Parfum</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-7xl mx-auto">
@@ -134,7 +134,7 @@ const About = () => {
               <div className="space-y-3 px-4">
                 <h3 className="text-2xl font-bold uppercase tracking-tight italic">{feature.title}</h3>
                 <div className="w-12 h-[1.5px] bg-[#81d8d0] mx-auto group-hover:w-24 transition-all duration-500"></div>
-                <p className="text-gray-400 text-sm leading-relaxed font-light italic">{feature.description}</p>
+                <p className="text-neutral  text-sm leading-relaxed font-light italic">{feature.description}</p>
               </div>
             </motion.div>
           ))}

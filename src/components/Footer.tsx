@@ -177,7 +177,7 @@ const Footer = () => {
 
         {/* Alt Hissə: Copyright */}
         <div className="border-t border-gray-100 pt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <span className="text-xs text-gray-400 font-medium tracking-widest uppercase">
+          <span className="text-xs text-neutral  font-medium tracking-widest uppercase">
             © {currentYear} MI PARFUM. Crafted with passion.
           </span>
           <div className="flex gap-6 text-[10px] font-bold text-gray-300 uppercase tracking-[2px]">

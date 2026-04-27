@@ -132,7 +132,7 @@ const AdminMessages = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold uppercase tracking-tight text-gray-900">Inquiries</h1>
-          <p className="text-[10px] text-gray-400 font-black uppercase tracking-[2px] mt-1">
+          <p className="text-[10px] text-neutral  font-black uppercase tracking-[2px] mt-1">
             {displayedMessages.length} total messages received
           </p>
         </div>
@@ -155,15 +155,15 @@ const AdminMessages = () => {
             {isFilterOpen && (
               <div className="absolute right-0 top-full mt-3 w-[320px] md:w-[400px] bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center justify-between mb-5">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Filter Messages</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-neutral ">Filter Messages</p>
                   <button aria-label="fix" onClick={() => setIsFilterOpen(false)} className="cursor-pointer">
-                    <FiX size={16} className="text-gray-400 hover:text-black" />
+                    <FiX size={16} className="text-neutral  hover:text-black" />
                   </button>
                 </div>
 
                 <div className="space-y-4">
                   <div className="flex flex-col gap-1">
-                    <label className="text-[9px] font-black uppercase text-gray-400">Search Content</label>
+                    <label className="text-[9px] font-black uppercase text-neutral ">Search Content</label>
                     <input
                       type="text" value={filters.search}
                       onChange={(e) => { setFilters(p => ({ ...p, search: e.target.value })); setIsFiltered(true); }}
@@ -173,7 +173,7 @@ const AdminMessages = () => {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-[9px] font-black uppercase text-gray-400">Order By</label>
+                    <label className="text-[9px] font-black uppercase text-neutral ">Order By</label>
                     <select
                       value={filters.sortDir}
                       onChange={(e) => { setFilters(p => ({ ...p, sortDir: e.target.value as "asc" | "desc" })); setIsFiltered(true); }}
@@ -186,7 +186,7 @@ const AdminMessages = () => {
                 </div>
 
                 <div className="flex gap-2 mt-8 pt-4 border-t border-gray-50">
-                  <button onClick={handleClearFilter} className="cursor-pointer px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all">Reset</button>
+                  <button onClick={handleClearFilter} className="cursor-pointer px-4 py-3 text-[10px] font-black uppercase tracking-widest text-neutral  hover:text-black transition-all">Reset</button>
                   <button onClick={() => setIsFilterOpen(false)} className="cursor-pointer flex-1 py-3 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Apply & Close</button>
                 </div>
               </div>
@@ -216,7 +216,7 @@ const AdminMessages = () => {
                   <h4 className="font-bold text-gray-900 text-sm uppercase truncate flex items-center gap-1">
                     <FiUser size={12} className="text-gray-300" /> {msg.name}
                   </h4>
-                  <p className="text-[10px] text-gray-400 font-bold tracking-widest uppercase truncate flex items-center gap-1">
+                  <p className="text-[10px] text-neutral  font-bold tracking-widest uppercase truncate flex items-center gap-1">
                     <FiMail size={12} /> {msg.email}
                   </p>
                 </div>
@@ -275,7 +275,7 @@ const AdminMessages = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => { setConfirmDeleteId(null); setConfirmDeleteName(""); }}
-                className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-gray-50 transition-all"
+                className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-neutral  hover:bg-gray-50 transition-all"
               >
                 Cancel
               </button>

@@ -169,7 +169,7 @@ const handleAddNew = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 uppercase tracking-tight">Products</h1>
-          <p className="text-gray-400 text-sm uppercase tracking-widest mt-1">
+          <p className="text-neutral  text-sm uppercase tracking-widest mt-1">
             {displayedProducts.length} items showing
           </p>
         </div>
@@ -192,16 +192,16 @@ const handleAddNew = () => {
             {isFilterOpen && (
               <div className="absolute right-0 top-full mt-3 w-[350px] md:w-[450px] bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center justify-between mb-5">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Filter Inventory</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-neutral ">Filter Inventory</p>
                   <button aria-label="fix" onClick={() => setIsFilterOpen(false)} className="cursor-pointer">
-                    <FiX size={16} className="text-gray-400 hover:text-black" />
+                    <FiX size={16} className="text-neutral  hover:text-black" />
                   </button>
                 </div>
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-black uppercase text-gray-400">Name</label>
+                      <label className="text-[9px] font-black uppercase text-neutral ">Name</label>
                       <input
                         type="text" value={filters.name}
                         onChange={(e) => { setFilters(p => ({...p, name: e.target.value})); setIsFiltered(true); }}
@@ -210,7 +210,7 @@ const handleAddNew = () => {
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-black uppercase text-gray-400">Brand</label>
+                      <label className="text-[9px] font-black uppercase text-neutral ">Brand</label>
                       <input
                         type="text" value={filters.brand}
                         onChange={(e) => { setFilters(p => ({...p, brand: e.target.value})); setIsFiltered(true); }}
@@ -222,7 +222,7 @@ const handleAddNew = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-black uppercase text-gray-400">Min Price</label>
+                      <label className="text-[9px] font-black uppercase text-neutral ">Min Price</label>
                       <input
                         type="number" value={filters.minPrice ?? ""}
                         onChange={(e) => { setFilters(p => ({...p, minPrice: e.target.value ? Number(e.target.value) : undefined})); setIsFiltered(true); }}
@@ -230,7 +230,7 @@ const handleAddNew = () => {
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-black uppercase text-gray-400">Max Price</label>
+                      <label className="text-[9px] font-black uppercase text-neutral ">Max Price</label>
                       <input
                         type="number" value={filters.maxPrice ?? ""}
                         onChange={(e) => { setFilters(p => ({...p, maxPrice: e.target.value ? Number(e.target.value) : undefined})); setIsFiltered(true); }}
@@ -241,7 +241,7 @@ const handleAddNew = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-black uppercase text-gray-400">Sort By</label>
+                      <label className="text-[9px] font-black uppercase text-neutral ">Sort By</label>
                       <select 
                         value={filters.sortBy} 
                         onChange={(e) => { setFilters(p => ({...p, sortBy: e.target.value as "id" | "price"})); setIsFiltered(true); }}
@@ -252,7 +252,7 @@ const handleAddNew = () => {
                       </select>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-black uppercase text-gray-400">Order</label>
+                      <label className="text-[9px] font-black uppercase text-neutral ">Order</label>
                       <select 
                         value={filters.sortDir} 
                         onChange={(e) => { setFilters(p => ({...p, sortDir: e.target.value as "asc" | "desc"})); setIsFiltered(true); }}
@@ -266,7 +266,7 @@ const handleAddNew = () => {
                 </div>
 
                 <div className="flex gap-2 mt-8 pt-4 border-t border-gray-50">
-                  <button onClick={handleClearFilter} className="cursor-pointer px-4 py-3 border border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all">Reset</button>
+                  <button onClick={handleClearFilter} className="cursor-pointer px-4 py-3 border border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-neutral  hover:text-black transition-all">Reset</button>
                   <button onClick={() => setIsFilterOpen(false)} className="cursor-pointer flex-1 py-3 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest">Apply & Close</button>
                 </div>
               </div>
@@ -289,7 +289,7 @@ const handleAddNew = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100 text-[10px] font-black uppercase tracking-[2px] text-gray-400">
+              <tr className="bg-gray-50/50 border-b border-gray-100 text-[10px] font-black uppercase tracking-[2px] text-neutral ">
                 <th className="px-8 py-6">Product</th>
                 <th className="px-6 py-6">Brand</th>
                 <th className="px-6 py-6">Price</th>
@@ -309,7 +309,7 @@ const handleAddNew = () => {
                     </div>
                   </td>
                   <td className="px-6 py-6">
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{product.brand}</span>
+                    <span className="text-xs font-bold text-neutral  uppercase tracking-widest">{product.brand}</span>
                   </td>
                   <td className="px-6 py-6 font-bold text-gray-900 text-sm">{product.price.toFixed(2)} Azn</td>
                   <td className="px-6 py-6">
@@ -344,12 +344,12 @@ const handleAddNew = () => {
             </div>
             <div>
               <h3 className="text-xl font-bold text-gray-900 uppercase tracking-tighter">Discard Item?</h3>
-              <p className="text-sm text-gray-400 mt-2">
+              <p className="text-sm text-neutral  mt-2">
                 <span className="font-bold text-black">{confirmDeleteName}</span> will be permanently removed.
               </p>
             </div>
             <div className="flex gap-3">
-              <button onClick={() => setConfirmDeleteId(null)} className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase text-gray-400 hover:bg-gray-50">Cancel</button>
+              <button onClick={() => setConfirmDeleteId(null)} className="cursor-pointer flex-1 py-4 border border-gray-100 rounded-2xl text-[10px] font-black uppercase text-neutral  hover:bg-gray-50">Cancel</button>
               <button onClick={handleConfirmDelete} disabled={deleteMutation.isPending} className="cursor-pointer flex-1 py-4 bg-red-500 text-white rounded-2xl text-[10px] font-black uppercase hover:bg-red-600 shadow-lg shadow-red-200 transition-all flex items-center justify-center">
                 {deleteMutation.isPending ? <FiLoader className="animate-spin" /> : "Remove"}
               </button>

@@ -205,7 +205,7 @@ const Home = () => {
 
               {/* Yazı üçün animasiya */}
               <div className="mt-6 flex flex-col items-center overflow-hidden">
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 group-hover:text-black transition-all duration-300 transform translate-y-0 group-hover:-translate-y-1">
+                <span className="text-[10px] font-black uppercase tracking-widest text-neutral  group-hover:text-black transition-all duration-300 transform translate-y-0 group-hover:-translate-y-1">
                   {note.title}
                 </span>
                 {/* Altdan çıxan incə xətt */}
@@ -222,7 +222,7 @@ const Home = () => {
             <h2 className="text-5xl font-bold font-[Playfair] leading-tight tracking-tighter text-[#81d8d0]">
               The Discovery <br /> Set
             </h2>
-            <p className="text-gray-400 italic text-lg leading-relaxed">
+            <p className="text-neutral  italic text-lg leading-relaxed">
               Experience the transition of Sandalwood to Jasmine in a single
               breath. Our most iconic textures.
             </p>
@@ -364,7 +364,7 @@ const Home = () => {
 
                   {/* PRODUCT INFO */}
                   <div className="mt-6 text-center">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[3px]">
+                    <p className="text-[10px] font-bold text-neutral  uppercase tracking-[3px]">
                       {item.brand}
                     </p>
                     <div>
@@ -382,7 +382,7 @@ const Home = () => {
                           </span>
 
                           {/* Köhnə qiymət (Üstü xətli) */}
-                          <span className="line-through text-[11px] text-gray-400">
+                          <span className="line-through text-[11px] text-neutral ">
                             {item.price} AZN
                           </span>
                         </>
@@ -433,7 +433,7 @@ const Home = () => {
             <h2 className="text-4xl md:text-6xl font-bold leading-tight tracking-tighter font-[Playfair]">
               Crafting <br /> Memories in <br /> a Bottle.
             </h2>
-            <p className="text-gray-400 text-lg italic font-light leading-relaxed">
+            <p className="text-neutral  text-lg italic font-light leading-relaxed">
               "A perfume is like a piece of clothing, a message, a way of
               presenting oneself, a costume that according to the person who
               wears it."

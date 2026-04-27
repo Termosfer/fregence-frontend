@@ -148,7 +148,7 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
           
           {/* Image Upload */}
           <div className="space-y-3">
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Product Media</span>
+            <span className="text-[10px] font-black text-neutral  uppercase tracking-widest">Product Media</span>
             <div className={`relative border-2 border-dashed border-gray-100 rounded-3xl flex flex-col items-center justify-center transition-all bg-gray-50/50 hover:border-black ${!imagePreview ? 'py-16' : 'p-2'}`}>
               {imagePreview ? (
                 <div className="relative w-full aspect-square">
@@ -168,35 +168,35 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
           <div className="space-y-6">
             {/* Name */}
             <div className="group">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Perfume Name</label>
+              <label className="text-[10px] font-black text-neutral  uppercase tracking-widest block mb-1">Perfume Name</label>
               <input {...register("name", { required: true })} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black transition-all text-sm bg-transparent" />
             </div>
 
             {/* Brand */}
             <div className="group">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Brand</label>
+              <label className="text-[10px] font-black text-neutral  uppercase tracking-widest block mb-1">Brand</label>
               <input {...register("brand", { required: true })} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black transition-all text-sm bg-transparent" />
             </div>
 
             {/* Prices & ML */}
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase mb-1">Price</label>
+                <label className="text-[10px] font-black text-neutral  uppercase mb-1">Price</label>
                 <input type="number" {...register("price", { valueAsNumber: true, required: true })} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black text-sm" />
               </div>
               <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase mb-1">Discount</label>
+                <label className="text-[10px] font-black text-neutral  uppercase mb-1">Discount</label>
                 <input type="number" {...register("discountPrice", { valueAsNumber: true })} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black text-sm" />
               </div>
               <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase mb-1">Volume (ML)</label>
+                <label className="text-[10px] font-black text-neutral  uppercase mb-1">Volume (ML)</label>
                 <input type="number" {...register("ml", { valueAsNumber: true, required: true })} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black text-sm" />
               </div>
             </div>
 
             {/* Gender */}
             <div>
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Gender</label>
+              <label className="text-[10px] font-black text-neutral  uppercase tracking-widest block mb-1">Gender</label>
               <select {...register("gender")} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black transition-all text-sm bg-transparent cursor-pointer">
                 <option value="MEN">MEN</option>
                 <option value="WOMEN">WOMEN</option>
@@ -206,7 +206,7 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
 
             {/* Description */}
             <div>
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Description</label>
+              <label className="text-[10px] font-black text-neutral  uppercase tracking-widest block mb-1">Description</label>
               <textarea {...register("description")} rows={3} className="w-full border border-gray-100 p-3 rounded-xl outline-none focus:border-black transition-all text-sm resize-none bg-transparent" />
             </div>
 
@@ -218,14 +218,14 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
                     <input type="checkbox" {...register("isNew")} className="peer h-5 w-5 appearance-none rounded border border-gray-300 checked:bg-black transition-all" />
                     <FiCheck className="absolute ml-1 text-white opacity-0 peer-checked:opacity-100 transition-opacity" size={12}/>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">New Arrival</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-neutral ">New Arrival</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <div className="relative flex items-center">
                     <input type="checkbox" {...register("isRecommended")} className="peer h-5 w-5 appearance-none rounded border border-gray-300 checked:bg-black transition-all" />
                     <FiCheck className="absolute ml-1 text-white opacity-0 peer-checked:opacity-100 transition-opacity" size={12}/>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Featured</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-neutral ">Featured</span>
                 </label>
               </div>
             </div>
@@ -234,7 +234,7 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
 
         {/* Footer */}
         <div className="p-6 border-t bg-[#F8F9FA] flex gap-4">
-          <button type="button" onClick={onClose} className="cursor-pointer flex-1 py-4 text-[10px] font-bold uppercase border border-gray-200 text-gray-400 rounded-2xl bg-white hover:text-black hover:border-black transition-all">
+          <button type="button" onClick={onClose} className="cursor-pointer flex-1 py-4 text-[10px] font-bold uppercase border border-gray-200 text-neutral  rounded-2xl bg-white hover:text-black hover:border-black transition-all">
             Cancel
           </button>
           <button 

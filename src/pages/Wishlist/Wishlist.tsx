@@ -76,7 +76,7 @@ const Wishlist = () => {
                           <p className="font-semibold text-base sm:text-lg">
                             {item.name}
                           </p>
-                          <p className="text-xs text-gray-400 uppercase tracking-widest">
+                          <p className="text-xs text-neutral  uppercase tracking-widest">
                             {item.brand}
                           </p>
                         </div>
@@ -95,7 +95,7 @@ const Wishlist = () => {
                             </span>
 
                             {/* Köhnə qiymət (Üstü xətli) */}
-                            <span className="line-through text-[11px] text-gray-400">
+                            <span className="line-through text-[11px] text-neutral ">
                               {item.price} AZN
                             </span>
                           </>

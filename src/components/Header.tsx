@@ -232,7 +232,7 @@ const Header = () => {
                 <form onSubmit={handleSearchSubmit}>
                   <div className="relative group">
                     <input autoFocus type="text" placeholder="What are you looking for?" className="w-full bg-gray-50 border-none rounded-xl py-4 pl-12 pr-10 text-sm outline-none focus:ring-2 focus:ring-black/5 transition-all font-[Playfair] italic" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors" size={18} />
+                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral  group-focus-within:text-black transition-colors" size={18} />
                     {searchQuery && (
                       <FiXCircle className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-black cursor-pointer transition-colors" onClick={() => setSearchQuery("")} />
                     )}
@@ -241,20 +241,20 @@ const Header = () => {
                 {searchQuery.trim().length > 1 && (
                   <div className="mt-6 space-y-3 max-h-[400px] overflow-y-auto no-scrollbar">
                     {isSearchLoading ? (
-                      <div className="flex flex-col items-center py-6 gap-2 text-gray-400"><FiLoader className="animate-spin" size={24} /><span className="text-[10px] font-bold uppercase tracking-widest">Searching...</span></div>
+                      <div className="flex flex-col items-center py-6 gap-2 text-neutral "><FiLoader className="animate-spin" size={24} /><span className="text-[10px] font-bold uppercase tracking-widest">Searching...</span></div>
                     ) : searchResults?.content && searchResults.content.length > 0 ? (
                       <>
                         <p className="text-[9px] font-black text-gray-300 uppercase tracking-[2px] mb-2 px-1">Top Matches</p>
                         {searchResults?.content?.map((p) => (
                           <div key={p.id} onClick={() => handleResultClick(p.name)} className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-gray-100">
                             <div className="w-14 h-16 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 p-1 shadow-md"><img src={p.imageUrl} alt="" className="w-full h-full object-fill rounded-lg" /></div>
-                            <div className="min-w-0 flex-1"><p className="text-xs font-bold text-gray-900 truncate uppercase tracking-tighter leading-tight">{p.name}</p><p className="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">{p.brand}</p><p className="text-[11px] font-bold text-[#81d8d0] mt-1">{p.price}.00 Azn</p></div>
+                            <div className="min-w-0 flex-1"><p className="text-xs font-bold text-gray-900 truncate uppercase tracking-tighter leading-tight">{p.name}</p><p className="text-[10px] text-neutral  uppercase tracking-widest mt-0.5">{p.brand}</p><p className="text-[11px] font-bold text-[#81d8d0] mt-1">{p.price}.00 Azn</p></div>
                           </div>
                         ))}
-                        <button onClick={handleSearchSubmit} className="w-full py-3 text-[10px] font-black uppercase tracking-[2px] text-gray-400 hover:text-black transition-colors border-t mt-2">View all results</button>
+                        <button onClick={handleSearchSubmit} className="w-full py-3 text-[10px] font-black uppercase tracking-[2px] text-neutral  hover:text-black transition-colors border-t mt-2">View all results</button>
                       </>
                     ) : (
-                      <div className="py-10 text-center"><p className="text-[10px] text-gray-400 uppercase font-black tracking-widest italic">No essence found</p></div>
+                      <div className="py-10 text-center"><p className="text-[10px] text-neutral  uppercase font-black tracking-widest italic">No essence found</p></div>
                     )}
                   </div>
                 )}

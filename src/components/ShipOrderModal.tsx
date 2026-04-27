@@ -48,7 +48,7 @@ const ShipOrderModal = ({ isOpen, onClose, orderId, onConfirm, isLoading }: Ship
         <div className="p-8 border-b border-gray-50 flex justify-between items-center bg-[#fafafa]">
           <div>
             <h2 className="text-xl font-bold uppercase tracking-tighter text-gray-800">Assign Courier</h2>
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Order ID: #{orderId}</p>
+            <p className="text-[10px] text-neutral  font-bold uppercase tracking-widest mt-1">Order ID: #{orderId}</p>
           </div>
           <button aria-label="close" onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-all cursor-pointer">
             <IoMdClose size={20} />
@@ -60,7 +60,7 @@ const ShipOrderModal = ({ isOpen, onClose, orderId, onConfirm, isLoading }: Ship
           
           {/* Courier Name */}
           <div className="space-y-2 group">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2 group-focus-within:text-black transition-colors">
+            <label className="text-[10px] font-black text-neutral  uppercase tracking-widest flex items-center gap-2 group-focus-within:text-black transition-colors">
               <FiUser /> Courier Full Name
             </label>
             <input 
@@ -74,7 +74,7 @@ const ShipOrderModal = ({ isOpen, onClose, orderId, onConfirm, isLoading }: Ship
 
           {/* Courier Phone */}
           <div className="space-y-2 group">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2 group-focus-within:text-black transition-colors">
+            <label className="text-[10px] font-black text-neutral  uppercase tracking-widest flex items-center gap-2 group-focus-within:text-black transition-colors">
               <FiPhone /> Contact Number
             </label>
             <input 
@@ -89,7 +89,7 @@ const ShipOrderModal = ({ isOpen, onClose, orderId, onConfirm, isLoading }: Ship
 
           {/* Estimated Arrival */}
           <div className="space-y-2 group">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2 group-focus-within:text-black transition-colors">
+            <label className="text-[10px] font-black text-neutral  uppercase tracking-widest flex items-center gap-2 group-focus-within:text-black transition-colors">
               <FiClock /> Estimated Delivery Time
             </label>
             <input 
