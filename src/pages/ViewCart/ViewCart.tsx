@@ -140,7 +140,7 @@ const ViewCart = () => {
                         <div
                           className={`flex items-center gap-6 border border-gray-200 px-5 py-2.5 rounded-full bg-white transition-all ${isThisItemUpdating ? "shadow-inner border-gray-300" : "shadow-sm"}`}
                         >
-                          <button
+                          <button aria-label="decrease quantity"
                             onClick={() =>
                               item.quantity > 1 &&
                               updateQuantity({
@@ -164,7 +164,7 @@ const ViewCart = () => {
                             {item.quantity}
                           </span>
 
-                          <button
+                          <button aria-label="increase quantity"
                             onClick={() =>
                               updateQuantity({
                                 perfumeId: item.perfumeId,

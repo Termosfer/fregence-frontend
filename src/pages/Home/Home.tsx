@@ -85,7 +85,7 @@ const Home = () => {
             initial={{ scale: 1.2, opacity: 0 }}
             animate={{ scale: 1, opacity: 0.8 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 2, ease: "easeOut" }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
             fetchPriority={current === 0 ? "high" : "low"}
             loading="eager"
             decoding="async"
@@ -323,7 +323,7 @@ const Home = () => {
                           delay: "delay-300",
                         },
                       ].map((btn, idx) => (
-                        <button
+                        <button aria-label="icon buttons"
                           key={idx}
                           onClick={(e) => {
                             e.preventDefault();

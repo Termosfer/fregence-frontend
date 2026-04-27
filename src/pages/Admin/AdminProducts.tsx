@@ -193,7 +193,7 @@ const handleAddNew = () => {
               <div className="absolute right-0 top-full mt-3 w-[350px] md:w-[450px] bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center justify-between mb-5">
                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Filter Inventory</p>
-                  <button onClick={() => setIsFilterOpen(false)} className="cursor-pointer">
+                  <button aria-label="fix" onClick={() => setIsFilterOpen(false)} className="cursor-pointer">
                     <FiX size={16} className="text-gray-400 hover:text-black" />
                   </button>
                 </div>
@@ -317,10 +317,10 @@ const handleAddNew = () => {
                   </td>
                   <td className="px-6 py-6 text-right">
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => { setSelectedProduct(product); setIsAddOpen(true); }} className="p-2.5 text-blue-500 hover:bg-blue-50 rounded-xl transition-all cursor-pointer">
+                      <button aria-label="edit button" onClick={() => { setSelectedProduct(product); setIsAddOpen(true); }} className="p-2.5 text-blue-500 hover:bg-blue-50 rounded-xl transition-all cursor-pointer">
                         <FiEdit size={18} />
                       </button>
-                      <button onClick={() => { setConfirmDeleteId(product.id); setConfirmDeleteName(`${product.brand} ${product.name}`); }} className="p-2.5 text-red-500 hover:bg-red-50 rounded-xl transition-all cursor-pointer">
+                      <button aria-label="trash" onClick={() => { setConfirmDeleteId(product.id); setConfirmDeleteName(`${product.brand} ${product.name}`); }} className="p-2.5 text-red-500 hover:bg-red-50 rounded-xl transition-all cursor-pointer">
                         <FiTrash2 size={18} />
                       </button>
                     </div>

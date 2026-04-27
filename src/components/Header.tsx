@@ -130,7 +130,7 @@ const Header = () => {
       }`}
     >
       <div className="flex items-center flex-1">
-        <button
+        <button aria-label="close and open button"
           onClick={() => {
             setMobileMenu(!mobileMenu);
             setIsSearchOpen(false);
@@ -184,7 +184,7 @@ const Header = () => {
               </Link>
             ) : (
               <div className="relative hidden lg:block">
-                <button
+                <button aria-label="user"
                   onClick={() => {
                     setIsProfileOpen(!isProfileOpen);
                     setIsSearchOpen(false);
@@ -292,7 +292,7 @@ const Header = () => {
                 <Link onClick={closeAll} to="/login" className="font-medium underline text-base">LOGIN</Link>
               ) : (
                 <div className="flex flex-col">
-                  <button onClick={() => setIsMobileProfileOpen(!isMobileProfileOpen)} className="flex items-center justify-between w-full font-medium text-base text-black uppercase">
+                  <button aria-label="user" onClick={() => setIsMobileProfileOpen(!isMobileProfileOpen)} className="flex items-center justify-between w-full font-medium text-base text-black uppercase">
                     <span className="flex items-center gap-2"><FiUser /> {userName}</span>
                     <FiChevronDown className={`transition-transform duration-300 ${isMobileProfileOpen ? "rotate-180" : ""}`} />
                   </button>
@@ -301,7 +301,7 @@ const Header = () => {
                       {userRole === "ADMIN" && <Link onClick={closeAll} to="/admin" className="flex items-center gap-2 text-blue-600 font-bold"><FiLayout /> Dashboard</Link>}
                       <Link onClick={closeAll} to="/profile" className="flex items-center gap-2 font-medium"><FiUser />My Account</Link>
                       <Link onClick={closeAll} to="/orders" className="flex items-center gap-2 font-medium"><FiPackage /> Orders</Link>
-                      <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 font-medium text-left"><FiLogOut />Logout</button>
+                      <button  onClick={handleLogout} className="flex items-center gap-2 text-red-500 font-medium text-left"><FiLogOut />Logout</button>
                     </div>
                   </div>
                 </div>

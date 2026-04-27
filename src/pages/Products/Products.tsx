@@ -221,7 +221,7 @@ const Products = () => {
           </div>
           <div className="flex gap-2 mb-10">
             {["MEN", "WOMEN", "UNISEX"]?.map((g) => (
-              <button
+              <button aria-label="show gender"
                 key={g}
                 onClick={() =>
                   updateFilter({ gender: filters.gender === g ? "" : g })

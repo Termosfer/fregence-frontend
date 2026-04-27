@@ -57,14 +57,14 @@ const Recomendation = () => {
         </h1>
 
         <div className="flex gap-3">
-          <button
+          <button aria-label="arrow-left"
             onClick={() => setIndex((p) => Math.max(0, p - 1))}
             disabled={index === 0}
             className="p-2 border border-gray-200 rounded-full disabled:opacity-20 cursor-pointer hover:bg-black hover:text-white transition-all duration-300"
           >
             <MdOutlineKeyboardArrowLeft size={24} />
           </button>
-          <button
+          <button aria-label="arrow-right"
             onClick={() => setIndex((p) => Math.min(maxIndex, p + 1))}
             disabled={index >= maxIndex}
             className="p-2 border border-gray-200 rounded-full disabled:opacity-20 cursor-pointer hover:bg-black hover:text-white transition-all duration-300"

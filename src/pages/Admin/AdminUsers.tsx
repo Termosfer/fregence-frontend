@@ -186,7 +186,7 @@ const AdminUsers = () => {
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
                   Filters
                 </p>
-                <button
+                <button aria-label="fix"
                   onClick={() => setIsFilterOpen(false)}
                   className="cursor-pointer text-gray-400 hover:text-black"
                 >
@@ -316,7 +316,7 @@ const AdminUsers = () => {
                     </td>
                     <td className="px-6 py-6 text-right">
                       {!isMe ? (
-                        <button
+                        <button aria-label="trash"
                           onClick={() => {
                             setConfirmDeleteId(u.id);
                             setConfirmDeleteName(u.name);

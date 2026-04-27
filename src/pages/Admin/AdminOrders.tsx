@@ -181,7 +181,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
                     Filters
                   </p>
-                  <button
+                  <button aria-label="fix"
                     onClick={() => setIsFilterOpen(false)}
                     className="cursor-pointer"
                   >
@@ -301,14 +301,14 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                       <td className="px-6 py-6 text-right">
                         <div className="flex justify-end gap-2">
                           {order.status === "PENDING" && (
-                            <button
+                            <button aria-label="truck button"
                               onClick={(e) => handleOpenShipModal(e, order.id)}
                               className="p-2.5 text-blue-500 hover:bg-blue-100 rounded-xl transition cursor-pointer"
                             >
                               <FiTruck size={18} />
                             </button>
                           )}
-                          <button
+                          <button aria-label="trash"
                             onClick={(e) => {
                               e.stopPropagation();
                               setConfirmDeleteId(order.id);

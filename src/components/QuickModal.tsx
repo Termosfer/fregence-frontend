@@ -93,7 +93,7 @@ const handleMainAction  = () => {
       <div className="relative bg-white w-full max-w-5xl max-h-[95dvh] lg:max-h-[85dvh] flex flex-col lg:flex-row rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden font-[Playfair] animate-in fade-in zoom-in duration-300">
         
         {/* Close Button - Mobildə daha görünən və asan kliklənən */}
-        <button 
+        <button  aria-label="close"
           onClick={() => setShowModal(false)} 
           className="absolute top-4 right-4 md:top-6 md:right-6 p-2 rounded-full bg-white/90 text-black hover:bg-black hover:text-white hover:rotate-180  transition-all duration-300 z-50 shadow-lg cursor-pointer border border-gray-100"
         >
@@ -185,7 +185,7 @@ const handleMainAction  = () => {
                 
                 {/* Quantity Controls */}
                 <div className="flex items-center justify-between border border-gray-200 px-4 py-3 md:px-6 md:py-4 rounded-full w-full sm:w-auto sm:min-w-[140px] bg-white shadow-sm">
-                  <button 
+                  <button  arial-label="decrease quantity"
                     onClick={() => handleQtyChange(-1)} 
                     disabled={isThisItemUpdating}
                     className="cursor-pointer text-gray-400 hover:text-black transition-colors"
@@ -195,7 +195,7 @@ const handleMainAction  = () => {
                   <span className={`font-bold text-base md:text-lg w-8 text-center tabular-nums ${isThisItemUpdating ? "animate-pulse text-[#81d8d0]" : "text-gray-800"}`}>
                     {localCount}
                   </span>
-                  <button 
+                  <button  aria-label="increase quantity"
                     onClick={() => handleQtyChange(1)} 
                     disabled={isThisItemUpdating}
                     className="cursor-pointer text-gray-400 hover:text-black transition-colors"

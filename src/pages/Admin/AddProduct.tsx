@@ -138,7 +138,7 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
               {initialData ? "Edit Product" : "Add New Product"}
             </h2>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-all cursor-pointer">
+          <button aria-label="fix" onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-all cursor-pointer">
             <FiX size={20} />
           </button>
         </div>

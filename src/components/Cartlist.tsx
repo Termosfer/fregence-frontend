@@ -68,7 +68,7 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
               {/* SIRA İLƏ SAĞDAN SOLA GƏLƏN İKONLAR */}
               <div className="absolute top-10 right-0 flex flex-col gap-4 p-1 z-20 overflow-hidden ">
                 {/* 1. Quick View (Gecikməsiz) */}
-                <button
+                <button aria-label="search"
                   onClick={(e) => {
                     e.preventDefault();
                     handleOpenQuickView(item.id);
@@ -79,7 +79,7 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
                 </button>
 
                 {/* 2. Wishlist (75ms Gecikmə) */}
-                <button
+                <button aria-label="wishlist"
                   onClick={(e) => {
                     e.stopPropagation();
                     addToWishlist(item);
@@ -90,7 +90,7 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
                 </button>
 
                 {/* 3. Add to Cart (150ms Gecikmə) */}
-                <button
+                <button aria-label="add to cart"
                   onClick={(e) => {
                     e.stopPropagation();
                     addToCart(item);

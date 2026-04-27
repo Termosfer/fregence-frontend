@@ -98,7 +98,7 @@ const FAQs = () => {
                     key={id} 
                     className={`border rounded-2xl transition-all duration-300 ${isOpen ? "border-black bg-white shadow-xl" : "border-gray-100 bg-[#FAFAF9]"}`}
                   >
-                    <button
+                    <button aria-label="plus and minus button"
                       onClick={() => toggleAccordion(id)}
                       className="w-full flex items-center justify-between p-6 text-left cursor-pointer"
                     >

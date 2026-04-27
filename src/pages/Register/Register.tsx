@@ -160,7 +160,7 @@ const Register = () => {
                 }`}
                 placeholder="Password"
               />
-              <button
+              <button aria-label="show-password"
                 type="button"
                 onClick={() => setShowPass(!showPass)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black cursor-pointer"

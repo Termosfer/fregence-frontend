@@ -156,7 +156,7 @@ const AdminMessages = () => {
               <div className="absolute right-0 top-full mt-3 w-[320px] md:w-[400px] bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 p-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center justify-between mb-5">
                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Filter Messages</p>
-                  <button onClick={() => setIsFilterOpen(false)} className="cursor-pointer">
+                  <button aria-label="fix" onClick={() => setIsFilterOpen(false)} className="cursor-pointer">
                     <FiX size={16} className="text-gray-400 hover:text-black" />
                   </button>
                 </div>
@@ -246,7 +246,7 @@ const AdminMessages = () => {
                   >
                     <FiExternalLink size={16} />
                   </Link>
-                  <button
+                  <button aria-label="trash"
                     onClick={() => { setConfirmDeleteId(msg.id); setConfirmDeleteName(msg.name); }}
                     className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm cursor-pointer"
                   >

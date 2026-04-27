@@ -191,7 +191,7 @@ const AdminSubscribers = () => {
                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
                     Search Subscribers
                   </p>
-                  <button
+                  <button aria-label="fix"
                     onClick={() => setIsFilterOpen(false)}
                     className="cursor-pointer"
                   >
@@ -287,7 +287,7 @@ const AdminSubscribers = () => {
                   </div>
                 </div>
               </div>
-              <button
+              <button aria-label="trash"
                 onClick={() => {
                   setConfirmDeleteId(sub.id);
                   setConfirmDeleteEmail(sub.email);

@@ -75,7 +75,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
           <h1 className="text-xl font-bold uppercase tracking-widest text-gray-800">
             Shopping Cart ({cartItems.length})
           </h1>
-          <button
+          <button aria-label="close"
             onClick={() => setIsOpen(false)}
             className="p-2 rounded-full cursor-pointer transition-all duration-300 hover:bg-black hover:rotate-180 hover:text-white"
           >
@@ -134,7 +134,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
 
                       <div className="flex items-center justify-between ">
                         <div className="flex items-center gap-4 border border-gray-200 px-3 py-1.5 rounded-full bg-white">
-                          <button
+                          <button aria-label="dicrease-quantity"
                             onClick={() =>
                               item.quantity > 1 &&
                               updateQuantity({
@@ -152,7 +152,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                           >
                             {item.quantity}
                           </span>
-                          <button
+                          <button aria-label="increase-quantity"
                             onClick={() =>
                               updateQuantity({
                                 perfumeId: item.perfumeId,
