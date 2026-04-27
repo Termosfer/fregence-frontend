@@ -180,7 +180,7 @@ const Footer = () => {
           <span className="text-xs text-neutral  font-medium tracking-widest uppercase">
             © {currentYear} MI PARFUM. Crafted with passion.
           </span>
-          <div className="flex gap-6 text-[10px] font-bold text-gray-300 uppercase tracking-[2px]">
+          <div className="flex gap-6 text-[10px] font-bold text-neutral uppercase tracking-[2px]">
             <span>Handmade Quality</span>
           </div>
         </div>
