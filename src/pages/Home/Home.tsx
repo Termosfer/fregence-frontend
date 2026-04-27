@@ -89,6 +89,7 @@ const Home = () => {
             fetchPriority={current === 0 ? "high" : "low"}
             loading="eager"
             decoding="async"
+            alt="Ən məşhur brendlərin orijinal ətir kolleksiyası"
             className="absolute inset-0 w-full h-full object-cover"
           />
         </AnimatePresence>
