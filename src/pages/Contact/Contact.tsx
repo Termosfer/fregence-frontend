@@ -109,7 +109,7 @@ const Contact = () => {
                     <item.icon size={18} />
                   </div>
                   <div>
-                    <h4 className="text-[10px] font-black uppercase tracking-[3px] text-neutral  mb-1">{item.title}</h4>
+                    <h3 className="text-[10px] font-black uppercase tracking-[3px] text-neutral  mb-1">{item.title}</h43>
                     <p className="text-sm font-bold text-gray-800 tracking-wide">{item.text}</p>
                   </div>
                 </div>

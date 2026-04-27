@@ -213,9 +213,9 @@ const AdminMessages = () => {
                   {msg.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <h4 className="font-bold text-gray-900 text-sm uppercase truncate flex items-center gap-1">
+                  <h3 className="font-bold text-gray-900 text-sm uppercase truncate flex items-center gap-1">
                     <FiUser size={12} className="text-gray-300" /> {msg.name}
-                  </h4>
+                  </h3>
                   <p className="text-[10px] text-neutral  font-bold tracking-widest uppercase truncate flex items-center gap-1">
                     <FiMail size={12} /> {msg.email}
                   </p>

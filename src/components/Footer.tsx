@@ -72,9 +72,9 @@ const Footer = () => {
 
           {/* Sütun 2: Quick Links */}
           <div>
-            <h4 className="font-bold text-sm uppercase tracking-widest mb-6">
+            <h2 className="font-bold text-sm uppercase tracking-widest mb-6">
               Explore
-            </h4>
+            </h2>
             <ul className="flex flex-col gap-4 text-gray-500 text-sm font-medium">
               <li>
                 <Link to="/" className="hover:text-black transition-colors">
@@ -110,9 +110,9 @@ const Footer = () => {
 
           {/* Sütun 3: Support & Policy */}
           <div>
-            <h4 className="font-bold text-sm uppercase tracking-widest mb-6">
+            <h2 className="font-bold text-sm uppercase tracking-widest mb-6">
               Customer Care
-            </h4>
+            </h2>
             <ul className="flex flex-col gap-4 text-gray-500 text-sm font-medium">
               <li>
                 <Link
@@ -148,9 +148,9 @@ const Footer = () => {
 
           {/* Sütun 4: Ödəniş və Əlaqə */}
           <div>
-            <h4 className="font-bold text-sm uppercase tracking-widest mb-6">
+            <h2 className="font-bold text-sm uppercase tracking-widest mb-6">
               Secure Payment
-            </h4>
+            </h2>
             <div className="flex flex-wrap items-center justify-center gap-4 mb-6 opacity-80">
               <img
                 src={img1}
