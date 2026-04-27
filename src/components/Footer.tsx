@@ -5,7 +5,7 @@ import {
   FaTwitter, 
   FaLinkedinIn 
 } from "react-icons/fa"; // npm install react-icons
-import logo from "../assets/black.png";
+import logo from "../assets/black (1).webp";
 import img1 from "../assets/5.png";
 import img2 from "../assets/5-pb.png";
 import img4 from "../assets/Kapital_Bank_logo_2025.webp";
