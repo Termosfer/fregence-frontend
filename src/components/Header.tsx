@@ -142,7 +142,7 @@ const Header = () => {
             {mobileMenu ? <FiX /> : <FiMenu />}
           </span>
         </button>
-        <Link to="/" onClick={closeAll}>
+        <Link to="/" onClick={closeAll} aria-label="logo">
           <img
             src={logo}
             alt="Logo"
@@ -152,7 +152,7 @@ const Header = () => {
       </div>
 
       <div className="flex justify-center flex-1">
-        <Link to="/" onClick={closeAll}>
+        <Link to="/" onClick={closeAll} aria-label="logo">
           <img
             src={logo}
             alt="Logo"
