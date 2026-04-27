@@ -248,7 +248,7 @@ const Home = () => {
         <div key={i} className="h-[450px] bg-gray-50 animate-pulse rounded-[2.5rem]" />
       ))
     ) : 
-data?.content.map((item) => (
+data?.content?.map((item) => (
   <motion.div 
     key={item.id}
     variants={fadeInUp}
