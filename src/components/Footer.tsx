@@ -8,7 +8,7 @@ import {
 import logo from "../assets/black.png";
 import img1 from "../assets/5.png";
 import img2 from "../assets/5-pb.png";
-import img4 from "../assets/Kapital_Bank_logo_2025.png";
+import img4 from "../assets/Kapital_Bank_logo_2025.webp";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

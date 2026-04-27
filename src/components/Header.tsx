@@ -11,7 +11,7 @@ import {
   FiXCircle,
 } from "react-icons/fi";
 import "./style.css";
-import logo from "../assets/black.png";
+import logo from "../assets/black (1).webp";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import ShoppingCart from "./ShoppingCart";
