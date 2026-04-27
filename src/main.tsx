@@ -8,8 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // Datalar 5 dəqiqə "təzə" qalsın (təkrar sorğu atmasın)
-      gcTime: 1000 * 60 * 10, // Keşdə 10 dəqiqə saxla
+      staleTime: 1000 * 60 * 10, // Datalar 10 dəqiqə "təzə" qalsın (təkrar sorğu atmasın)
+      gcTime: 1000 * 60 * 30, // Keşdə 30 dəqiqə saxla
       refetchOnWindowFocus: false, // Pəncərəyə qayıdanda təzədən yükləmə (Trafikə qənaət)
     },
   },

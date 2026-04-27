@@ -21,6 +21,7 @@ import { useCart } from "../hooks/useCart";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios";
 import type { PageResponse, Perfume } from "../types/perfume";
+import { useDebounce } from "../hooks/useDebounce";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -37,7 +38,8 @@ const Header = () => {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
+// 1. Debounce olunmuş dəyəri yaradın (500ms gözləyir)
+  const debouncedSearch = useDebounce(searchQuery, 500);
   const token = localStorage.getItem("token");
   const userRole = localStorage.getItem("role");
   const userName = localStorage.getItem("userName") || "Profile";
@@ -48,10 +50,10 @@ const Header = () => {
   const { data: searchResults, isLoading: isSearchLoading } = useQuery<
     PageResponse<Perfume>
   >({
-    queryKey: ["global-search", searchQuery],
+    queryKey: ["global-search", debouncedSearch],
     queryFn: () =>
       api.get(`/perfumes?query=${searchQuery}&size=5`).then((res) => res.data),
-    enabled: searchQuery.trim().length > 1,
+    enabled: debouncedSearch.trim().length > 1,
   });
 
   // Menyuların kənarına klikləyəndə bağlanması məntiqi
