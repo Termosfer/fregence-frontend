@@ -122,7 +122,7 @@ const About = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-7xl mx-auto">
-          {features.map((feature) => (
+          {features?.map((feature) => (
             <motion.div 
               key={feature.id}
               whileHover={{ y: -10 }}

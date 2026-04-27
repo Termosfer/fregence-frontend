@@ -63,7 +63,7 @@ const Shops = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto min-h-[400px]">
         {isLoading ? (
           /* SKELETON LOADING - Dizaynı qoruyur */
-          [...Array(8)].map((_, i) => (
+          [...Array(8)]?.map((_, i) => (
             <div 
               key={i} 
               className="relative aspect-[3/4] bg-white rounded-[2rem] border border-gray-100 p-6 flex flex-col items-center justify-between shadow-sm"
@@ -80,7 +80,7 @@ const Shops = () => {
           ))
         ) : (
           /* REAL CARDS */
-          brandsArray.map((brand, index) => (
+          brandsArray?.map((brand, index) => (
             <motion.div
               key={brand.name}
               initial={{ opacity: 0, y: 20 }}

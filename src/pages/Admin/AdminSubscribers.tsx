@@ -137,7 +137,7 @@ const AdminSubscribers = () => {
       {/* Arxa planda solğun skeleton cədvəl (istifadəçiyə dərinlik hissi vermək üçün) */}
       <div className="absolute inset-0 -z-10 opacity-[0.03] pointer-events-none px-10 pt-32">
         <div className="space-y-6">
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4]?.map((i) => (
             <div key={i} className="h-16 bg-black rounded-3xl w-full"></div>
           ))}
         </div>
@@ -266,7 +266,7 @@ const AdminSubscribers = () => {
             No Subscribers Found
           </div>
         ) : (
-          displayedSubscribers.map((sub) => (
+          displayedSubscribers?.map((sub) => (
             <div
               key={sub.id}
               className="bg-white p-6 rounded-[2rem] border border-gray-50 shadow-sm hover:shadow-xl hover:border-black transition-all duration-500 group flex items-center justify-between"

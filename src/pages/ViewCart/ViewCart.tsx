@@ -82,7 +82,7 @@ const ViewCart = () => {
             </thead>
 
             <tbody>
-              {sortedItems.map((item: CartItem) => {
+              {sortedItems?.map((item: CartItem) => {
                 const isThisItemUpdating =
                   isUpdating && updatingVariables?.perfumeId === item.perfumeId;
                 const isThisItemRemoving =

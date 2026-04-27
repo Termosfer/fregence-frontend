@@ -82,14 +82,14 @@ const FAQs = () => {
 
       {/* 2. FAQ CONTENT */}
       <section className="py-20 px-6 max-w-4xl mx-auto">
-        {faqData.map((category, catIdx) => (
+        {faqData?.map((category, catIdx) => (
           <div key={catIdx} className="mb-16">
             <h2 className="text-xs font-black uppercase tracking-[4px] text-[#81d8d0] mb-8 border-b pb-4 border-gray-50">
               {category.category}
             </h2>
             
             <div className="space-y-4">
-              {category.questions.map((item, qIdx) => {
+              {category?.questions?.map((item, qIdx) => {
                 const id = `${catIdx}-${qIdx}`;
                 const isOpen = activeIdx === id;
 

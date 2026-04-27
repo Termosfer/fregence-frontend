@@ -132,7 +132,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
       {/* Arxa planda solğun skeleton cədvəl (istifadəçiyə dərinlik hissi vermək üçün) */}
       <div className="absolute inset-0 -z-10 opacity-[0.03] pointer-events-none px-10 pt-32">
         <div className="space-y-6">
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4]?.map((i) => (
             <div key={i} className="h-16 bg-black rounded-3xl w-full"></div>
           ))}
         </div>
@@ -261,7 +261,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {displayedOrders.map((order: Order) => {
+              {displayedOrders?.map((order: Order) => {
                 const isOpen = openOrderId === order.id;
                 return (
                   <React.Fragment key={order.id}>
@@ -341,7 +341,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                                 Information
                               </h4>
                               <div className="max-h-[400px] overflow-y-auto pr-2 custom-scrollbar space-y-3">
-                                {order.items?.map((item: OrderItem) => (
+                                {order?.items?.map((item: OrderItem) => (
                                   <div
                                     key={item.id}
                                     className="bg-white p-3 rounded-2xl border border-gray-100 flex items-center gap-4 shadow-sm"
@@ -393,11 +393,11 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                                     {order.address}
                                   </div>
                                 </div>
-                                {order.orderNote && (
+                                {order?.orderNote && (
                                   <div className="bg-orange-50/50 p-4 rounded-xl border border-orange-100/50">
                                     <p className="text-xs italic text-orange-900 leading-relaxed">
                                       <FiEdit3 className="inline mr-1" />
-                                      {order.preferredDeliveryTime
+                                      {order?.preferredDeliveryTime
                                         ? new Date(
                                             order.preferredDeliveryTime,
                                           ).toLocaleString("en-GB", {

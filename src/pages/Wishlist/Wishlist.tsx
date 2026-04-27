@@ -59,7 +59,7 @@ const Wishlist = () => {
               </thead>
 
               <tbody>
-                {wishlist.map((item) => (
+                {wishlist?.map((item) => (
                   <tr
                     key={item.id}
                     className="border-b-2 border-gray-300 block md:table-row mb-6 lg:mb-0"

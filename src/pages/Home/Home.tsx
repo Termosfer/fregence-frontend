@@ -147,7 +147,7 @@ const Home = () => {
     }}
     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10"
   >
-    {notes.map((note, i) => (
+    {notes?.map((note, i) => (
       <motion.div 
         key={i}
         variants={{
@@ -200,11 +200,11 @@ const Home = () => {
                 <h2 className="text-5xl font-bold font-[Playfair] leading-tight tracking-tighter text-[#81d8d0]">The Discovery <br/> Set</h2>
                 <p className="text-gray-400 italic text-lg leading-relaxed">Experience the transition of Sandalwood to Jasmine in a single breath. Our most iconic textures.</p>
                 <div className="flex gap-4">
-                    {scentCards.map((_, i) => <div key={i} className="w-12 h-[2px] bg-white/20" />)}
+                    {scentCards?.map((_, i) => <div key={i} className="w-12 h-[2px] bg-white/20" />)}
                 </div>
             </div>
             <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {scentCards.map((card, i) => (
+                {scentCards?.map((card, i) => (
                     <motion.div key={i} whileHover={{ y: -20 }} className="relative h-[450px] rounded-[3rem] overflow-hidden group">
                         <img src={card.img} className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
@@ -244,11 +244,11 @@ const Home = () => {
     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
   >
     {isLoading ? (
-      [...Array(4)].map((_, i) => (
+      [...Array(4)]?.map((_, i) => (
         <div key={i} className="h-[450px] bg-gray-50 animate-pulse rounded-[2.5rem]" />
       ))
     ) : 
-data?.content.map((item) => (
+data?.content?.map((item) => (
   <motion.div 
     key={item.id}
     variants={fadeInUp}
@@ -272,7 +272,7 @@ data?.content.map((item) => (
           { icon: <FiSearch />, action: () => handleOpenQuickView(item.id), delay: "delay-100" },
           { icon: <FiHeart />, action: () => addToWishlist(item), delay: "delay-200" },
           { icon: <FiShoppingCart />, action: () => addToCart(item), delay: "delay-300" }
-        ].map((btn, idx) => (
+        ]?.map((btn, idx) => (
           <button
             key={idx}
             onClick={(e) => {

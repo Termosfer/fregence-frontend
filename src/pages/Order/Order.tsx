@@ -64,7 +64,7 @@ const OrderHistory = () => {
              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
              className="flex gap-10 opacity-20"
            >
-             {[...Array(10)].map((_, i) => (
+             {[...Array(10)]?.map((_, i) => (
                <div key={i} className="min-w-[20px] h-[2px] bg-gray-400"></div>
              ))}
            </motion.div>
@@ -116,7 +116,7 @@ const OrderHistory = () => {
           </div>
         ) : (
           <div className="space-y-6">
-            {orders.map((order: Order) => {
+            {orders?.map((order: Order) => {
               const isOpen = openOrderId === order.id;
               const { color, icon } = getStatusDetails(order.status);
 
@@ -204,7 +204,7 @@ const OrderHistory = () => {
                       {/* 2. MƏHSUL SİYAHISI */}
                       <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[3px] mb-6 mt-4">Order Items</h3>
                       <div className="space-y-4">
-                        {order.items.map((item: OrderItem) => (
+                        {order?.items?.map((item: OrderItem) => (
                           <div key={item.id} className="flex items-center justify-between p-4 rounded-2xl bg-[#fafafa] border border-gray-100">
                             <div className="flex items-center gap-5">
                               <div className="w-16 h-20 bg-white rounded-xl overflow-hidden border border-gray-100 p-2 shadow-sm">

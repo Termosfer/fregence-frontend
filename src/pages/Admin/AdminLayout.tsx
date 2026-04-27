@@ -153,7 +153,7 @@ const AdminLayout = () => {
         </div>
 
         <nav className="flex-1 p-4 mt-4 space-y-2">
-          {navItems.map((item) => (
+          {navItems?.map((item) => (
             <Link
               key={item.path}
               to={item.path}
@@ -220,7 +220,7 @@ const AdminLayout = () => {
                         <p className="text-[11px] text-gray-400 font-medium">No new alerts at the moment.</p>
                       </div>
                     ) : (
-                      notifications.map((note, index) => (
+                      notifications?.map((note, index) => (
                         <div key={index} className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
                           <div className="flex gap-3">
                             <div className="w-2 h-2 bg-teal-500 rounded-full mt-1.5 shrink-0" />

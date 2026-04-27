@@ -60,7 +60,7 @@ const TermsOfService = () => {
       {/* 2. KEY HIGHLIGHTS CARDS */}
       <section className="py-20 px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {highlights.map((item) => (
+          {highlights?.map((item) => (
             <motion.div 
               key={item.id}
               whileHover={{ y: -5 }}

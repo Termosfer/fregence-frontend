@@ -175,7 +175,7 @@ const Products = () => {
             <div className="flex flex-col gap-4">
             {isBrandsLoading ? (
               // Brendlər üçün skelet sətirləri
-              [...Array(10)].map((_, i) => (
+              [...Array(10)]?.map((_, i) => (
                 <div key={i} className="h-5 w-3/4 bg-gray-100 rounded animate-pulse ml-5"></div>
               ))
             ) : (
@@ -220,7 +220,7 @@ const Products = () => {
             <span className="h-[.5px] bg-gray-300 w-full"></span>
           </div>
           <div className="flex gap-2 mb-10">
-            {["MEN", "WOMEN", "UNISEX"].map((g) => (
+            {["MEN", "WOMEN", "UNISEX"]?.map((g) => (
               <button
                 key={g}
                 onClick={() =>
@@ -272,7 +272,7 @@ const Products = () => {
                     onClick={() => setIsSortOpen(false)}
                   ></div>
                   <div className="absolute right-0 mt-2 bg-white border border-gray-100 shadow-xl rounded-lg p-2 z-20 animate-in fade-in zoom-in duration-200">
-                    {sortOptions.map((option) => (
+                    {sortOptions?.map((option) => (
                       <div
                         key={option.label}
                         onClick={() => {
@@ -307,7 +307,7 @@ const Products = () => {
           lg:grid-cols-3
           2xl:grid-cols-4"
               >
-                {[...Array(8)].map((_, i) => (
+                {[...Array(8)]?.map((_, i) => (
                   <div
                     key={i}
                     className="animate-pulse bg-gray-100 rounded-lg h-[300px] w-[230px]"

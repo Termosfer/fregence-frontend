@@ -442,7 +442,7 @@ const CheckoutContent = () => {
               </div>
 
               <div className="max-h-[250px] overflow-y-auto pr-2 mb-8 space-y-5 custom-scrollbar">
-                {cartItems.map((item: CartItem) => (
+                {cartItems?.map((item: CartItem) => (
                   <div
                     key={item.cartItemId}
                     className="flex gap-4 items-center group transition-all hover:opacity-70"

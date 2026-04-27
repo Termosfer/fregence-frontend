@@ -45,7 +45,7 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
   return (
     <>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full">
-        {data.content.map((item) => (
+        {data?.content?.map((item) => (
           <div
             key={item.id}
             className="relative flex flex-col items-center justify-between text-center group shadow-md rounded-xl p-4 bg-white hover:shadow-xl transition-all duration-500 h-full border border-gray-50"

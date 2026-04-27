@@ -108,7 +108,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
             </div>
           ) : (
             <div className="flex flex-col">
-              {sortedItems.map((item) => {
+              {sortedItems?.map((item) => {
                 const isThisUpdating =
                   isUpdating && updatingVariables?.perfumeId === item.perfumeId;
                 return (

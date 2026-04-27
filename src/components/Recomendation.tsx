@@ -79,7 +79,7 @@ const Recomendation = () => {
           className="flex transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${translateValue}%)` }}
         >
-          {filteredProducts.map((product) => (
+          {filteredProducts?.map((product) => (
             <div key={product.id} className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 flex-shrink-0 px-3">
               <div className="relative overflow-hidden group img-hover-effect bg-white p-6 shadow-sm rounded-xl border border-gray-50 flex flex-col items-center">
                 <div className="w-full aspect-[4/5] overflow-hidden flex items-center justify-center">

@@ -11,7 +11,7 @@ const NotFound = () => {
       bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-white">
       
       {/* 1. TÜND VƏ DOLĞUN QABARCIQLAR (BUBBLES) */}
-      {bubbles.map((_, i) => {
+      {bubbles?.map((_, i) => {
         const size = Math.random() * 50 + 15; // 15px - 65px arası
         return (
           <motion.div

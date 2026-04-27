@@ -66,7 +66,7 @@ const PrivacyPolicy = () => {
       {/* 2. CORE POLICY SECTIONS */}
       <section className="py-20 px-6 max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
-          {sections.map((section) => (
+          {sections?.map((section) => (
             <motion.div 
               key={section.id}
               initial={{ opacity: 0, y: 30 }}

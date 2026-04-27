@@ -243,7 +243,7 @@ const Header = () => {
                     ) : searchResults?.content && searchResults.content.length > 0 ? (
                       <>
                         <p className="text-[9px] font-black text-gray-300 uppercase tracking-[2px] mb-2 px-1">Top Matches</p>
-                        {searchResults.content.map((p) => (
+                        {searchResults?.content?.map((p) => (
                           <div key={p.id} onClick={() => handleResultClick(p.name)} className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-gray-100">
                             <div className="w-14 h-16 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 p-1 shadow-md"><img src={p.imageUrl} alt="" className="w-full h-full object-fill rounded-lg" /></div>
                             <div className="min-w-0 flex-1"><p className="text-xs font-bold text-gray-900 truncate uppercase tracking-tighter leading-tight">{p.name}</p><p className="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">{p.brand}</p><p className="text-[11px] font-bold text-[#81d8d0] mt-1">{p.price}.00 Azn</p></div>

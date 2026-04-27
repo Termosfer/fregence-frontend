@@ -135,7 +135,7 @@ const AdminUsers = () => {
       {/* Arxa planda solğun skeleton cədvəl (istifadəçiyə dərinlik hissi vermək üçün) */}
       <div className="absolute inset-0 -z-10 opacity-[0.03] pointer-events-none px-10 pt-32">
         <div className="space-y-6">
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4]?.map((i) => (
             <div key={i} className="h-16 bg-black rounded-3xl w-full"></div>
           ))}
         </div>
@@ -268,7 +268,7 @@ const AdminUsers = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {displayedUsers.map((u: User) => {
+              {displayedUsers?.map((u: User) => {
                 const isMe = u.id === currentUser?.id;
 
                 return (

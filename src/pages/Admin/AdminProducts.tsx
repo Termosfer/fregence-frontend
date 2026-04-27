@@ -144,7 +144,7 @@ const handleAddNew = () => {
       {/* Arxa planda solğun skeleton cədvəl (istifadəçiyə dərinlik hissi vermək üçün) */}
       <div className="absolute inset-0 -z-10 opacity-[0.03] pointer-events-none px-10 pt-32">
         <div className="space-y-6">
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4]?.map((i) => (
             <div key={i} className="h-16 bg-black rounded-3xl w-full"></div>
           ))}
         </div>
@@ -298,7 +298,7 @@ const handleAddNew = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {displayedProducts.map((product) => (
+              {displayedProducts?.map((product) => (
                 <tr key={product.id} className="group hover:bg-gray-50/40 transition-all duration-300">
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-4">

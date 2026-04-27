@@ -52,7 +52,7 @@ export const useCart = () => {
         let newItems: CartItem[];
 
         if (existingItem) {
-          newItems = old.items.map((item) =>
+          newItems = old.items?.map((item) =>
             item.perfumeId === perfumeId
               ? {
                   ...item,
