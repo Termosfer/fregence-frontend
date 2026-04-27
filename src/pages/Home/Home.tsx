@@ -244,11 +244,11 @@ const Home = () => {
     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
   >
     {isLoading ? (
-      [...Array(4)]?.map((_, i) => (
+      [...Array(4)].map((_, i) => (
         <div key={i} className="h-[450px] bg-gray-50 animate-pulse rounded-[2.5rem]" />
       ))
     ) : 
-data?.content?.map((item) => (
+data?.content.map((item) => (
   <motion.div 
     key={item.id}
     variants={fadeInUp}
@@ -272,7 +272,7 @@ data?.content?.map((item) => (
           { icon: <FiSearch />, action: () => handleOpenQuickView(item.id), delay: "delay-100" },
           { icon: <FiHeart />, action: () => addToWishlist(item), delay: "delay-200" },
           { icon: <FiShoppingCart />, action: () => addToCart(item), delay: "delay-300" }
-        ]?.map((btn, idx) => (
+        ].map((btn, idx) => (
           <button
             key={idx}
             onClick={(e) => {
