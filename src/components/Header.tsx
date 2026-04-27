@@ -161,11 +161,11 @@ const Header = () => {
         </Link>
 
         <ul className="hidden lg:flex gap-10 items-center text-base text-black font-medium">
-          <Link to="/" onClick={closeAll} className="hover:text-[#00000080]">Home</Link>
-          <Link to="/shops" onClick={closeAll} className="hover:text-[#00000080]">Shops</Link>
-          <Link to="/products" onClick={closeAll} className="hover:text-[#00000080]">Products</Link>
-          <Link to="/about" onClick={closeAll} className="hover:text-[#00000080]">About</Link>
-          <Link to="/contact" onClick={closeAll} className="hover:text-[#00000080]">Contact</Link>
+          <li><Link to="/" onClick={closeAll} className="hover:text-[#00000080]">Home</Link></li>
+          <li><Link to="/shops" onClick={closeAll} className="hover:text-[#00000080]">Shops</Link></li>
+          <li><Link to="/products" onClick={closeAll} className="hover:text-[#00000080]">Products</Link></li>
+          <li><Link to="/about" onClick={closeAll} className="hover:text-[#00000080]">About</Link></li>
+          <li><Link to="/contact" onClick={closeAll} className="hover:text-[#00000080]">Contact</Link></li>
         </ul>
       </div>
 
