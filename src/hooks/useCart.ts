@@ -12,7 +12,7 @@ import type {
 export const useCart = () => {
   const queryClient = useQueryClient();
   const token = localStorage.getItem("token");
-  /* const token = useAuth(); */
+
   // 1. Səbəti gətir
   const { data: responseData, isLoading } = useQuery<CartResponse>({
     queryKey: ["cart"],
@@ -21,9 +21,8 @@ export const useCart = () => {
       return res.data;
     },
     enabled: !!token,
-    // BU SƏTİRLƏRİ ƏLAVƏ EDİN:
-    staleTime: 0, // Datanı hər zaman köhnə say ki, invalidated olan kimi dərhal fetch etsin
-    refetchOnMount: true, // Komponent hər görünəndə (modal açılanda) yoxlasın
+    staleTime: 0, 
+    refetchOnMount: true, 
   });
 
   const cartItems = responseData?.items || [];
@@ -52,25 +51,39 @@ export const useCart = () => {
         let newItems: CartItem[];
 
         if (existingItem) {
-          newItems = old.items?.map((item) =>
-            item.perfumeId === perfumeId
-              ? {
-                  ...item,
-                  quantity: item.quantity + quantity,
-                  subTotal: (item.quantity + quantity) * item.price,
-                }
-              : item,
-          );
+          newItems = old.items?.map((item) => {
+            if (item.perfumeId === perfumeId) {
+              const newQty = item.quantity + quantity;
+              
+              // VACİB: Endirimli qiymət varsa onu götür, yoxdursa normal qiyməti
+              const effectivePrice = (item.discountPrice && item.discountPrice > 0) 
+                                     ? item.discountPrice 
+                                     : item.price;
+
+              return {
+                ...item,
+                quantity: newQty,
+                subTotal: newQty * effectivePrice, // Qiymət sıçrayışının qarşısını alan sətir
+              };
+            }
+            return item;
+          });
         } else {
+          // Yeni məhsul əlavə ediləndə endirimli qiyməti müəyyən edirik
+          const effectivePrice = (perfume?.discountPrice && perfume.discountPrice > 0) 
+                                 ? perfume.discountPrice 
+                                 : (perfume?.price || 0);
+
           const newItem: CartItem = {
-            cartItemId: Math.random(),
+            cartItemId: Math.random(), // Keçici ID
             perfumeId: perfumeId,
             perfumeName: perfume?.name || "Loading...",
             brand: perfume?.brand || "...",
             price: perfume?.price || 0,
+            discountPrice: perfume?.discountPrice || 0, // DTO-dan gələn endirimi saxla
             quantity: quantity,
-            subTotal: (perfume?.price || 0) * quantity,
-            imageUrl: perfume?.imageUrl,
+            subTotal: effectivePrice * quantity,
+            imageUrl: perfume?.imageUrl || "",
           };
           newItems = [...(old.items || []), newItem];
         }
@@ -83,9 +96,7 @@ export const useCart = () => {
     },
 
     onSuccess: (_data, variables) => {
-      // Mutasiya uğurlu olan kimi dərhal cache-i ləğv et və təzələ
       queryClient.invalidateQueries({ queryKey: ["cart"] });
-
       if (variables.isNew) {
         toast.success("Item added to cart!");
       }
@@ -99,10 +110,7 @@ export const useCart = () => {
     },
 
     onSettled: () => {
-      // Bütün mutasiyalar bitibsə mütləq serverlə sinxronlaş
-      if (queryClient.isMutating({ mutationKey: ["cart-update"] }) === 0) {
-        queryClient.invalidateQueries({ queryKey: ["cart"] });
-      }
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
 
@@ -163,15 +171,15 @@ export const useCart = () => {
       isNew: true,
     });
   };
+
   const clearCart = () => {
-    // 1. Dərhal ekrandakı (cache-dəki) datanı sıfırlayır (gözləmədən)
     queryClient.setQueryData<CartResponse>(["cart"], {
       items: [],
       totalAmount: 0,
     });
-    // 2. Arxa planda serverlə əmin olmaq üçün sinxronlaşdırır
     queryClient.invalidateQueries({ queryKey: ["cart"] });
   };
+
   return {
     cartItems,
     cartCount,

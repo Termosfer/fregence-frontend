@@ -30,7 +30,7 @@ const AdminOrders = () => {
     isShipping,
     isDeletingAll,
   } = useOrder();
-  
+  console.log(allOrders,"orders")
   const [openOrderId, setOpenOrderId] = useState<number | null>(null);
   const [isShipModalOpen, setIsShipModalOpen] = useState(false);
   const [targetOrderId, setTargetOrderId] = useState<number | null>(null);
@@ -58,35 +58,48 @@ const query = useOutletContext<string>(); // Bunu əlavə et
     setIsShipModalOpen(true);
   };
 
-  // ANLIQ FİLTRLƏMƏ VƏ SIRALAMA
-  const displayedOrders = [...allOrders]
+ // ANLIQ FİLTRLƏMƏ VƏ SIRALAMA
+const displayedOrders = [...allOrders]
   .filter((order: Order) => {
-    // A) Global Axtarış (Layout-dakı search bar üçün)
-    const q = query.toLowerCase();
-    const matchesGlobal = 
-      order.customerName.toLowerCase().includes(q) ||
-      order.customerEmail.toLowerCase().includes(q) ||
-      order.phoneNumber.includes(q) ||
-      order.id.toString().includes(q);
+    // 1. Axtarış sözlərini öncədən hazırlayaq (null olmasın deyə)
+    const q = (query || "").toLowerCase();
+    const searchLower = (filters.search || "").toLowerCase();
 
-    // B) Lokal Filtr (Səhifədəki filtr pəncərəsi üçün)
-    const searchLower = filters.search.toLowerCase();
+    // A) Global Axtarış - Hər sahəni (order.xxx || "") ilə qoruyuruq
+    const matchesGlobal = 
+      (order.customerName || "").toLowerCase().includes(q) ||
+      (order.customerEmail || "").toLowerCase().includes(q) ||
+      (order.phoneNumber || "").includes(q) ||
+      (order.id?.toString() || "").includes(q);
+
+    // B) Lokal Filtr
     const matchesLocalSearch = 
-      order.customerName.toLowerCase().includes(searchLower) || 
-      order.customerEmail.toLowerCase().includes(searchLower);
+      (order.customerName || "").toLowerCase().includes(searchLower) || 
+      (order.customerEmail || "").toLowerCase().includes(searchLower);
     
+    // Status və Qiymət yoxlaması
     const matchesStatus = filters.status === "ALL" || order.status === filters.status;
-    const matchesMinPrice = filters.minPrice ? order.totalAmount >= filters.minPrice : true;
-    const matchesMaxPrice = filters.maxPrice ? order.totalAmount <= filters.maxPrice : true;
+    
+    // totalAmount null-dursa 0 götürürük ki, müqayisə xəta verməsin
+    const orderAmount = order.totalAmount || 0;
+    const matchesMinPrice = filters.minPrice ? orderAmount >= filters.minPrice : true;
+    const matchesMaxPrice = filters.maxPrice ? orderAmount <= filters.maxPrice : true;
 
     return matchesGlobal && matchesLocalSearch && matchesStatus && matchesMinPrice && matchesMaxPrice;
   })
   .sort((a: Order, b: Order) => {
     const dir = filters.sortDir === "asc" ? 1 : -1;
-    if (filters.sortBy === "totalAmount") return (a.totalAmount - b.totalAmount) * dir;
-    return (new Date(a.orderDate).getTime() - new Date(b.orderDate).getTime()) * dir;
+    
+    // Qiymətə görə sıralama (null qoruması ilə)
+    if (filters.sortBy === "totalAmount") {
+      return ((a.totalAmount || 0) - (b.totalAmount || 0)) * dir;
+    }
+    
+    // Tarixə görə sıralama (null qoruması ilə)
+    const dateA = a.orderDate ? new Date(a.orderDate).getTime() : 0;
+    const dateB = b.orderDate ? new Date(b.orderDate).getTime() : 0;
+    return (dateA - dateB) * dir;
   });
-
   const handleClearFilter = () => {
     setFilters({
       search: "",
@@ -289,7 +302,7 @@ const query = useOutletContext<string>(); // Bunu əlavə et
                         })}
                       </td>
                       <td className="px-6 py-6 font-bold text-gray-900 text-sm">
-                        {order.totalAmount.toFixed(2)} AZN
+                        {order.totalAmount} AZN
                       </td>
                       <td className="px-6 py-6">
                         <span

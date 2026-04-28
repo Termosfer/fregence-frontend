@@ -34,6 +34,7 @@ export interface CartItem {
   perfumeName: string;
   brand?: string;
   price: number;
+  discountPrice?:number;
   quantity: number;
   subTotal: number;
   imageUrl?: string;

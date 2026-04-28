@@ -18,6 +18,7 @@ const ViewCart = () => {
     removingVariables,
   } = useCart();
 
+  console.log(cartItems);
   // 1. Məhsulların yerinin dəyişməməsi üçün ID-yə görə sıralayırıq
   const sortedItems: CartItem[] = [...cartItems].sort(
     (a, b) => a.cartItemId - b.cartItemId,
@@ -112,7 +113,9 @@ const ViewCart = () => {
                             {item.perfumeName}
                           </h2>
                           <p className="text-base font-medium text-[#81d8d0] font-[Jost]">
-                            {item.price}
+                            {item.discountPrice && item.discountPrice > 0
+                              ? item.discountPrice
+                              : item.price || 0}
                             <span className="text-xs">.00 Azn</span>
                           </p>
 
@@ -140,7 +143,8 @@ const ViewCart = () => {
                         <div
                           className={`flex items-center gap-6 border border-gray-200 px-5 py-2.5 rounded-full bg-white transition-all ${isThisItemUpdating ? "shadow-inner border-gray-300" : "shadow-sm"}`}
                         >
-                          <button aria-label="decrease quantity"
+                          <button
+                            aria-label="decrease quantity"
                             onClick={() =>
                               item.quantity > 1 &&
                               updateQuantity({
@@ -164,7 +168,8 @@ const ViewCart = () => {
                             {item.quantity}
                           </span>
 
-                          <button aria-label="increase quantity"
+                          <button
+                            aria-label="increase quantity"
                             onClick={() =>
                               updateQuantity({
                                 perfumeId: item.perfumeId,

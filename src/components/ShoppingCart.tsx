@@ -20,15 +20,17 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
     isUpdating,
     updatingVariables,
   } = useCart();
-
+console.log(cartItems,"cartitems")
+console.log(cartTotal,"carttotal")
   // Kuryer hesablama məntiqi
- /*  const SHIPPING_LIMIT = 180;
+  /*  const SHIPPING_LIMIT = 180;
   const shippingCost = cartTotal < SHIPPING_LIMIT && cartItems.length > 0 ? 10 : 0;
   const finalTotal = cartTotal + shippingCost; */
 
   const sortedItems = [...cartItems].sort(
     (a, b) => a.cartItemId - b.cartItemId,
   );
+
 
   // 1. SKROLUN QARŞISINI ALMAQ ÜÇÜN MÜKƏMMƏL EFFEKT
   useEffect(() => {
@@ -75,7 +77,8 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
           <h1 className="text-xl font-bold uppercase tracking-widest text-gray-800">
             Shopping Cart ({cartItems.length})
           </h1>
-          <button aria-label="close"
+          <button
+            aria-label="close"
             onClick={() => setIsOpen(false)}
             className="p-2 rounded-full cursor-pointer transition-all duration-300 hover:bg-black hover:rotate-180 hover:text-white"
           >
@@ -83,14 +86,12 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
           </button>
         </div>
 
-      
         <div className="flex-1 min-h-0 overflow-y-auto">
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-neutral ">
               <div className="relative mb-6">
                 <div className="absolute -inset-5 bg-gray-50 rounded-full animate-pulse"></div>
                 <RiShoppingBag2Fill
-
                   size={80}
                   strokeWidth={1}
                   className="relative text-gray-300 animate-pulse"
@@ -102,7 +103,10 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                 onClick={() => setIsOpen(false)}
                 className="mt-4 text-black underline font-bold uppercase text-xs tracking-widest flex items-center gap-1 transition-transform duration-300  group"
               >
-                 <BsArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                <BsArrowLeft
+                  size={16}
+                  className="group-hover:-translate-x-1 transition-transform"
+                />
                 Shop Now
               </Link>
             </div>
@@ -134,7 +138,8 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
 
                       <div className="flex items-center justify-between ">
                         <div className="flex items-center gap-4 border border-gray-200 px-3 py-1.5 rounded-full bg-white">
-                          <button aria-label="dicrease-quantity"
+                          <button
+                            aria-label="dicrease-quantity"
                             onClick={() =>
                               item.quantity > 1 &&
                               updateQuantity({
@@ -152,7 +157,8 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                           >
                             {item.quantity}
                           </span>
-                          <button aria-label="increase-quantity"
+                          <button
+                            aria-label="increase-quantity"
                             onClick={() =>
                               updateQuantity({
                                 perfumeId: item.perfumeId,
@@ -198,7 +204,9 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                 Shipping
               </h2>
               <p className="font-medium font-[Jost] text-gray-800">
-                <span className="text-green-600 uppercase text-xs font-bold tracking-widest">Free</span>
+                <span className="text-green-600 uppercase text-xs font-bold tracking-widest">
+                  Free
+                </span>
                 {/* {shippingCost === 0 ? (
                   <span className="text-green-600 uppercase text-xs font-bold tracking-widest">Free</span>
                 ) : (
@@ -215,7 +223,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                 <span className="text-sm">.00 Azn</span>
               </p>
             </div>
-            
+
             {/* {shippingCost > 0 && (
               <p className="mt-3 text-[10px] text-neutral  uppercase tracking-widest text-center italic">
                 Add <span className="font-bold text-black">{SHIPPING_LIMIT - cartTotal} Azn</span> more for <span className="text-green-600 font-bold">Free</span> shipping
@@ -224,7 +232,11 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
           </div>
 
           <div className="flex flex-col gap-4">
-            <Link to="/checkout" onClick={() => setIsOpen(false)} className="relative w-full h-14 bg-black text-white rounded-xl overflow-hidden group cursor-pointer  shadow-lg active:scale-[0.98] transition-transform">
+            <Link
+              to="/checkout"
+              onClick={() => setIsOpen(false)}
+              className="relative w-full h-14 bg-black text-white rounded-xl overflow-hidden group cursor-pointer  shadow-lg active:scale-[0.98] transition-transform"
+            >
               <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tracking-[3px] uppercase transition-transform duration-300 group-hover:-translate-y-full">
                 Secure Checkout
               </span>

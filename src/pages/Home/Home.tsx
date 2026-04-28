@@ -307,7 +307,7 @@ const Home = () => {
                     </div>
 
                     {/* İKONLAR PANELI (DOCK) */}
-                    <div className="absolute top-6 right-6 flex flex-col gap-3 z-30">
+                    <div className="absolute top-25 right-6 flex flex-col gap-3 z-30">
                       {[
                         {
                           icon: <FiSearch />,
