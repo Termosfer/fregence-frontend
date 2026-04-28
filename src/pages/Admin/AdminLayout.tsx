@@ -20,12 +20,14 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { LuContact } from "react-icons/lu";
 import SockJS from "sockjs-client";
-import { Client } from '@stomp/stompjs';
+import { Client } from "@stomp/stompjs";
 import { toast } from "react-toastify";
 import sound from "../../../public/freesound_community-service-bell-ring-14610.mp3";
+import { useQueryClient } from "@tanstack/react-query";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const globalQuery = searchParams.get("query") || "";
@@ -79,7 +81,10 @@ const AdminLayout = () => {
   // Dropdown kənarına klikləyəndə bağlanması üçün
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
       }
     };
@@ -91,21 +96,30 @@ const AdminLayout = () => {
     if (stompClientRef.current) return;
 
     const client = new Client({
-      webSocketFactory: () => new SockJS(`${import.meta.env.VITE_API_BASE_URL}/ws-notifications`),
+      webSocketFactory: () =>
+        new SockJS(`${import.meta.env.VITE_API_BASE_URL}/ws-notifications`),
       onConnect: () => {
         client.subscribe("/topic/admin-notifications", (message) => {
           if (message.body) {
             playNotificationSound();
-            
+
             // 1. Yeni bildirişi siyahıya əlavə et
-            setNotifications(prev => [message.body, ...prev]);
-            
+            setNotifications((prev) => [message.body, ...prev]);
+
             // 2. Toast göstər
             toast.info(`🚨 ${message.body}`, {
               icon: () => "📦",
               position: "top-right",
             });
           }
+
+          // Sifarişlər səhifəsindəki siyahını yeniləyir
+          queryClient.invalidateQueries({ queryKey: ["admin-all-orders"] });
+
+          // Dashboard-dakı statistika rəqəmlərini (qazanc, say və s.) yeniləyir
+          queryClient.invalidateQueries({
+            queryKey: ["admin-dashboard-stats"],
+          });
         });
       },
       reconnectDelay: 5000,
@@ -126,13 +140,16 @@ const AdminLayout = () => {
     const unlockAudio = () => {
       const audio = audioRef.current;
       audio.volume = 0;
-      audio.play().then(() => {
-        audio.pause();
-        audio.volume = 1;
-        setAudioUnlocked(true);
-        window.removeEventListener("click", unlockAudio);
-        window.removeEventListener("touchstart", unlockAudio);
-      }).catch(() => {});
+      audio
+        .play()
+        .then(() => {
+          audio.pause();
+          audio.volume = 1;
+          setAudioUnlocked(true);
+          window.removeEventListener("click", unlockAudio);
+          window.removeEventListener("touchstart", unlockAudio);
+        })
+        .catch(() => {});
     };
     window.addEventListener("click", unlockAudio);
     window.addEventListener("touchstart", unlockAudio);
@@ -147,9 +164,14 @@ const AdminLayout = () => {
       <aside className="w-64 bg-[#0F172A] text-white flex flex-col fixed h-full z-[100] shadow-xl">
         <div className="p-8 border-b border-white/5">
           <h2 className="text-xl font-bold tracking-widest uppercase flex items-center  gap-2">
-            <span className="w-8 h-8 bg-white text-black flex items-center justify-center rounded-lg">Mi</span>-Parfum
+            <span className="w-8 h-8 bg-white text-black flex items-center justify-center rounded-lg">
+              Mi
+            </span>
+            -Parfum
           </h2>
-          <p className="text-[10px] text-gray-500 mt-2 font-bold tracking-[3px] uppercase">Control Panel</p>
+          <p className="text-[10px] text-gray-500 mt-2 font-bold tracking-[3px] uppercase">
+            Control Panel
+          </p>
         </div>
 
         <nav className="flex-1 p-4 mt-4 space-y-2">
@@ -158,20 +180,34 @@ const AdminLayout = () => {
               key={item.path}
               to={item.path}
               className={`flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 group ${
-                location.pathname === item.path ? "bg-white text-black shadow-lg" : "text-neutral  hover:bg-white/5 hover:text-white"
+                location.pathname === item.path
+                  ? "bg-white text-black shadow-lg"
+                  : "text-neutral  hover:bg-white/5 hover:text-white"
               }`}
             >
-              <span className={`text-lg ${location.pathname === item.path ? "text-black" : "group-hover:text-white"}`}>{item.icon}</span>
-              <span className="text-xs font-bold uppercase tracking-widest">{item.label}</span>
+              <span
+                className={`text-lg ${location.pathname === item.path ? "text-black" : "group-hover:text-white"}`}
+              >
+                {item.icon}
+              </span>
+              <span className="text-xs font-bold uppercase tracking-widest">
+                {item.label}
+              </span>
             </Link>
           ))}
         </nav>
 
         <div className="p-4 border-t border-white/5 space-y-2">
-          <Link to="/" className="flex items-center gap-3 px-4 py-3 text-neutral  hover:text-white transition-all text-xs font-bold uppercase tracking-widest">
+          <Link
+            to="/"
+            className="flex items-center gap-3 px-4 py-3 text-neutral  hover:text-white transition-all text-xs font-bold uppercase tracking-widest"
+          >
             <FiHome /> Back to Website
           </Link>
-          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-red-400 hover:bg-red-500/10 rounded-xl transition-all text-xs font-bold uppercase tracking-widest cursor-pointer">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3 w-full text-red-400 hover:bg-red-500/10 rounded-xl transition-all text-xs font-bold uppercase tracking-widest cursor-pointer"
+          >
             <FiLogOut /> Logout
           </button>
         </div>
@@ -193,7 +229,7 @@ const AdminLayout = () => {
           <div className="flex items-center gap-8">
             {/* --- NOTIFICATIONS DROPDOWN --- */}
             <div className="relative" ref={dropdownRef}>
-              <div 
+              <div
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="relative cursor-pointer text-neutral  hover:text-black transition-all p-2"
               >
@@ -208,25 +244,44 @@ const AdminLayout = () => {
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-3 w-80 bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden z-[110] animate-in fade-in slide-in-from-top-2">
                   <div className="p-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">Recent Notifications</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">
+                      Recent Notifications
+                    </span>
                     {notifications.length > 0 && (
-                      <button onClick={() => setNotifications([])} className="text-[9px] text-red-500 font-bold hover:underline uppercase">Clear all</button>
+                      <button
+                        onClick={() => setNotifications([])}
+                        className="text-[9px] text-red-500 font-bold hover:underline uppercase"
+                      >
+                        Clear all
+                      </button>
                     )}
                   </div>
                   <div className="max-h-80 overflow-y-auto">
                     {notifications.length === 0 ? (
                       <div className="p-10 text-center">
-                        <FiBell className="mx-auto text-gray-200 mb-2" size={24} />
-                        <p className="text-[11px] text-neutral  font-medium">No new alerts at the moment.</p>
+                        <FiBell
+                          className="mx-auto text-gray-200 mb-2"
+                          size={24}
+                        />
+                        <p className="text-[11px] text-neutral  font-medium">
+                          No new alerts at the moment.
+                        </p>
                       </div>
                     ) : (
                       notifications?.map((note, index) => (
-                        <div key={index} className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                        <div
+                          key={index}
+                          className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                        >
                           <div className="flex gap-3">
                             <div className="w-2 h-2 bg-teal-500 rounded-full mt-1.5 shrink-0" />
                             <div>
-                              <p className="text-xs text-gray-700 leading-relaxed font-medium">{note}</p>
-                              <span className="text-[9px] text-neutral  font-bold mt-1 block uppercase">New Update</span>
+                              <p className="text-xs text-gray-700 leading-relaxed font-medium">
+                                {note}
+                              </p>
+                              <span className="text-[9px] text-neutral  font-bold mt-1 block uppercase">
+                                New Update
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -239,11 +294,17 @@ const AdminLayout = () => {
 
             <div className="flex items-center gap-4 border-l pl-8 border-gray-100">
               <div className="text-right hidden sm:block">
-                <p className="text-xs font-black text-gray-900 uppercase tracking-tighter">Super Admin</p>
-                <p className="text-[10px] text-teal-500 font-bold uppercase">Online</p>
+                <p className="text-xs font-black text-gray-900 uppercase tracking-tighter">
+                  Super Admin
+                </p>
+                <p className="text-[10px] text-teal-500 font-bold uppercase">
+                  Online
+                </p>
               </div>
               <div className="relative group cursor-pointer">
-                <div className="w-10 h-10 rounded-xl bg-[#0F172A] text-white flex items-center justify-center font-bold shadow-lg group-hover:scale-105 transition-transform">A</div>
+                <div className="w-10 h-10 rounded-xl bg-[#0F172A] text-white flex items-center justify-center font-bold shadow-lg group-hover:scale-105 transition-transform">
+                  A
+                </div>
               </div>
             </div>
           </div>
