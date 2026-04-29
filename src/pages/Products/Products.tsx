@@ -10,6 +10,7 @@ import api from "../../api/axios";
 import type { PageResponse, Perfume } from "../../types/perfume";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+import ProductSkeleton from "../../components/ProductSkeleton";
 
 const sortOptions = [
   { label: "Featured", sortBy: "id", direction: "DESC" },
@@ -318,18 +319,10 @@ const Products = () => {
           </div>
           <div className="flex-1">
             {isBrandsLoading || isProductsLoading ? (
-              <div
-                className="grid gap-10
-          grid-cols-1
-          sm:grid-cols-2
-          lg:grid-cols-3
-          2xl:grid-cols-4"
-              >
-                {[...Array(8)]?.map((_, i) => (
-                  <div
-                    key={i}
-                    className="animate-pulse bg-gray-100 rounded-lg grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full h-[350px] xl:h-[300px]"
-                  ></div>
+              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full">
+                {/* 12 dənə (və ya sənin page size-ın qədər) skeleton göstəririk */}
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <ProductSkeleton key={i} />
                 ))}
               </div>
             ) : (
