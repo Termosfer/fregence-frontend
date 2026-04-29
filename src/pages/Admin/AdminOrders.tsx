@@ -30,7 +30,6 @@ const AdminOrders = () => {
     isShipping,
     isDeletingAll,
   } = useOrder();
-  console.log(allOrders,"orders")
   const [openOrderId, setOpenOrderId] = useState<number | null>(null);
   const [isShipModalOpen, setIsShipModalOpen] = useState(false);
   const [targetOrderId, setTargetOrderId] = useState<number | null>(null);

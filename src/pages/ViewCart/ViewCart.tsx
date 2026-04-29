@@ -18,7 +18,6 @@ const ViewCart = () => {
     removingVariables,
   } = useCart();
 
-  console.log(cartItems);
   // 1. Məhsulların yerinin dəyişməməsi üçün ID-yə görə sıralayırıq
   const sortedItems: CartItem[] = [...cartItems].sort(
     (a, b) => a.cartItemId - b.cartItemId,
@@ -205,7 +204,7 @@ const ViewCart = () => {
 
           <Link
             to="/products"
-            className="relative inline-block w-fit overflow-hidden group tracking-widest cursor-pointer mt-10 text-white"
+            className="relative inline-block w-fit overflow-hidden group tracking-widest cursor-pointer mt-10 text-black"
           >
             <span className="absolute bottom-0 left-0 h-[1px] w-full bg-[#00000080] scale-x-100 group-hover:scale-x-0 transition-transform duration-300"></span>
             <span className="relative block text-xs font-bold text-neutral  px-1 transition-transform duration-300 group-hover:-translate-y-full">

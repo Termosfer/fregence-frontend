@@ -20,8 +20,6 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
     isUpdating,
     updatingVariables,
   } = useCart();
-console.log(cartItems,"cartitems")
-console.log(cartTotal,"carttotal")
   // Kuryer hesablama məntiqi
   /*  const SHIPPING_LIMIT = 180;
   const shippingCost = cartTotal < SHIPPING_LIMIT && cartItems.length > 0 ? 10 : 0;

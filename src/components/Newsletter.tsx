@@ -8,11 +8,13 @@ import { FiLoader, FiArrowRight } from "react-icons/fi";
 
 const Newsletter = () => {
   const [email, setEmail] = useState<string>("");
-  // Mesaj və onun tipini (uğur/xəta) saxlamaq üçün state
   const [status, setStatus] = useState<{ message: string; type: "success" | "error" | null }>({
     message: "",
     type: null,
   });
+
+  // Tokeni yoxlayırıq
+  const token = localStorage.getItem("token");
 
   const mutation = useMutation<void, AxiosError<ApiError>, string>({
     mutationFn: (newEmail: string) => api.post("/subscribers", { email: newEmail }),
@@ -21,18 +23,28 @@ const Newsletter = () => {
       setEmail("");
     },
     onError: (error) => {
-      const serverMessage = error.response?.data?.message || "Something went wrong!";
-      setStatus({ message: serverMessage, type: "error" });
+      // Əgər server 401 və ya 403 qaytarırsa (Auth problemi)
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        setStatus({ message: "Please login to subscribe us.", type: "error" });
+      } else {
+        const serverMessage = error.response?.data?.message || "Something went wrong!";
+        setStatus({ message: serverMessage, type: "error" });
+      }
     },
   });
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Köhnə statusu təmizləyirik
     setStatus({ message: "", type: null });
 
-    if (!email.includes("@")) {
+    // 1. LOGIN YOXLAMASI (Sorğudan əvvəl)
+    if (!token) {
+      setStatus({ message: "Please login to subscribe us.", type: "error" });
+      return;
+    }
+
+    // 2. EMAİL FORMAT YOXLAMASI
+    if (!email.includes("@") || email.length < 5) {
       setStatus({ message: "Please enter a valid email.", type: "error" });
       return;
     }
@@ -40,7 +52,6 @@ const Newsletter = () => {
     mutation.mutate(email);
   };
 
-  // İstifadəçi yenidən yazmağa başlayanda mesajı gizlətmək üçün (opsional)
   useEffect(() => {
     if (email.length > 0) {
       setStatus({ message: "", type: null });
@@ -73,7 +84,7 @@ const Newsletter = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={mutation.isPending}
-              type="text" // Validasiyanı özümüz etdiyimiz üçün 'text' saxladıq
+              type="text"
               placeholder="Enter your email address..."
               className="w-full bg-transparent py-4 text-black outline-none placeholder:text-gray-300 italic text-lg"
             />
@@ -93,10 +104,10 @@ const Newsletter = () => {
             </button>
           </form>
 
-          {/* İNPUTUN ALTINDAKI MESAJ HİSSƏSİ */}
-          <div className="h-6 mt-2"> {/* Hündürlük sabit qoyulub ki, mesaj çıxanda layout sürüşməsin */}
+          {/* MESAJ HİSSƏSİ */}
+          <div className="h-6 mt-2">
             {status.message && (
-              <p className={`text-xs font-bold uppercase tracking-widest text-left ${
+              <p className={`text-[10px] font-bold uppercase tracking-widest text-left ${
                 status.type === "success" ? "text-green-600" : "text-red-500"
               } animate-in fade-in slide-in-from-top-1 duration-300`}>
                 {status.message}
