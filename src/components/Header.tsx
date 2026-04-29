@@ -170,7 +170,9 @@ const Header = () => {
           <img
             src={logo}
             alt="Logo"
-            className="lg:hidden w-24  object-contain"
+            width="96" 
+            height="30"
+            className="lg:hidden w-24 object-contain"
           />
         </Link>
 
@@ -348,7 +350,7 @@ const Header = () => {
                             <div className="w-14 h-16 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 p-1 shadow-md">
                               <img
                                 src={p.imageUrl}
-                                alt=""
+                                alt={p.brand}
                                 className="w-full h-full object-fill rounded-lg"
                               />
                             </div>
