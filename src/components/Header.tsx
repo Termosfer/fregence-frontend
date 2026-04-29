@@ -122,7 +122,7 @@ const Header = () => {
 
   return (
     <div
-      className={`header flex items-center py-5 px-4 sm:px-8 lg:px-20 transition-all duration-300`}
+      className={`header flex items-center py-5 px-4 sm:px-8 lg:px-20 justify-between relative z-50 bg-white shadow-sm`}
     >
       <div className="flex items-center flex-1">
         <button
