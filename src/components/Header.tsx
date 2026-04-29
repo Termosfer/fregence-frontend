@@ -142,7 +142,7 @@ const Header = () => {
             src={logo}
             alt="Logo"
             width="128"
-            height="40"
+            height="20"
             className="hidden lg:block w-40 object-contain"
           />
         </Link>
