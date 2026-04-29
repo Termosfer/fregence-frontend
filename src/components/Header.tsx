@@ -78,7 +78,6 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
   useEffect(() => {
     if (mobileMenu) {
       document.body.style.overflow = "hidden";
@@ -122,7 +121,7 @@ const Header = () => {
 
   return (
     <div
-      className={`header flex items-center py-5 px-4 sm:px-8 lg:px-20 justify-between relative z-50 bg-white shadow-sm`}
+      className={`header flex items-center py-5 px-4 sm:px-8 lg:px-20 justify-between relative z-50 bg-white shadow-sm h-[70px]`}
     >
       <div className="flex items-center flex-1">
         <button
@@ -142,7 +141,7 @@ const Header = () => {
           <img
             src={logo}
             alt="Logo"
-            width="160" 
+            width="160"
             height="40"
             className="hidden lg:block w-40 object-contain"
           />
@@ -154,7 +153,7 @@ const Header = () => {
           <img
             src={logo}
             alt="Logo"
-            width="96" 
+            width="96"
             height="30"
             className="lg:hidden w-24 object-contain"
           />
