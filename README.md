@@ -33,3 +33,5 @@ Fregence Frontend is a modern, high-performance, and fully responsive web applic
 4. Launch the development server:
    ```bash
    npm run dev
+---
+   Developed by Toghrul
