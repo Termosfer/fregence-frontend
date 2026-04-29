@@ -7,47 +7,44 @@ const api = axios.create({
   },
 });
 
-// 1. SORĞU GEDƏNDƏ (Request Interceptor)
 api.interceptors.request.use(
   (config) => {
-    // LocalStorage-dən tokeni götürürük
     const token = localStorage.getItem("token");
-    
-    // Əgər token varsa, onu sorğunun Header hissəsinə əlavə edirik
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// 2. CAVAB GƏLƏNDƏ (Response Interceptor - Opsional amma tövsiyə olunur)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Sorğu atılan URL-i yoxlayırıq (məsələn: /auth/login)
-    const isLoginRequest = error.config?.url?.includes("/auth/login");
+    const status = error.response?.status;
+    const url = error.config?.url || "";
 
-    // Əgər status 401-dirsə
-    if (error.response?.status === 401) {
+   
+    if (url.includes("/auth/login")) {
+      return Promise.reject(error);
+    }
+
+    
+    if (url.includes("/subscribers") || url.includes("/contact")) {
+      return Promise.reject(error);
+    }
+
+  
+    if (status === 401 || status === 403) {
       
-      // ƏGƏR BU LOGİN SORĞUSU DEYİLDİRSƏ (Məsələn, səbətə baxanda tokenin vaxtı bitibsə)
-      if (!isLoginRequest) {
-        localStorage.clear(); 
-        window.location.href = "/"; // Yalnız bu halda refresh etsin
+      if (localStorage.getItem("token")) {
+        localStorage.clear();
+        // window.location.href = "/"; // <--- Əgər bu sətir çox narahat edirsə şərhə al
       }
-      
-      // Əgər bu bir logindirsə, burada heç nə etmirik (window.location yazmırıq)
-      // Beləliklə, Login.tsx-dəki catch bloku işləyəcək və sən xətanı görəcəksən.
     }
 
     return Promise.reject(error);
   }
 );
-
 
 export default api;

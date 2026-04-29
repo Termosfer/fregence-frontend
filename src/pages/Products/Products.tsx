@@ -132,7 +132,6 @@ const Products = () => {
     };
   }, [isFilterOpen]);
 
-
   return (
     <div className="py-10 font-[Playfair]">
       <div className="px-10 flex flex-col lg:flex-row gap-10">
@@ -173,24 +172,42 @@ const Products = () => {
     [&::-webkit-scrollbar-track]:bg-transparent"
           >
             <div className="flex flex-col gap-4">
-            {isBrandsLoading ? (
-              // Brendlər üçün skelet sətirləri
-              [...Array(10)]?.map((_, i) => (
-                <div key={i} className="h-5 w-3/4 bg-gray-100 rounded animate-pulse ml-5"></div>
-              ))
-            ) : (
-              /* Brend siyahısı kodu buraya gəlir... */
-              <div className="flex flex-col gap-3 max-h-[370px] overflow-y-auto custom-scrollbar">
-                 <button onClick={resetAllFilters} className={`cursor-pointer text-left text-base transition-all ${filters.brand === "" && !globalQuery ? "text-black font-bold" : "text-[#00000080]"}`}>All Brands</button>
-                 {brands?.map((brandName, index) => (
-                   <div key={index} onClick={() => updateFilter({ brand: brandName })} className={`group relative flex items-center font-semibold text-base cursor-pointer transition-all duration-300 mb-2 ${filters.brand === brandName ? "text-black" : "text-[#00000080] hover:text-black"}`}>
-                     <MdKeyboardArrowRight className={`absolute left-0 transition-all duration-300 ${filters.brand === brandName ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}`} />
-                     <p className={`text-sm md:text-base transition-transform duration-300 ${filters.brand === brandName ? "translate-x-6" : "group-hover:translate-x-6"}`}>{brandName}</p>
-                   </div>
-                 ))}
-              </div>
-            )}
-          </div>
+              {isBrandsLoading ? (
+                // Brendlər üçün skelet sətirləri
+                [...Array(10)]?.map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-5 w-3/4 bg-gray-100 rounded animate-pulse ml-5"
+                  ></div>
+                ))
+              ) : (
+                /* Brend siyahısı kodu buraya gəlir... */
+                <div className="flex flex-col gap-3 max-h-[370px] overflow-y-auto custom-scrollbar">
+                  <button
+                    onClick={resetAllFilters}
+                    className={`cursor-pointer text-left text-base transition-all ${filters.brand === "" && !globalQuery ? "text-black font-bold" : "text-[#00000080]"}`}
+                  >
+                    All Brands
+                  </button>
+                  {brands?.map((brandName, index) => (
+                    <div
+                      key={index}
+                      onClick={() => updateFilter({ brand: brandName })}
+                      className={`group relative flex items-center font-semibold text-base cursor-pointer transition-all duration-300 mb-2 ${filters.brand === brandName ? "text-black" : "text-[#00000080] hover:text-black"}`}
+                    >
+                      <MdKeyboardArrowRight
+                        className={`absolute left-0 transition-all duration-300 ${filters.brand === brandName ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}`}
+                      />
+                      <p
+                        className={`text-sm md:text-base transition-transform duration-300 ${filters.brand === brandName ? "translate-x-6" : "group-hover:translate-x-6"}`}
+                      >
+                        {brandName}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-3 py-3 px-5 border-l-4 border-black my-8">
@@ -221,7 +238,8 @@ const Products = () => {
           </div>
           <div className="flex gap-2 mb-10">
             {["MEN", "WOMEN", "UNISEX"]?.map((g) => (
-              <button aria-label="show gender"
+              <button
+                aria-label="show gender"
                 key={g}
                 onClick={() =>
                   updateFilter({ gender: filters.gender === g ? "" : g })
@@ -310,7 +328,7 @@ const Products = () => {
                 {[...Array(8)]?.map((_, i) => (
                   <div
                     key={i}
-                    className="animate-pulse bg-gray-100 rounded-lg h-[300px] w-[230px]"
+                    className="animate-pulse bg-gray-100 rounded-lg grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full h-[350px] xl:h-[300px]"
                   ></div>
                 ))}
               </div>
