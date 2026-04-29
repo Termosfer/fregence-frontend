@@ -25,12 +25,6 @@ import { useDebounce } from "../hooks/useDebounce";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [scrolled, setScrolled] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      return window.scrollY > 50;
-    }
-    return false;
-  });
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const [isMobileProfileOpen, setIsMobileProfileOpen] =
@@ -84,14 +78,6 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     if (mobileMenu) {
@@ -136,9 +122,7 @@ const Header = () => {
 
   return (
     <div
-      className={`header flex items-center py-5 px-4 sm:px-8 lg:px-20 transition-all duration-300 ${
-        scrolled ? "header-scrolled shadow-md" : ""
-      }`}
+      className={`header flex items-center py-5 px-4 sm:px-8 lg:px-20 transition-all duration-300`}
     >
       <div className="flex items-center flex-1">
         <button
@@ -158,7 +142,7 @@ const Header = () => {
           <img
             src={logo}
             alt="Logo"
-            width="160" // Təxmini ölçülər (w-40 üçün)
+            width="160" 
             height="40"
             className="hidden lg:block w-40 object-contain"
           />
