@@ -22,6 +22,7 @@ import img9 from "../../assets/b9-1.webp";
 import img10 from "../../assets/b9-2.webp";
 import img11 from "../../assets/b9-3.webp";
 import img13 from "../../assets/b124-1.webp";
+import BrandMarquee from "../../components/BrandMarquee";
 
 const scentCards = [
   { img: img9, title: "Sandalwood" },
@@ -29,12 +30,42 @@ const scentCards = [
   { img: img11, title: "Midnight Jasmine" },
 ];
 const notes = [
-  { img: img3, title: "Floral" },
-  { img: img4, title: "Warm & Spicy" },
-  { img: img5, title: "Woody" },
-  { img: img6, title: "Lavender" },
-  { img: img7, title: "Vanilla" },
-  { img: img8, title: "Fresh" },
+  { 
+    img: img3, 
+    title: "Floral", 
+    color: "#FFD1DC", 
+    top: "Rose", heart: "Jasmine", base: "Peony" 
+  },
+  { 
+    img: img4, 
+    title: "Warm & Spicy", 
+    color: "#E2725B", 
+    top: "Saffron", heart: "Cinnamon", base: "Amber" 
+  },
+  { 
+    img: img5, 
+    title: "Woody", 
+    color: "#D2B48C", 
+    top: "Cedar", heart: "Sandalwood", base: "Oud" 
+  },
+  { 
+    img: img6, 
+    title: "Lavender", 
+    color: "#E6E6FA", 
+    top: "Lavender", heart: "Sage", base: "Coumarin" 
+  },
+  { 
+    img: img7, 
+    title: "Vanilla", 
+    color: "#F3E5AB", 
+    top: "Vanilla", heart: "Orchid", base: "Musk" 
+  },
+  { 
+    img: img8, 
+    title: "Fresh", 
+    color: "#ADD8E6", 
+    top: "Bergamot", heart: "Sea Salt", base: "Mint" 
+  },
 ];
 
 const Home = () => {
@@ -136,85 +167,131 @@ const Home = () => {
 
       {/* 2. THE NOTES - ANIMATED MOLECULES (img3 - img8) */}
       <section className="py-24 max-w-[1440px] mx-auto px-6 lg:px-20 overflow-hidden">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-          <motion.div
-            initial={{ x: -50, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-2"
-          >
-            <h2 className="text-[10px] font-black uppercase tracking-[4px] text-[#81d8d0]">
-              Olfactory Gallery
-            </h2>
-            <h3 className="text-4xl font-bold font-[Playfair] tracking-tight text-gray-900">
-              Shop by Scent Profile
-            </h3>
-          </motion.div>
-          <div className="h-[1px] flex-1 bg-gray-100 hidden md:block mx-10 mb-3"></div>
-          <Link
-            to="/shops"
-            className="text-[10px] font-black uppercase tracking-widest border-b-2 border-black pb-1 hover:text-[#81d8d0] hover:border-[#81d8d0] transition-colors"
-          >
-            All families
-          </Link>
-        </div>
+  <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+    <motion.div
+      initial={{ x: -50, opacity: 0 }}
+      whileInView={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="space-y-2"
+    >
+      <h2 className="text-[10px] font-black uppercase tracking-[4px] text-[#81d8d0]">
+        Olfactory Gallery
+      </h2>
+      <h3 className="text-4xl font-bold font-[Playfair] tracking-tight text-gray-900">
+        Shop by Scent Profile
+      </h3>
+    </motion.div>
+    <div className="h-[1px] flex-1 bg-gray-100 hidden md:block mx-10 mb-3"></div>
+    <Link
+      to="/shops"
+      className="text-[10px] font-black uppercase tracking-widest border-b-2 border-black pb-1 hover:text-[#81d8d0] hover:border-[#81d8d0] transition-colors"
+    >
+      All families
+    </Link>
+  </div>
 
-        {/* Konteyner üçün Stagger effekti */}
+  {/* Konteyner üçün Stagger effekti */}
+  <motion.div
+    initial="initial"
+    whileInView="animate"
+    viewport={{ once: true }}
+    variants={{
+      animate: { transition: { staggerChildren: 0.1 } },
+    }}
+    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10"
+  >
+    {notes?.map((note, i) => (
+      <motion.div
+        key={i}
+        variants={{
+          initial: { y: 30, opacity: 0 },
+          animate: { y: 0, opacity: 1 },
+        }}
+        whileHover="hover" // Bu, uşaq elementlərdəki 'hover' variantlarını aktiv edir
+        className="flex flex-col items-center group cursor-pointer"
+      >
+        {/* Dairəvi Konteyner */}
         <motion.div
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          variants={{
-            animate: { transition: { staggerChildren: 0.1 } },
+          animate={{
+            y: [0, -10, 0],
           }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10"
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            delay: i * 0.2,
+            ease: "easeInOut",
+          }}
+          className="relative w-full aspect-square rounded-full overflow-hidden border border-gray-100 bg-white p-4 shadow-sm group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] group-hover:border-black transition-all duration-500"
         >
-          {notes?.map((note, i) => (
-            <motion.div
-              key={i}
-              variants={{
-                initial: { y: 30, opacity: 0 },
-                animate: { y: 0, opacity: 1 },
-              }}
-              className="flex flex-col items-center group cursor-pointer"
-            >
-              {/* Dairəvi Konteyner: Həmişə yavaşca süzən (floating) animasiya */}
-              <motion.div
-                animate={{
-                  y: [0, -10, 0], // Aşağı-yuxarı hərəkət
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  delay: i * 0.2, // Hər biri fərqli vaxtda tərpənsin deyə
-                  ease: "easeInOut",
-                }}
-                whileHover={{ scale: 1.08, rotate: [0, -2, 2, 0] }}
-                className="relative w-full aspect-square rounded-full overflow-hidden border border-gray-100 bg-white p-4 shadow-sm group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] group-hover:border-black transition-all duration-500"
-              >
-                {/* Şəkil daxilində yüngül zoom */}
-                <motion.img
-                  src={note.img}
-                  className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
-                  alt={note.title}
-                />
+          
+          {/* 1. ARXA FONDAKI AURA (Qoxu buludu) */}
+          <motion.div
+            variants={{
+              hover: { scale: 2, opacity: 0.5 }
+            }}
+            initial={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            style={{ backgroundColor: note.color }}
+            className="absolute inset-0 rounded-full blur-3xl -z-10"
+          />
 
-                {/* Hover zamanı zərif parıltı (Aura) */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#81d8d0]/0 via-[#81d8d0]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </motion.div>
+          {/* ƏSAS ŞƏKİL - Hoverdə kiçilir və şəffaflaşır */}
+          <motion.img
+            src={note.img}
+            variants={{
+              hover: { 
+                scale: 0.7, 
+                opacity: 0.15, 
+                filter: "blur(4px)" 
+              }
+            }}
+            transition={{ duration: 0.6 }}
+            className="w-full h-full object-contain mix-blend-multiply relative z-10"
+            alt={note.title}
+          />
 
-              {/* Yazı üçün animasiya */}
-              <div className="mt-6 flex flex-col items-center overflow-hidden">
-                <span className="text-[10px] font-black uppercase tracking-widest text-neutral  group-hover:text-black transition-all duration-300 transform translate-y-0 group-hover:-translate-y-1">
-                  {note.title}
-                </span>
-                {/* Altdan çıxan incə xətt */}
-                <div className="w-0 h-[1.5px] bg-[#81d8d0] group-hover:w-full transition-all duration-500 mt-1" />
-              </div>
-            </motion.div>
-          ))}
+          {/* 2. ÜST QATDAKI NOTLAR (Composition Overlay) */}
+          <motion.div
+            variants={{
+              hover: { opacity: 1, y: 0 }
+            }}
+            initial={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-20"
+          >
+            <span className="text-[7px] font-black tracking-[3px] text-[#81d8d0] uppercase mb-2">
+              Composition
+            </span>
+            <div className="space-y-1">
+              <p className="text-[9px] font-bold text-gray-800 uppercase leading-none">
+                Top: {note.top}
+              </p>
+              <p className="text-[9px] font-bold text-gray-800 uppercase leading-none border-y border-gray-100 py-1">
+                Heart: {note.heart}
+              </p>
+              <p className="text-[9px] font-bold text-gray-800 uppercase leading-none">
+                Base: {note.base}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Hover parıltı effekti */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </motion.div>
-      </section>
+
+        {/* Yazı və Altındakı Xətt */}
+        <div className="mt-6 flex flex-col items-center overflow-hidden">
+          <span className="text-[10px] font-black uppercase tracking-widest text-neutral group-hover:text-black transition-all duration-300 transform translate-y-0 group-hover:-translate-y-1">
+            {note.title}
+          </span>
+          <div className="w-0 h-[1.5px] bg-[#81d8d0] group-hover:w-full transition-all duration-500 mt-1" />
+        </div>
+      </motion.div>
+    ))}
+  </motion.div>
+</section>
+
+<BrandMarquee/>
       {/* 3. SCENT DISCOVERY - ASYMMETRIC (img9, img10, img11) */}
       <section className="py-24 bg-black text-white overflow-hidden">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">

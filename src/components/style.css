@@ -6,10 +6,11 @@
   scrollbar-width: none;
 }
 
-
 .menu-icon {
   display: inline-flex;
-  transition: transform 0.5s ease, opacity 0.2s ease;
+  transition:
+    transform 0.5s ease,
+    opacity 0.2s ease;
 }
 
 .menu-icon.open {
@@ -24,3 +25,25 @@
 .mobile-menu.open {
   transform: translateX(0);
 }
+
+/* Sonsuz axın animasiyası */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee-infinite {
+  display: flex;
+  width: max-content;
+  animation: marquee 45s linear infinite;
+}
+
+/* Mouse üzərinə gələndə dayanması üçün */
+.animate-marquee-infinite:hover {
+  animation-play-state: paused;
+}
+
