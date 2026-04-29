@@ -137,13 +137,20 @@ const Header = () => {
             {mobileMenu ? <FiX /> : <FiMenu />}
           </span>
         </button>
-        <Link to="/" onClick={closeAll} aria-label="logo">
+        <Link
+          to="/"
+          onClick={closeAll}
+          aria-label="logo"
+          className="block w-40 h-10"
+        >
           <img
             src={logo}
             alt="Logo"
-            width="128"
-            height="20"
-            className="hidden lg:block w-40 object-contain"
+            width="160" 
+            height="40" 
+            className="hidden lg:block w-40 h-auto object-contain"
+            loading="eager" 
+            fetchPriority="high" 
           />
         </Link>
       </div>
