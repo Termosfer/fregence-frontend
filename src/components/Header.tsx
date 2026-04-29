@@ -141,7 +141,7 @@ const Header = () => {
           to="/"
           onClick={closeAll}
           aria-label="logo"
-          className="block w-40 h-10"
+          className="block w-40 h-40"
         >
           <img
             src={logo}
@@ -149,8 +149,7 @@ const Header = () => {
             width="160" 
             height="40" 
             className="hidden lg:block w-40 h-auto object-contain"
-            loading="eager" 
-            fetchPriority="high" 
+            
           />
         </Link>
       </div>
