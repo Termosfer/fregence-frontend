@@ -141,8 +141,6 @@ const Header = () => {
           <img
             src={logo}
             alt="Logo"
-            width="160"
-            height="40"
             className="hidden lg:block w-40 object-contain"
           />
         </Link>
