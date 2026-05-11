@@ -3,10 +3,22 @@ import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { FiCheckCircle, FiPackage, FiArrowRight, FiMail } from "react-icons/fi";
+import { useCart } from "../../hooks/useCart";
+import { useQueryClient } from "@tanstack/react-query";
 
 const OrderSuccess = () => {
   const { orderId } = useParams<{ orderId: string }>(); // URL-dən sifariş nömrəsini götürürük
+  const queryClient = useQueryClient();
+  const { clearCart } = useCart();
   useEffect(() => {
+    // 1. BU ÇOK VACİBDİR: Müştəri bu səhifəni gördüyü an səbəti boşaldırıq
+    // Beləliklə Header-dəki rəqəm dərhal 0 olur.
+    clearCart();
+
+    // 2. Müştərinin sifariş kəşini silirik ki, "Track Order"ə basanda
+    // heç bir gecikmə olmadan ən son sifarişi görsün.
+    queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+
     // Səhifə açılan kimi professional konfeti animasiyası
     const duration = 3 * 1000;
     const animationEnd = Date.now() + duration;
@@ -37,7 +49,7 @@ const OrderSuccess = () => {
     }, 250);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [clearCart, queryClient]);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-20 font-[Playfair]">

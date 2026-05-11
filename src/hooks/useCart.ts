@@ -7,6 +7,7 @@ import type {
   CartMutationContext,
   CartResponse,
   Perfume,
+  WishlistItemDTO,
 } from "../types/perfume";
 
 export const useCart = () => {
@@ -26,10 +27,10 @@ export const useCart = () => {
   });
 
   const cartItems = responseData?.items || [];
-  const cartTotal = cartItems.reduce((sum, item) => sum + item.subTotal, 0);
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const cartTotal = responseData?.totalAmount || 0;
+  const cartCount = cartItems.length; // Sətir sayını (növ) göstərmək üçün
 
-  // 2. Artırıb-azaltma / Əlavə etmə
+  // 2. Artırıb-azaltma / Əlavə etmə (VARIANT ID İLƏ)
   const addToCartMutation = useMutation<
     void,
     Error,
@@ -37,25 +38,26 @@ export const useCart = () => {
     CartMutationContext
   >({
     mutationKey: ["cart-update"],
-    mutationFn: ({ perfumeId, quantity }) =>
-      api.post(`/cart/add?perfumeId=${perfumeId}&quantity=${quantity}`),
+    // DÜZƏLİŞ: URL-də perfumeId yerinə variantId göndəririk
+    mutationFn: ({ variantId, quantity }) =>
+      api.post(`/cart/add?variantId=${variantId}&quantity=${quantity}`),
 
-    onMutate: async ({ perfumeId, quantity, perfume }) => {
+    onMutate: async ({ variantId, quantity, perfume, variant }) => {
       await queryClient.cancelQueries({ queryKey: ["cart"] });
       const previousCart = queryClient.getQueryData<CartResponse>(["cart"]);
 
       queryClient.setQueryData<CartResponse>(["cart"], (old) => {
         if (!old) return { items: [], totalAmount: 0 };
 
-        const existingItem = old.items?.find((i) => i.perfumeId === perfumeId);
+        // DÜZƏLİŞ: Axtarışı variantId üzərindən edirik
+        const existingItem = old.items?.find((i) => i.variantId === variantId);
         let newItems: CartItem[];
 
         if (existingItem) {
           newItems = old.items?.map((item) => {
-            if (item.perfumeId === perfumeId) {
+            if (item.variantId === variantId) {
               const newQty = item.quantity + quantity;
               
-              // VACİB: Endirimli qiymət varsa onu götür, yoxdursa normal qiyməti
               const effectivePrice = (item.discountPrice && item.discountPrice > 0) 
                                      ? item.discountPrice 
                                      : item.price;
@@ -63,24 +65,27 @@ export const useCart = () => {
               return {
                 ...item,
                 quantity: newQty,
-                subTotal: newQty * effectivePrice, // Qiymət sıçrayışının qarşısını alan sətir
+                subTotal: newQty * effectivePrice,
               };
             }
             return item;
           });
         } else {
-          // Yeni məhsul əlavə ediləndə endirimli qiyməti müəyyən edirik
-          const effectivePrice = (perfume?.discountPrice && perfume.discountPrice > 0) 
-                                 ? perfume.discountPrice 
-                                 : (perfume?.price || 0);
+          // Yeni məhsul üçün qiymət hesablama
+          // Əgər 'variant' obyekti göndərilibsə ordan götür, yoxdursa perfume-dan
+          const price = variant?.price || perfume?.price || 0;
+          const discountPrice = variant?.discountPrice || perfume?.discountPrice || 0;
+          const effectivePrice = (discountPrice > 0) ? discountPrice : price;
 
           const newItem: CartItem = {
-            cartItemId: Math.random(), // Keçici ID
-            perfumeId: perfumeId,
+            cartItemId: Math.random(), 
+            perfumeId: perfume?.id || 0,
+            variantId: variantId, // Yeni sahə
             perfumeName: perfume?.name || "Loading...",
             brand: perfume?.brand || "...",
-            price: perfume?.price || 0,
-            discountPrice: perfume?.discountPrice || 0, // DTO-dan gələn endirimi saxla
+            ml: variant?.ml || 0, // Yeni sahə
+            price: price,
+            discountPrice: discountPrice,
             quantity: quantity,
             subTotal: effectivePrice * quantity,
             imageUrl: perfume?.imageUrl || "",
@@ -114,7 +119,7 @@ export const useCart = () => {
     },
   });
 
-  // 3. Silmək Mutasiyası
+  // 3. Silmək Mutasiyası (cartItemId ilə - dəyişməz qalır)
   const removeFromCartMutation = useMutation<
     void,
     Error,
@@ -154,23 +159,41 @@ export const useCart = () => {
     },
   });
 
-  const handleAddToCart = (product: Perfume) => {
-    if (!token) return toast.error("Please log in first!");
+  // Ana səhifədəki "Quick Add" düyməsi üçün (Default variantı əlavə edir)
+ // useCart.ts daxilində handleAddToCart funksiyasını belə yenilə:
 
-    const alreadyInCart = cartItems.some(
-      (item) => item.perfumeId === product.id,
-    );
-    if (alreadyInCart) {
-      return toast.info("This item is already in your cart.");
-    }
+const handleAddToCart = (product: Perfume | WishlistItemDTO) => { // 'any' yazırıq ki, fərqli strukturları qəbul etsin
+  if (!token) return toast.error("Please log in first!");
 
-    addToCartMutation.mutate({
-      perfumeId: product.id,
-      quantity: 1,
-      perfume: product,
-      isNew: true,
-    });
-  };
+  // 1. Variant ID-ni tapmaq üçün 3 mənbəyə baxırıq:
+  // a) Obyektin özündə birbaşa 'variantId' varmı? (Wishlist-dən gələndə belə olur)
+  // b) 'variants' massivi varmı? (Ana səhifədən gələndə belə olur)
+  // c) Heç biri yoxdursa 'id' sahəsini variantId kimi yoxla (Bəzi hallarda lazım olur)
+  
+  const vId = ("variantId" in product) 
+             ? product.variantId 
+             : product.variants?.find((v) => v.ml === product.defaultMl)?.id || 
+               product.variants?.[0]?.id;
+
+  if (!vId) {
+    console.error("Variant ID tapılmadı:", product);
+    return toast.error("Product information is incomplete.");
+  }
+
+  const alreadyInCart = cartItems.some((item) => item.variantId === vId);
+
+  if (alreadyInCart) {
+    return toast.info("This item is already in your cart.");
+  }
+
+  // Tapılan vId ilə əlavə edirik
+  addToCartMutation.mutate({
+    variantId: vId,
+    quantity: 1,
+    perfume: product,
+    isNew: true,
+  });
+};
 
   const clearCart = () => {
     queryClient.setQueryData<CartResponse>(["cart"], {

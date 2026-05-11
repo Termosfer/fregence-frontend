@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { useWishlist } from "../../hooks/useWishlist";
 import { useCart } from "../../hooks/useCart";
-/* import Recomendation from "../../components/Recomendation"; */
+import type { WishlistItemDTO } from "../../types/perfume"; // Yeni tipi import edirik
 
 const Wishlist = () => {
   const { wishlist, removeFromWishlist, isLoading } = useWishlist();
   const { addToCart } = useCart();
+
   if (isLoading) {
     return (
       <div className="text-center py-20 text-xl font-bold animate-pulse uppercase tracking-widest">
@@ -23,25 +24,17 @@ const Wishlist = () => {
       <div className="w-full">
         {wishlist.length === 0 ? (
           <div className="text-center py-20 border-2 border-dashed border-gray-200 rounded-xl">
-            <p className="text-gray-500 text-lg mb-6 italic text-[Playfair]">
+            <p className="text-gray-500 text-lg mb-6 italic font-[Playfair]">
               Your wishlist is currently empty.
             </p>
             <Link
               to="/products"
-              className="
-                            relative  md:min-w-[120px]
-                            h-[46px] w-[120px] overflow-hidden group
-                            rounded-full bg-black text-white
-                            border border-black transition
-                            hover:bg-white hover:text-black
-                            cursor-pointer
-                            inline-flex items-center justify-center
-                          "
+              className="relative md:min-w-[120px] h-[46px] w-[120px] overflow-hidden group rounded-full bg-black text-white border border-black transition hover:bg-white hover:text-black cursor-pointer inline-flex items-center justify-center"
             >
-              <span className="absolute inset-0 flex items-center  justify-center text-sm font-semibold transition-transform duration-300 group-hover:-translate-y-full ">
+              <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold transition-transform duration-300 group-hover:-translate-y-full">
                 Shop Now
               </span>
-              <span className="absolute inset-0 flex items-center  justify-center text-sm font-semibold text-black translate-y-full transition-transform duration-300 group-hover:translate-y-0 ">
+              <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-black translate-y-full transition-transform duration-300 group-hover:translate-y-0">
                 Shop Now
               </span>
             </Link>
@@ -59,48 +52,44 @@ const Wishlist = () => {
               </thead>
 
               <tbody>
-                {wishlist?.map((item) => (
+                {wishlist?.map((item: WishlistItemDTO) => (
                   <tr
-                    key={item.id}
+                    key={item.variantId} // VariantId hər zaman unikaldır
                     className="border-b-2 border-gray-300 block md:table-row mb-6 lg:mb-0"
                   >
                     {/* Product Info */}
                     <td className="py-6 block lg:table-cell">
                       <div className="flex items-center gap-4">
                         <img
-                          src={item.imageUrl}
-                          alt={item.name}
+                          src={item.imageUrl || undefined} // Boş string xətasının qarşısını alır
+                          alt={item.perfumeName}
                           className="w-20 h-24 object-contain rounded-md bg-gray-50"
                         />
                         <div className="text-left">
                           <p className="font-semibold text-base sm:text-lg">
-                            {item.name}
+                            {item.perfumeName} {/* DTO-da adı 'perfumeName'-dir */}
                           </p>
-                          <p className="text-xs text-neutral  uppercase tracking-widest">
+                          <p className="text-xs text-neutral uppercase tracking-widest">
                             {item.brand}
                           </p>
+                          <p className="text-[10px] font-bold text-gray-400">{item.ml} ML</p>
                         </div>
                       </div>
                     </td>
 
                     {/* Price */}
-                    <td className="py-6 font-medium font-[Jost] text-lg hidden md:table-cell text-center">
-                      <div className="flex justify-center items-center gap-3 font-[Jost]">
+                    <td className="py-6 font-medium font-[Jost] text-lg block md:table-cell text-center">
+                      <div className="flex justify-center items-center gap-3">
                         {item.discountPrice && item.discountPrice > 0 ? (
-                          // Ehtimal 1: Endirim VARSA
                           <>
-                            {/* Yeni qiymət (Endirimli) */}
                             <span className="text-[#81d8d0] text-sm font-black">
                               {item.discountPrice} AZN
                             </span>
-
-                            {/* Köhnə qiymət (Üstü xətli) */}
-                            <span className="line-through text-[11px] text-neutral ">
+                            <span className="line-through text-[11px] text-neutral">
                               {item.price} AZN
                             </span>
                           </>
                         ) : (
-                          // Ehtimal 2: Endirim YOXDURSA (Yalnız normal qiymət)
                           <span className="text-gray-900 text-sm font-black">
                             {item.price} AZN
                           </span>
@@ -120,16 +109,9 @@ const Wishlist = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            addToCart(item);
+                            addToCart(item as WishlistItemDTO);
                           }}
-                          className="
-                            relative w-full md:min-w-[120px]
-                            h-[46px] overflow-hidden group
-                            rounded-full border border-black
-                            transition-colors duration-300
-                            hover:bg-black
-                            cursor-pointer
-                          "
+                          className="relative w-full md:min-w-[120px] h-[46px] overflow-hidden group rounded-full border border-black transition-colors duration-300 hover:bg-black cursor-pointer"
                         >
                           <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-black transition-transform duration-300 group-hover:-translate-y-full group-hover:text-white uppercase">
                             Add to Cart
@@ -139,19 +121,13 @@ const Wishlist = () => {
                           </span>
                         </button>
 
+                        {/* Remove Button */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            removeFromWishlist(item.id);
+                            removeFromWishlist(item.variantId); // VACİB: variantId göndəririk
                           }}
-                          className="
-                            relative w-full md:min-w-[120px]
-                            h-[46px] overflow-hidden group
-                            rounded-full bg-black text-white
-                            border border-black transition
-                            hover:bg-white hover:text-black
-                            cursor-pointer
-                          "
+                          className="relative w-full md:min-w-[120px] h-[46px] overflow-hidden group rounded-full bg-black text-white border border-black transition hover:bg-white hover:text-black cursor-pointer"
                         >
                           <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold transition-transform duration-300 group-hover:-translate-y-full uppercase">
                             Remove
@@ -169,7 +145,6 @@ const Wishlist = () => {
           </div>
         )}
       </div>
-      <div className="mt-10">{/* <Recomendation /> */}</div>
     </div>
   );
 };

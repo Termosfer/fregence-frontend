@@ -1,43 +1,64 @@
+// --- 1. PERFUME & VARIANTS ---
+export interface PerfumeVariant {
+  id: number;
+  ml: number;
+  price: number;
+  discountPrice: number | null;
+  stock: number;
+  lowStock?: boolean;
+  stockMessage?: string;
+}
+
 export interface Perfume {
   id: number;
   brand: string;
   name: string;
-  price: number;
-  discountPrice?: number;
-  imageUrl: string;
   description: string;
-  ml: number;
+  imageUrl: string;
   gender: "MEN" | "WOMEN" | "UNISEX";
   isNew: boolean;
-  isRecommended?: boolean;
+  isRecommended: boolean;
+  // Backend convertToDto-dan gələn ana qiymətlər
+  price: number;           // Ən ucuz variantın orijinal qiyməti
+  discountPrice: number | null; // Ən ucuz variantın endirimli qiyməti
+  minPrice: number;        // Son görünən qiymət
+  defaultMl: number;       // Avtomatik seçilən ölçü
+  variants: PerfumeVariant[];
 }
 
-export interface BrandGroup {
-  name: string;
-  count: number;
-  mainImage: string;
-  products: string[];
+// --- 2. WISHLIST ---
+export interface WishlistItemDTO {
+  id?: number; // Wishlist rekordunun ID-si
+  perfumeId: number;
+  variantId: number;
+  perfumeName: string;
+  brand: string;
+  imageUrl: string;
+  ml: number;
+  price: number;
+  discountPrice: number | null;
+  name?:string;
 }
 
-export interface PageResponse<T> {
-  content: T[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  last: boolean;
+export interface WishlistMutationContext {
+  previousWishlist: WishlistItemDTO[] | undefined;
+  previousCount: number | undefined;
 }
 
+// --- 3. CART (SƏBƏT) ---
 export interface CartItem {
   cartItemId: number;
   perfumeId: number;
+  variantId: number;
   perfumeName: string;
-  brand?: string;
+  brand: string;
+  ml: number;
   price: number;
-  discountPrice?:number;
+  discountPrice: number | null;
   quantity: number;
   subTotal: number;
-  imageUrl?: string;
+  imageUrl: string;
+  
 }
 
 export interface CartResponse {
@@ -46,9 +67,11 @@ export interface CartResponse {
 }
 
 export interface AddToCartArgs {
-  perfumeId: number;
+  variantId: number;
   quantity: number;
-  perfume?: Perfume;
+  perfumeId?: number;
+   perfume?: Perfume | WishlistItemDTO;
+  variant?: PerfumeVariant;
   isNew?: boolean;
 }
 
@@ -56,9 +79,60 @@ export interface CartMutationContext {
   previousCart: CartResponse | undefined;
 }
 
-export interface WishlistMutationContext {
-  previousWishlist: Perfume[] | undefined;
-  previousCount: number | undefined;
+// --- 4. ORDER (SİFARİŞ) SİSTEMİ ---
+export type OrderStatus = "AWAITING_PAYMENT" | "PAID" | "PENDING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+
+export interface OrderItem {
+  id: number;
+  perfumeId: number;
+  perfumeName: string;
+  brand: string;
+  imageUrl: string;
+  price: number; // Alış anındakı qiymət
+  quantity: number;
+  subTotal: number;
+}
+
+export interface Order {
+  id: number;
+  customerName: string;
+  customerEmail: string;
+  totalAmount: number;
+  address: string;
+  phoneNumber: string;
+  orderNote?: string;
+  status: OrderStatus;
+  orderDate: string;
+  preferredDeliveryTime?: string;
+  estimatedDeliveryTime?: string;
+  courierName?: string;
+  courierPhone?: string;
+  items: OrderItem[];
+}
+
+export interface OrderFilterParams {
+  customerName?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  size?: number;
+}
+
+export interface ShipOrderArgs {
+  id: number;
+  courierName: string;
+  courierPhone: string;
+  estimatedTime: string;
+}
+
+// --- 5. USER & AUTH ---
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: "ADMIN" | "USER";
 }
 
 export interface UserProfile {
@@ -72,104 +146,7 @@ export interface PasswordUpdateData {
   newPassword: string;
 }
 
-export interface ApiError {
-  message: string;
-}
-export interface OrderFilterParams {
-  customerName?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  startDate?: string;
-  endDate?: string;
-  sortBy?: "orderDate" | "totalAmount";
-  sortDir?: "asc" | "desc";
-}
-
-export interface OrderItem {
-  id: number;
-  perfumeName: string;
-  priceAtPurchase: number;
-  quantity: number;
-}
-
-export interface OrderResponse {
-  id: number;
-  customerName: string;
-  customerEmail: string;
-  totalAmount: number;
-  address: string;
-  phoneNumber: string;
-  orderNote: string;
-  status: "PENDING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
-  orderDate: string;
-  preferredDeliveryTime: string;
-  items: OrderItem[];
-}
-
-export type OrderStatus = "PENDING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
-
-export interface OrderItem {
-  id: number;
-  perfumeName: string;
-  imageUrl: string;
-  brand: string;
-  quantity: number;
-  price: number;
-}
-
-export interface Order {
-  id: number;
-  orderDate: string;
-  totalAmount: number;
-  status: OrderStatus;
-  items: OrderItem[];
-  orderNote?: string;
-  phoneNumber: string;
-  customerName: string;
-  customerEmail: string;
-  address: string;
-  // YENİ SAHƏLƏR:
-  courierName?: string;
-  courierPhone?: string;
-  estimatedDeliveryTime?: string;
-  preferredDeliveryTime?: string;
-}
-
-export interface OrderFilters {
-  search: string;
-  status: string;
-  minPrice: number | undefined;
-  maxPrice: number | undefined;
-  sortBy: "orderDate" | "totalAmount";
-  sortDir: "asc" | "desc";
-}
-
-export interface AddProductFormInput {
-  name: string;
-  brand: string;
-  price: number;
-  ml: number;
-  gender: "MEN" | "WOMEN" | "UNISEX";
-  description: string;
-  discountPrice?: number;
-  isNew?: boolean;
-  isRecommended?: boolean;
-}
-
-export interface ShipOrderArgs {
-  id: number;
-  courierName: string;
-  courierPhone: string;
-  estimatedTime: string;
-}
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: "ADMIN" | "USER";
-}
-
+// --- 6. COMMON & UTILITY ---
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;
@@ -179,9 +156,20 @@ export interface PageResponse<T> {
   last: boolean;
 }
 
+export interface ApiError {
+  message: string;
+}
+
 export interface ContactMessage {
   id: number;
   name: string;
   email: string;
   message: string;
+}
+
+export interface BrandGroup {
+  name: string;
+  count: number;
+  mainImage: string;
+  products: string[];
 }

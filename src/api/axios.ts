@@ -1,9 +1,11 @@
-import axios from 'axios';
+import { QueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
+const queryClient = new QueryClient();
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -15,7 +17,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 api.interceptors.response.use(
@@ -24,27 +26,24 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const url = error.config?.url || "";
 
-   
     if (url.includes("/auth/login")) {
       return Promise.reject(error);
     }
 
-    
     if (url.includes("/subscribers") || url.includes("/contact")) {
       return Promise.reject(error);
     }
 
-  
     if (status === 401 || status === 403) {
-      
       if (localStorage.getItem("token")) {
         localStorage.clear();
+        queryClient.clear();
         // window.location.href = "/"; // <--- Əgər bu sətir çox narahat edirsə şərhə al
       }
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

@@ -114,7 +114,7 @@ const AdminLayout = () => {
           }
 
           // Sifarişlər səhifəsindəki siyahını yeniləyir
-          queryClient.invalidateQueries({ queryKey: ["admin-all-orders"] });
+          queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
 
           // Dashboard-dakı statistika rəqəmlərini (qazanc, say və s.) yeniləyir
           queryClient.invalidateQueries({
@@ -161,7 +161,7 @@ const AdminLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FA] font-[Playfair]">
-      <aside className="w-64 bg-[#0F172A] text-white flex flex-col fixed h-full z-[100] shadow-xl">
+      <aside className="w-64 bg-[#0F172A] text-white flex flex-col fixed h-full z-100 shadow-xl">
         <div className="p-8 border-b border-white/5">
           <h2 className="text-xl font-bold tracking-widest uppercase flex items-center  gap-2">
             <span className="w-8 h-8 bg-white text-black flex items-center justify-center rounded-lg">
@@ -214,7 +214,7 @@ const AdminLayout = () => {
       </aside>
 
       <div className="flex-1 ml-64 flex flex-col min-h-screen">
-        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-10 sticky top-0 z-[90]">
+        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-10 sticky top-0 z-90">
           <div className="relative w-full max-w-md group">
             <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral  group-focus-within:text-black transition-colors" />
             <input
@@ -242,7 +242,7 @@ const AdminLayout = () => {
               </div>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-3 w-80 bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden z-[110] animate-in fade-in slide-in-from-top-2">
+                <div className="absolute right-0 mt-3 w-80 bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden z-110 animate-in fade-in slide-in-from-top-2">
                   <div className="p-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
                     <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">
                       Recent Notifications

@@ -1,17 +1,21 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios";
 import { toast } from "react-toastify";
-import type { Perfume, WishlistMutationContext } from "../types/perfume";
+import type { 
+  Perfume, 
+  WishlistItemDTO, 
+  WishlistMutationContext 
+} from "../types/perfume";
 
 export const useWishlist = () => {
   const queryClient = useQueryClient();
   const token = localStorage.getItem("token");
-  /* const token = useAuth(); */
+
   // 1. Wishlist-i çəkirik
-  const { data: wishlist = [], isLoading } = useQuery<Perfume[]>({
+  const { data: wishlist = [], isLoading } = useQuery<WishlistItemDTO[]>({
     queryKey: ["wishlist"],
     queryFn: async () => {
-      const res = await api.get("/wishlist");
+      const res = await api.get<WishlistItemDTO[]>("/wishlist");
       return res.data;
     },
     enabled: !!token,
@@ -21,48 +25,59 @@ export const useWishlist = () => {
   const { data: wishlistCount = 0 } = useQuery<number>({
     queryKey: ["wishlistCount"],
     queryFn: async () => {
-      const res = await api.get("/wishlist/count");
+      const res = await api.get<number>("/wishlist/count");
       return res.data;
     },
     enabled: !!token,
   });
 
-  // 3. Əlavə etmək üçün Mutation (Optimistic)
+  // 3. Əlavə etmək üçün Mutation
   const addMutation = useMutation<
-    void,
-    Error,
-    Perfume,
+    void, 
+    Error, 
+    { variantId: number; product: Perfume }, 
     WishlistMutationContext
   >({
-    mutationFn: (product: Perfume) => api.post(`/wishlist/add/${product.id}`),
-    onMutate: async (newProduct: Perfume) => {
+    mutationFn: ({ variantId }) => api.post(`/wishlist/add/${variantId}`),
+    
+    onMutate: async ({ variantId, product }) => {
       await queryClient.cancelQueries({ queryKey: ["wishlist"] });
       await queryClient.cancelQueries({ queryKey: ["wishlistCount"] });
 
-      const previousWishlist = queryClient.getQueryData<Perfume[]>([
-        "wishlist",
-      ]);
+      const previousWishlist = queryClient.getQueryData<WishlistItemDTO[]>(["wishlist"]);
       const previousCount = queryClient.getQueryData<number>(["wishlistCount"]);
 
-      // Cache-i anında yeniləyirik
-      queryClient.setQueryData<Perfume[]>(["wishlist"], (old) => [
+      // Optimistic Update: Obyekti WishlistItemDTO strukturuna uyğunlaşdırırıq
+      const newItem: WishlistItemDTO = {
+        perfumeId: product.id,
+        variantId: variantId,
+        perfumeName: product.name,
+        brand: product.brand,
+        imageUrl: product.imageUrl,
+        ml: product.defaultMl || 0,
+        price: product.price,
+        discountPrice: product.discountPrice || null
+      };
+
+      queryClient.setQueryData<WishlistItemDTO[]>(["wishlist"], (old) => [
         ...(old || []),
-        newProduct,
+        newItem
       ]);
-      queryClient.setQueryData<number>(
-        ["wishlistCount"],
-        (old) => (old || 0) + 1,
-      );
+      queryClient.setQueryData<number>(["wishlistCount"], (old) => (old || 0) + 1);
 
       return { previousWishlist, previousCount };
     },
     onSuccess: () => {
-      toast.success("Item added to wishlist!");
+      toast.success("Added to wishlist!");
     },
-    onError: (_err, _newProduct, context) => {
-      queryClient.setQueryData(["wishlist"], context?.previousWishlist);
-      queryClient.setQueryData(["wishlistCount"], context?.previousCount);
-      toast.error("An error occurred while adding to wishlist.");
+    onError: (_err, _variables, context) => {
+      if (context?.previousWishlist) {
+        queryClient.setQueryData(["wishlist"], context.previousWishlist);
+      }
+      if (context?.previousCount !== undefined) {
+        queryClient.setQueryData(["wishlistCount"], context.previousCount);
+      }
+      toast.error("An error occurred.");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
@@ -70,40 +85,39 @@ export const useWishlist = () => {
     },
   });
 
-  // 4. Silmək üçün Mutation (Optimistic)
+  // 4. Silmək üçün Mutation
   const removeMutation = useMutation<
-    void,
-    Error,
-    number,
+    void, 
+    Error, 
+    number, 
     WishlistMutationContext
   >({
-    mutationFn: (perfumeId: number) =>
-      api.delete(`/wishlist/remove/${perfumeId}`),
-    onMutate: async (perfumeId: number) => {
+    mutationFn: (variantId: number) => api.delete(`/wishlist/remove/${variantId}`),
+    
+    onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: ["wishlist"] });
       await queryClient.cancelQueries({ queryKey: ["wishlistCount"] });
 
-      const previousWishlist = queryClient.getQueryData<Perfume[]>([
-        "wishlist",
-      ]);
+      const previousWishlist = queryClient.getQueryData<WishlistItemDTO[]>(["wishlist"]);
       const previousCount = queryClient.getQueryData<number>(["wishlistCount"]);
 
-      // Cache-dən anında silirik
-      queryClient.setQueryData<Perfume[]>(["wishlist"], (old) =>
-        old?.filter((item: Perfume) => item.id !== perfumeId),
+      queryClient.setQueryData<WishlistItemDTO[]>(["wishlist"], (old) =>
+        old?.filter((item) => item.variantId !== id && item.perfumeId !== id)
       );
-      queryClient.setQueryData<number>(["wishlistCount"], (old) =>
-        Math.max(0, (old || 0) - 1),
-      );
+      queryClient.setQueryData<number>(["wishlistCount"], (old) => Math.max(0, (old || 0) - 1));
 
       return { previousWishlist, previousCount };
     },
     onSuccess: () => {
-      toast.info("Item removed from wishlist");
+      toast.info("Removed from wishlist");
     },
-    onError: (_err, _perfumeId, context) => {
-      queryClient.setQueryData(["wishlist"], context?.previousWishlist);
-      queryClient.setQueryData(["wishlistCount"], context?.previousCount);
+    onError: (_err, _id, context) => {
+      if (context?.previousWishlist) {
+        queryClient.setQueryData(["wishlist"], context.previousWishlist);
+      }
+      if (context?.previousCount !== undefined) {
+        queryClient.setQueryData(["wishlistCount"], context.previousCount);
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
@@ -111,19 +125,43 @@ export const useWishlist = () => {
     },
   });
 
-  const isInWishlist = (id: number) => wishlist.some((item) => item.id === id);
+  // Yoxlama: Müştərinin ana səhifədəki kartında 'ürək' rəngini təyin edir
+  const isInWishlist = (perfumeId: number): boolean => {
+    return wishlist.some((item) => item.perfumeId === perfumeId);
+  };
 
-  // Əlavə etmə funksiyası (Artıq product obyektini qəbul edir)
-  const addToWishlist = (product: Perfume) => {
+  // Silmə funksiyası: perfumeId gəlsə belə siyahıdan onun variantId-sini tapır
+  const removeFromWishlist = (id: number): void => {
+    const item = wishlist.find((w) => w.perfumeId === id || w.variantId === id);
+    const variantIdToDelete = item?.variantId || id;
+
+    if (variantIdToDelete) {
+      removeMutation.mutate(variantIdToDelete);
+    } else {
+      toast.error("Could not find item to remove.");
+    }
+  };
+
+  // Əlavə etmə funksiyası
+  const addToWishlist = (product: Perfume): void => {
     if (!token) {
       toast.error("Please log in first!");
       return;
     }
+    
     if (isInWishlist(product.id)) {
-      toast.info("This item is already in your wishlist.");
+      toast.info("Already in wishlist.");
       return;
     }
-    addMutation.mutate(product);
+
+    // Default variant tapılır
+    const defaultVariant = product.variants?.find(v => v.ml === product.defaultMl) || product.variants?.[0];
+
+    if (defaultVariant) {
+      addMutation.mutate({ variantId: defaultVariant.id, product });
+    } else {
+      toast.error("Product variant not found.");
+    }
   };
 
   return {
@@ -131,7 +169,7 @@ export const useWishlist = () => {
     wishlistCount,
     isLoading,
     addToWishlist,
-    removeFromWishlist: removeMutation.mutate,
+    removeFromWishlist,
     isInWishlist,
   };
 };

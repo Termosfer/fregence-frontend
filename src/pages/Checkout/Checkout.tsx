@@ -178,7 +178,7 @@ const CheckoutContent = () => {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-40 bg-[#fafafa] min-h-[70vh] font-[Playfair] overflow-hidden">
-        <div className="relative w-64 md:w-80 h-[1px] bg-gray-200 mb-12">
+        <div className="relative w-64 md:w-80 h-px bg-gray-200 mb-12">
           <motion.div
             initial={{ x: "-20%", opacity: 0 }}
             animate={{ x: "120%", opacity: [0, 1, 1, 0] }}
@@ -197,7 +197,7 @@ const CheckoutContent = () => {
             initial={{ scaleX: 0, originX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-[#81d8d0]/50 to-transparent"
+            className="absolute inset-0 bg-linear-to-r from-transparent via-[#81d8d0]/50 to-transparent"
           />
         </div>
         <div className="text-center space-y-3 relative">
@@ -224,7 +224,7 @@ const CheckoutContent = () => {
   if (!cartItems || cartItems.length === 0) {
     return (
       <div className="py-40 px-4 flex flex-col items-center justify-center font-[Playfair] bg-[#fafafa] min-h-screen">
-        <div className="text-center p-12 bg-white rounded-[2rem] shadow-xl max-w-lg w-full border border-gray-100 flex flex-col items-center">
+        <div className="text-center p-12 bg-white rounded-4xl shadow-xl max-w-lg w-full border border-gray-100 flex flex-col items-center">
           <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 mb-6">
             <FiShoppingBag size={40} />
           </div>
@@ -431,7 +431,7 @@ const CheckoutContent = () => {
 
           {/* SUMMARY SIDEBAR */}
           <div className="lg:col-span-4">
-            <div className="bg-white p-8 md:p-10 rounded-[2rem] shadow-sm border border-gray-100 sticky top-24 flex flex-col">
+            <div className="bg-white p-8 md:p-10 rounded-4xl shadow-sm border border-gray-100 sticky top-24 flex flex-col">
               <div className="flex justify-between items-center mb-8 border-b border-gray-50 pb-5">
                 <h2 className="text-sm font-bold uppercase tracking-[2px] flex items-center gap-2 text-gray-800">
                   <FiShoppingBag /> Summary
@@ -447,7 +447,7 @@ const CheckoutContent = () => {
                     key={item.cartItemId}
                     className="flex gap-4 items-center group transition-all hover:opacity-70"
                   >
-                    <div className="w-14 h-18 bg-[#FAFAF9] rounded-xl overflow-hidden flex-shrink-0 border border-gray-50 p-1 flex items-center justify-center">
+                    <div className="w-14 h-18 bg-[#FAFAF9] rounded-xl overflow-hidden shrink-0 border border-gray-50 p-1 flex items-center justify-center">
                       <img
                         src={item.imageUrl}
                         className="max-h-full max-w-full object-contain"
@@ -500,7 +500,7 @@ const CheckoutContent = () => {
               </div>
 
               <div className="mt-8 p-5 bg-[#FAFAF9] rounded-2xl border border-gray-50 flex items-center gap-4">
-                <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#81d8d0] shadow-sm border border-gray-100 flex-shrink-0">
+                <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#81d8d0] shadow-sm border border-gray-100 shrink-0">
                   <FiShoppingBag size={14} />
                 </div>
                 <p className="text-[10px] text-neutral  leading-relaxed font-bold uppercase tracking-wider">

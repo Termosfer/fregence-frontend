@@ -5,7 +5,7 @@ import api from "../../api/axios";
 import { toast } from "react-toastify";
 import imageCompression from "browser-image-compression";
 import { FiX, FiUpload, FiLoader, FiCheck } from "react-icons/fi";
-import type { AddProductFormInput, ApiError, Perfume } from "../../types/perfume";
+import type {  ApiError, Perfume } from "../../types/perfume";
 import type { AxiosError } from "axios";
 
 interface Props {
@@ -120,14 +120,14 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
   return (
     <>
       <div
-        className={`fixed inset-0 bg-black/40 z-[100] backdrop-blur-sm transition-opacity ${
+        className={`fixed inset-0 bg-black/40 z-100 backdrop-blur-sm transition-opacity ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={onClose}
       />
 
       <div
-        className={`fixed top-0 right-0 h-screen w-full sm:w-[500px] bg-white z-[101] shadow-2xl transition-transform duration-500 ease-in-out ${
+        className={`fixed top-0 right-0 h-screen w-full sm:w-[500px] bg-white z-101 shadow-2xl transition-transform duration-500 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } flex flex-col font-[Playfair]`}
       >

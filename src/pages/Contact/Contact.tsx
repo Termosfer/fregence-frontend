@@ -105,7 +105,7 @@ const Contact = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-10">
               {contactInfo?.map((item, index) => (
                 <div key={index} className="flex items-start gap-5 group">
-                  <div className="w-10 h-10 rounded-full bg-[#FAFAF9] flex items-center justify-center text-[#81d8d0] border border-gray-100 flex-shrink-0 transition-colors group-hover:bg-black group-hover:text-white">
+                  <div className="w-10 h-10 rounded-full bg-[#FAFAF9] flex items-center justify-center text-[#81d8d0] border border-gray-100 shrink-0 transition-colors group-hover:bg-black group-hover:text-white">
                     <item.icon size={18} />
                   </div>
                   <div>

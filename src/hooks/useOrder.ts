@@ -7,63 +7,71 @@ import type {
   OrderFilterParams,
   OrderStatus,
   ShipOrderArgs,
+  PageResponse,
 } from "../types/perfume";
 import type { AxiosError } from "axios";
-import { useState } from "react";
 
-export const useOrder = () => {
+export const useOrder = (page: number = 0, size: number = 10) => {
   const queryClient = useQueryClient();
+  const token = localStorage.getItem("token");
 
-  const { data: myOrders = [], isLoading: isMyOrdersLoading } = useQuery<
-    Order[]
-  >({
+  const isAdminPath = window.location.pathname.includes("/admin");
+  // -----------------------------------------------------------
+  // 1. MÜŞTƏRİ ÜÇÜN SİFARİŞLƏR (5 saniyəlik canlı yenilənmə)
+  // -----------------------------------------------------------
+   const { data: myOrders = [], isLoading: isMyOrdersLoading } = useQuery<Order[]>({
     queryKey: ["my-orders"],
     queryFn: () => api.get("/orders/my").then((res) => res.data),
-    // VACİB OPTİMİZASİYA:
-    refetchInterval: (query) => {
-      // Sifarişləri yoxlayırıq: Əgər içində statusu 'PENDING' və ya 'SHIPPED' olan varsa
-      const hasActiveOrder = query.state.data?.some(
-        (order) => order.status === "PENDING" || order.status === "SHIPPED",
-      );
-
-      // Aktiv sifariş varsa 20 saniyədən bir yoxla, yoxdursa (hamısı delivered-dirsə) polling-i söndür (false)
-      return hasActiveOrder ? 20000 : false;
-    },
-
-    // İstifadəçi pəncərədən çıxanda (məsələn YouTube-a keçəndə) sorğu atmağı dayandırır
-    refetchOnWindowFocus: true,
-    staleTime: 1000 * 30, // Datanı 30 saniyə təzə say
+    refetchInterval: 5000, // 5 saniyədən bir avtomatik yenilənmə (refresh-siz status dəyişimi üçün)
+    enabled: !!token && !isAdminPath, // <--- ADMİN DEYİLSƏ İŞLƏSİN
   });
 
+  // -----------------------------------------------------------
+  // 2. ADMİN ÜÇÜN BÜTÜN SİFARİŞLƏR (5 saniyəlik canlı yenilənmə)
+  // -----------------------------------------------------------
+  const { data: ordersData, isLoading: isAllOrdersLoading } = useQuery<PageResponse<Order>>({
+    queryKey: ["admin-orders", page, size],
+    queryFn: () => api.get("/orders/admin/all", { params: { page, size } }).then((res) => res.data),
+    refetchInterval: 5000, 
+    enabled: !!token && isAdminPath, // <--- ANCAQ ADMİN PANELİNDƏ İŞLƏSİN
+  });
+
+  // -----------------------------------------------------------
+  // 3. SİFARİŞ YARATMAQ (CHECKOUT)
+  // -----------------------------------------------------------
   const checkoutMutation = useMutation({
     mutationFn: (checkoutData: {
       address: string;
       phoneNumber: string;
+      preferredTime: string;
       note?: string;
     }) => api.post("/orders/checkout", null, { params: checkoutData }),
     onSuccess: () => {
+      // Çox vacib: Həm müştəri, həm də admin kəşini dərhal silirik
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
       toast.success("Order placed successfully!");
     },
   });
 
-  const { data: allOrders = [], isLoading: isAllOrdersLoading } = useQuery<
-    Order[]
-  >({
-    queryKey: ["admin-all-orders"],
-    queryFn: () => api.get("/orders/admin/all").then((res) => res.data),
-  });
-
+  // -----------------------------------------------------------
+  // 4. STATUS YENİLƏMƏ (ADMİN)
+  // -----------------------------------------------------------
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }: { id: number; status: OrderStatus }) =>
       api.patch(`/orders/admin/${id}/status?status=${status}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-all-orders"] });
+      // Status dəyişən kimi hər iki tərəfin siyahısını təzələyirik
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      queryClient.invalidateQueries({ queryKey: ["my-orders"] });
       toast.success("Status updated!");
     },
   });
 
+  // -----------------------------------------------------------
+  // 5. KURYER TƏYİNİ (SHIP)
+  // -----------------------------------------------------------
   const shipMutation = useMutation<void, AxiosError<ApiError>, ShipOrderArgs>({
     mutationFn: ({ id, courierName, courierPhone, estimatedTime }) =>
       api.patch(`/orders/admin/${id}/ship`, null, {
@@ -74,86 +82,69 @@ export const useOrder = () => {
         },
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-all-orders"] });
-      toast.success("Order is on its way!");
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+      toast.success("Order is being shipped!");
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Shipping error");
     },
   });
 
-  // Tək sifariş silmə - OPTİMİSTİK
+  // -----------------------------------------------------------
+  // 6. SİFARİŞ SİLMƏ (Soft Delete)
+  // -----------------------------------------------------------
   const deleteOrderMutation = useMutation({
     mutationFn: (id: number) => api.delete(`/orders/admin/${id}`),
-    onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: ["admin-all-orders"] });
-      const previous = queryClient.getQueryData<Order[]>(["admin-all-orders"]);
-
-      // DƏRHAL sil
-      queryClient.setQueryData<Order[]>(
-        ["admin-all-orders"],
-        (old) => old?.filter((o) => o.id !== id) ?? [],
-      );
-      return { previous };
-    },
-    onError: (_err, _id, context) => {
-      queryClient.setQueryData(["admin-all-orders"], context?.previous);
-      toast.error("Could not delete order.");
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-all-orders"] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+      toast.info("Order moved to trash.");
     },
   });
 
-  // Bütün sifarişləri silmə - OPTİMİSTİK
+  // -----------------------------------------------------------
+  // 7. BÜTÜN SİFARİŞLƏRİ SİLMƏ
+  // -----------------------------------------------------------
   const deleteAllOrdersMutation = useMutation({
     mutationFn: () => api.delete("/orders/admin/all"),
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["admin-all-orders"] });
-      const previous = queryClient.getQueryData<Order[]>(["admin-all-orders"]);
-
-      // DƏRHAL hamısını sil
-      queryClient.setQueryData<Order[]>(["admin-all-orders"], []);
-      return { previous };
-    },
-    onError: (_err, _vars, context) => {
-      queryClient.setQueryData(["admin-all-orders"], context?.previous);
-      toast.error("Could not delete orders.");
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-all-orders"] });
-      toast.success("All orders deleted.");
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      toast.success("All orders cleared.");
     },
   });
 
-  // Filter - onSuccess-də dərhal state yenilə
-  const [localFilteredOrders, setLocalFilteredOrders] = useState<Order[]>([]);
-
+  // -----------------------------------------------------------
+  // 8. FİLTİRLƏMƏ (PAGINATED)
+  // -----------------------------------------------------------
   const filterOrdersMutation = useMutation({
     mutationFn: (params: OrderFilterParams) =>
-      api.get("/orders/admin/filter", { params }).then((res) => res.data),
-    onSuccess: (data) => {
-      setLocalFilteredOrders(data);
+      api.get("/orders/admin/filter", { 
+        params: { ...params, page, size } 
+      }).then((res) => res.data),
+    onSuccess: (data: PageResponse<Order>) => {
+      // Filtr nəticəsini birbaşa admin siyahısına tətbiq edirik
+      queryClient.setQueryData(["admin-orders", page, size], data);
     },
-    onError: () => toast.error("Filter failed."),
   });
 
   return {
     myOrders,
-    allOrders,
-    /* filteredOrders: filterOrdersMutation.data as Order[] | undefined, */
-    isLoading: isMyOrdersLoading || isAllOrdersLoading,
-    isFiltering: filterOrdersMutation.isPending,
-    checkout: checkoutMutation.mutate,
+    ordersData,
+    allOrders: ordersData?.content || [],
+    isLoading: isAdminPath ? isAllOrdersLoading : isMyOrdersLoading,
+    /* isLoading: isMyOrdersLoading || isAllOrdersLoading, */
     isCheckingOut: checkoutMutation.isPending,
+    isShipping: shipMutation.isPending,
+    isDeletingOrder: deleteOrderMutation.isPending,
+    isDeletingAll: deleteAllOrdersMutation.isPending,
+    isFiltering: filterOrdersMutation.isPending,
+    
+    checkout: checkoutMutation.mutate,
     updateStatus: updateStatusMutation.mutate,
     shipOrder: shipMutation.mutate,
-    isShipping: shipMutation.isPending,
     deleteOrder: deleteOrderMutation.mutate,
-    isDeletingOrder: deleteOrderMutation.isPending,
     deleteAllOrders: deleteAllOrdersMutation.mutate,
-    isDeletingAll: deleteAllOrdersMutation.isPending,
     filterOrders: filterOrdersMutation.mutate,
-    filteredOrders: localFilteredOrders,
   };
 };

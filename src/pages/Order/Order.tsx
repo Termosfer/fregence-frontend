@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser } from "../../hooks/useUser";
+
 import { motion } from "framer-motion";
 import { 
   FiPackage, FiChevronDown, FiCheckCircle, 
@@ -7,9 +7,11 @@ import {
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import type { Order, OrderItem, OrderStatus } from "../../types/perfume";
+import { useOrder } from "../../hooks/useOrder";
+
 
 const OrderHistory = () => {
-  const { orders, isLoading } = useUser();
+   const { myOrders: orders, isLoading } = useOrder(); 
   const [openOrderId, setOpenOrderId] = useState<number | null>(null);
   // Statusa uyğun rəng, ikon və mətni təyin edən funksiya
   const getStatusDetails = (status: OrderStatus) => {
@@ -31,7 +33,7 @@ const OrderHistory = () => {
     <div className="flex flex-col items-center justify-center py-40 bg-[#fafafa] min-h-[60vh] font-[Playfair] overflow-hidden">
       
       {/* MAŞININ GETDİYİ YOL (TRASS) */}
-      <div className="relative w-64 md:w-96 h-[2px] bg-gray-200 mb-10">
+      <div className="relative w-64 md:w-96 h-0.5 bg-gray-200 mb-10">
         
         {/* HƏRƏKƏT EDƏN MAŞIN */}
         <motion.div
@@ -65,7 +67,7 @@ const OrderHistory = () => {
              className="flex gap-10 opacity-20"
            >
              {[...Array(10)]?.map((_, i) => (
-               <div key={i} className="min-w-[20px] h-[2px] bg-gray-400"></div>
+               <div key={i} className="min-w-5 h-0.5 bg-gray-400"></div>
              ))}
            </motion.div>
         </div>
@@ -105,7 +107,7 @@ const OrderHistory = () => {
         </div>
 
         {orders.length === 0 ? (
-          <div className="bg-white p-20 text-center rounded-[2rem] border border-dashed border-gray-200 flex flex-col items-center gap-6">
+          <div className="bg-white p-20 text-center rounded-4xl border border-dashed border-gray-200 flex flex-col items-center gap-6">
             <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-300">
                <FiShoppingBag size={30} />
             </div>
@@ -123,7 +125,7 @@ const OrderHistory = () => {
               return (
                 <div 
                   key={order.id} 
-                  className={`bg-white rounded-[2rem] border transition-all duration-500 ${
+                  className={`bg-white rounded-4xl border transition-all duration-500 ${
                     isOpen ? "border-black shadow-xl" : "border-gray-100 shadow-sm hover:shadow-md"
                   }`}
                 >
@@ -146,7 +148,7 @@ const OrderHistory = () => {
                           <span className="text-[10px] text-neutral  font-black uppercase tracking-widest">Date</span>
                           <span className="text-sm font-bold text-gray-800">{new Date(order.orderDate).toLocaleDateString('en-GB')}</span>
                         </div>
-                        <div className="flex flex-col hidden sm:flex">
+                        <div className=" flex-col hidden sm:flex">
                           <span className="text-[10px] text-neutral  font-black uppercase tracking-widest">Total</span>
                           <span className="text-xs font-bold text-[#81d8d0] tracking-tighter font-[Jost]">{order.totalAmount} AZN</span>
                         </div>

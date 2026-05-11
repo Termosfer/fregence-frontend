@@ -20,25 +20,16 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
     isUpdating,
     updatingVariables,
   } = useCart();
-  // Kuryer hesablama məntiqi
-  /*  const SHIPPING_LIMIT = 180;
-  const shippingCost = cartTotal < SHIPPING_LIMIT && cartItems.length > 0 ? 10 : 0;
-  const finalTotal = cartTotal + shippingCost; */
 
   const sortedItems = [...cartItems].sort(
     (a, b) => a.cartItemId - b.cartItemId,
   );
 
-
-  // 1. SKROLUN QARŞISINI ALMAQ ÜÇÜN MÜKƏMMƏL EFFEKT
   useEffect(() => {
     if (isOpen) {
-      // Skrolu bağla
       document.body.style.overflow = "hidden";
-      // Bəzi mobil brauzerlər üçün əlavə sığorta
       document.documentElement.style.overflow = "hidden";
     } else {
-      // Skrolu geri qaytar
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
     }
@@ -50,28 +41,24 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
 
   return (
     <>
-      {/* Overlay: Arxa fonu qaraldır */}
       <div
         onClick={() => setIsOpen(false)}
-        className={`fixed inset-0 bg-black/50 z-[998] transition-opacity duration-500 ${
+        className={`fixed inset-0 bg-black/50 z-998 transition-opacity duration-500 ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       />
 
-      {/* Drawer: Səbət menyusu */}
       <div
         className={`
-          fixed top-0 right-0 z-[999] bg-white 
+          fixed top-0 right-0 z-999 bg-white 
           w-full sm:w-[450px] md:w-[500px]
-          h-[100dvh] shadow-[-10px_0_30px_rgba(0,0,0,0.1)] 
+          h-dvh shadow-[-10px_0_30px_rgba(0,0,0,0.1)] 
           transition-all duration-500 ease-in-out
           flex flex-col font-[Playfair]
-          /* SAĞA DOĞRU SKROLU ARADAN QALDIRAN KLASLAR: */
           ${isOpen ? "translate-x-0 visible" : "translate-x-full invisible"}
         `}
       >
-        {/* Header - flex-shrink-0 (Sabit) */}
-        <div className="p-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
+        <div className="p-6 flex justify-between items-center border-b border-gray-100 shrink-0">
           <h1 className="text-xl font-bold uppercase tracking-widest text-gray-800">
             Shopping Cart ({cartItems.length})
           </h1>
@@ -111,18 +98,21 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
           ) : (
             <div className="flex flex-col">
               {sortedItems?.map((item) => {
+                // DÜZƏLİŞ: variantId üzərindən yoxlayırıq
                 const isThisUpdating =
-                  isUpdating && updatingVariables?.perfumeId === item.perfumeId;
+                  isUpdating && updatingVariables?.variantId === item.variantId;
+
                 return (
                   <div
                     key={item.cartItemId}
                     className="flex items-center gap-4 p-6 border-b border-gray-50 bg-white"
                   >
-                    <div className="w-20 h-24 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
+                    <div className="w-20 h-24 bg-gray-50 rounded-lg overflow-hidden shrink-0">
                       <img
-                        src={item.imageUrl}
+                        // DÜZƏLİŞ: "" xətasının qarşısını almaq üçün undefined istifadə edirik
+                        src={item.imageUrl || undefined}
                         alt={item.brand}
-                        className="w-full h-full object-fill p-2"
+                        className="w-full h-full object-contain p-2"
                       />
                     </div>
 
@@ -130,18 +120,18 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                       <h2 className="text-sm font-bold text-gray-800 uppercase leading-tight">
                         {item.perfumeName}
                       </h2>
-                      <p className="text-neutral  text-xs mb-3 uppercase">
-                        {item.brand}
+                      <p className="text-neutral text-[10px] mb-1 uppercase tracking-widest">
+                        {item.brand} — {item.ml} ML
                       </p>
 
                       <div className="flex items-center justify-between ">
                         <div className="flex items-center gap-4 border border-gray-200 px-3 py-1.5 rounded-full bg-white">
                           <button
-                            aria-label="dicrease-quantity"
+                            aria-label="decrease-quantity"
                             onClick={() =>
                               item.quantity > 1 &&
                               updateQuantity({
-                                perfumeId: item.perfumeId,
+                                variantId: item.variantId, // DÜZƏLİŞ: variantId gönderilmeli
                                 quantity: -1,
                               })
                             }
@@ -151,7 +141,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                             <FiMinus size={14} />
                           </button>
                           <span
-                            className={`text-sm font-bold tabular-nums ${isThisUpdating ? "animate-pulse" : ""}`}
+                            className={`text-sm font-bold tabular-nums ${isThisUpdating ? "animate-pulse text-[#81d8d0]" : ""}`}
                           >
                             {item.quantity}
                           </span>
@@ -159,7 +149,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                             aria-label="increase-quantity"
                             onClick={() =>
                               updateQuantity({
-                                perfumeId: item.perfumeId,
+                                variantId: item.variantId, // DÜZƏLİŞ: variantId gönderilmeli
                                 quantity: 1,
                               })
                             }
@@ -170,14 +160,13 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                           </button>
                         </div>
                         <span className="font-medium font-[Jost] text-[#81d8d0] text-xs">
-                          {item.subTotal}
-                          <span className="text-xs">.00 Azn</span>
+                          {item.subTotal}.00 Azn
                         </span>
                         <button
                           onClick={() => removeFromCart(item.cartItemId)}
                           className="relative inline-block align-middle overflow-hidden group tracking-widest cursor-pointer"
                         >
-                          <span className="absolute bottom-0 left-0 h-[1px] w-full bg-red-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                          <span className="absolute bottom-0 left-0 h-px w-full bg-red-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                           <span className="relative block text-[10px] font-bold text-red-500 transition-transform duration-300 group-hover:-translate-y-full flex items-center gap-1">
                             <FiTrash2 /> REMOVE
                           </span>
@@ -194,8 +183,7 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
           )}
         </div>
 
-        {/* Footer - flex-shrink-0 (Sabit aşağıda qalır) */}
-        <div className="p-4 md:p-6 border-t border-gray-100 bg-white shadow-[0_-10px_20px_rgba(0,0,0,0.02)] flex-shrink-0">
+        <div className="p-4 md:p-6 border-t border-gray-100 bg-white shadow-[0_-10px_20px_rgba(0,0,0,0.02)] shrink-0">
           <div className="flex flex-col mb-6">
             <div className="flex items-center justify-between mb-2">
               <h2 className="font-bold text-sm uppercase tracking-widest text-neutral ">
@@ -205,11 +193,6 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                 <span className="text-green-600 uppercase text-xs font-bold tracking-widest">
                   Free
                 </span>
-                {/* {shippingCost === 0 ? (
-                  <span className="text-green-600 uppercase text-xs font-bold tracking-widest">Free</span>
-                ) : (
-                  <span className="text-green-600 font-bold">+10.00 Azn</span>
-                )} */}
               </p>
             </div>
             <div className="flex items-center justify-between">
@@ -217,23 +200,16 @@ const ShoppingCart = ({ isOpen, setIsOpen }: ShoppingCartProps) => {
                 Estimated Total
               </h2>
               <p className="font-medium font-[Jost] text-lg text-gray-800">
-                {cartTotal}
-                <span className="text-sm">.00 Azn</span>
+                {cartTotal}.00 Azn
               </p>
             </div>
-
-            {/* {shippingCost > 0 && (
-              <p className="mt-3 text-[10px] text-neutral  uppercase tracking-widest text-center italic">
-                Add <span className="font-bold text-black">{SHIPPING_LIMIT - cartTotal} Azn</span> more for <span className="text-green-600 font-bold">Free</span> shipping
-              </p>
-            )} */}
           </div>
 
           <div className="flex flex-col gap-4">
             <Link
               to="/checkout"
               onClick={() => setIsOpen(false)}
-              className="relative w-full h-14 bg-black text-white rounded-xl overflow-hidden group cursor-pointer  shadow-lg active:scale-[0.98] transition-transform"
+              className="relative w-full h-14 bg-black text-white rounded-xl overflow-hidden group cursor-pointer shadow-lg active:scale-[0.98] transition-transform"
             >
               <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tracking-[3px] uppercase transition-transform duration-300 group-hover:-translate-y-full">
                 Secure Checkout

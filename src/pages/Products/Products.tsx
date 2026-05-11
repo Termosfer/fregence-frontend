@@ -20,16 +20,23 @@ const sortOptions = [
   { label: "Price, high to low", sortBy: "price", direction: "DESC" },
 ];
 
+const volumes = [50, 75, 100, 150]; // ML seçimləri
+
 const Products = () => {
   const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [sliderPrice, setSliderPrice] = useState(1000);
   const [searchParams, setSearchParams] = useSearchParams();
+  
+
+
   const initialBrand = searchParams.get("brand") || "";
-  const globalQuery = searchParams.get("query") || ""; // Header-dən gələn axtarış sözü
+  const globalQuery = searchParams.get("query") || "";
+
   const [filters, setFilters] = useState({
     brand: initialBrand,
     gender: "",
+    ml: null as number | null, // YENİ: ML filtri üçün
     minPrice: 0,
     maxPrice: 1000,
     sortBy: "id",
@@ -38,7 +45,6 @@ const Products = () => {
     size: 12,
   });
 
-  // Əgər URL-dəki brand dəyişərsə state-i yenilə (Shops-dan gələndə lazım olur)
   useEffect(() => {
     setFilters((prev) => ({ ...prev, brand: initialBrand, page: 0 }));
     if (initialBrand === "" && globalQuery === "") {
@@ -53,7 +59,6 @@ const Products = () => {
     return () => clearTimeout(handler);
   }, [sliderPrice]);
 
-  // Brendləri çəkirik
   const { data: brands, isLoading: isBrandsLoading } = useQuery<string[]>({
     queryFn: () => api.get("/perfumes/brands").then((res) => res.data),
     queryKey: ["brands"],
@@ -68,6 +73,7 @@ const Products = () => {
       const isSidebarFiltered =
         filters.brand !== "" ||
         filters.gender !== "" ||
+        filters.ml !== null || // ML yoxlanışı
         filters.maxPrice < 1000;
 
       const endpoint =
@@ -77,9 +83,10 @@ const Products = () => {
 
       const response = await api.get(endpoint, {
         params: {
-          query: globalQuery || undefined, // Header axtarışı
-          brand: filters.brand || undefined, // Sidebar brend seçimi
+          query: globalQuery || undefined,
+          brand: filters.brand || undefined,
           gender: filters.gender || undefined,
+          ml: filters.ml || undefined, // ML parametri backend-ə gedir
           minPrice: filters.minPrice,
           maxPrice: filters.maxPrice,
           sortBy: filters.sortBy,
@@ -91,7 +98,7 @@ const Products = () => {
       return response.data;
     },
   });
-  // Hal-hazırda aktiv olan sıralamanın adını tapmaq üçün
+
   const currentSortLabel =
     sortOptions.find(
       (opt) =>
@@ -99,16 +106,12 @@ const Products = () => {
     )?.label || "Featured";
 
   const resetAllFilters = () => {
-    // URL-dəki bütün parametrləri (brand və query) təmizləyirik
     setSearchParams({});
-
-    // Slayderi sıfırlayırıq
     setSliderPrice(1000);
-
-    // State-i ilkin vəziyyətinə qaytarırıq
     setFilters({
       brand: "",
       gender: "",
+      ml: null,
       minPrice: 0,
       maxPrice: 1000,
       sortBy: "id",
@@ -126,16 +129,10 @@ const Products = () => {
     }));
   };
 
-  useEffect(() => {
-    document.body.style.overflow = isFilterOpen ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isFilterOpen]);
-
   return (
     <div className="py-10 font-[Playfair]">
       <div className="px-10 flex flex-col lg:flex-row gap-10">
+        {/* MOBILE OVERLAY */}
         {isFilterOpen && (
           <div
             onClick={() => setIsFilterOpen(false)}
@@ -151,73 +148,57 @@ const Products = () => {
           ${isFilterOpen ? "translate-y-0" : "-translate-y-full lg:translate-y-0"}
         `}
         >
+          {/* BRAND SECTION */}
           <div className="flex items-center gap-3 py-3 px-5 border-l-4 border-black mb-8">
-            <h2 className="text-md md:text-lg 2xl:text-xl font-bold tracking-wider">
-              BRAND
+            <h2 className="text-md font-bold tracking-wider uppercase">
+              Brand
             </h2>
-            <span className="h-[.5px] bg-gray-300 w-full"></span>
+            <span className="h-[.5px] bg-gray-200 w-full"></span>
           </div>
-
-          <div
-            className=" flex flex-col gap-3 
-    max-h-[370px]          
-    overflow-y-auto         
-                        
-    scrollbar-thin          
-    scrollbar-thumb-black   
-    scrollbar-track-gray-100
-    
-    [&::-webkit-scrollbar]:w-1 
-    [&::-webkit-scrollbar-thumb]:bg-gray-300 
-    [&::-webkit-scrollbar-thumb]:rounded-full
-    [&::-webkit-scrollbar-track]:bg-transparent"
-          >
-            <div className="flex flex-col gap-4">
-              {isBrandsLoading ? (
-                // Brendlər üçün skelet sətirləri
-                [...Array(10)]?.map((_, i) => (
+          <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2 mb-10">
+            {isBrandsLoading ? (
+              [...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-5 w-3/4 bg-gray-100 rounded animate-pulse"
+                />
+              ))
+            ) : (
+              <>
+                <button
+                  onClick={resetAllFilters}
+                  className={`cursor-pointer text-left text-sm transition-all ${filters.brand === "" ? "text-black font-bold" : "text-gray-400"}`}
+                >
+                  All Brands
+                </button>
+                {brands?.map((brandName) => (
                   <div
-                    key={i}
-                    className="h-5 w-3/4 bg-gray-100 rounded animate-pulse ml-5"
-                  ></div>
-                ))
-              ) : (
-                /* Brend siyahısı kodu buraya gəlir... */
-                <div className="flex flex-col gap-3 max-h-[370px] overflow-y-auto custom-scrollbar">
-                  <button
-                    onClick={resetAllFilters}
-                    className={`cursor-pointer text-left text-base transition-all ${filters.brand === "" && !globalQuery ? "text-black font-bold" : "text-[#00000080]"}`}
+                    key={brandName}
+                    onClick={() => updateFilter({ brand: brandName })}
+                    className={`group relative flex items-center font-semibold cursor-pointer transition-all duration-300 ${filters.brand === brandName ? "text-black" : "text-gray-400 hover:text-black"}`}
                   >
-                    All Brands
-                  </button>
-                  {brands?.map((brandName, index) => (
-                    <div
-                      key={index}
-                      onClick={() => updateFilter({ brand: brandName })}
-                      className={`group relative flex items-center font-semibold text-base cursor-pointer transition-all duration-300 mb-2 ${filters.brand === brandName ? "text-black" : "text-[#00000080] hover:text-black"}`}
+                    <MdKeyboardArrowRight
+                      className={`absolute left-0 transition-all ${filters.brand === brandName ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}`}
+                    />
+                    <p
+                      className={`text-sm transition-transform ${filters.brand === brandName ? "translate-x-6" : "group-hover:translate-x-6"}`}
                     >
-                      <MdKeyboardArrowRight
-                        className={`absolute left-0 transition-all duration-300 ${filters.brand === brandName ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}`}
-                      />
-                      <p
-                        className={`text-sm md:text-base transition-transform duration-300 ${filters.brand === brandName ? "translate-x-6" : "group-hover:translate-x-6"}`}
-                      >
-                        {brandName}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                      {brandName}
+                    </p>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
 
-          <div className="flex items-center gap-3 py-3 px-5 border-l-4 border-black my-8">
-            <h2 className="text-md md:text-lg 2xl:text-xl font-bold tracking-wider">
-              PRICE
+          {/* PRICE SECTION */}
+          <div className="flex items-center gap-3 py-3 px-5 border-l-4 border-black mb-8">
+            <h2 className="text-md font-bold tracking-wider uppercase">
+              Price
             </h2>
-            <span className="h-[.5px] bg-gray-300 w-full"></span>
+            <span className="h-[.5px] bg-gray-200 w-full"></span>
           </div>
-          <div className="flex flex-col gap-3 pr-5">
+          <div className="flex flex-col gap-3 pr-5 mb-10">
             <input
               type="range"
               min="0"
@@ -226,35 +207,65 @@ const Products = () => {
               onChange={(e) => setSliderPrice(Number(e.target.value))}
               className="h-1 rounded-lg accent-black cursor-pointer bg-gray-200"
             />
-            <div className="flex justify-between text-gray-600 font-medium">
-              <span className="text-sm">Price: $0 - ${sliderPrice}</span>
-            </div>
+            <span className="text-sm text-gray-600 font-medium">
+              Range: $0 - ${sliderPrice}
+            </span>
           </div>
 
-          <div className="flex items-center gap-3 py-3 px-5 border-l-4 border-black my-8">
-            <h2 className="text-md md:text-lg 2xl:text-xl font-bold tracking-wider">
-              GENDER
+          {/* VOLUME (ML) SECTION - YENİ! */}
+          <div className="flex items-center gap-3 py-3 px-5 border-l-4 border-black mb-8">
+            <h2 className="text-md font-bold tracking-wider uppercase">
+              Volume
             </h2>
-            <span className="h-[.5px] bg-gray-300 w-full"></span>
+            <span className="h-[.5px] bg-gray-200 w-full"></span>
+          </div>
+          <div className="flex flex-wrap gap-2 mb-10">
+            {volumes.map((v) => (
+              <button
+                key={v}
+                onClick={() =>
+                  updateFilter({ ml: filters.ml === v ? null : v })
+                }
+                className={`cursor-pointer px-4 py-1.5 border rounded-full text-[10px] font-black tracking-widest transition-all 
+                  ${filters.ml === v ? "bg-black text-white border-black" : "bg-white text-black border-gray-200 hover:border-black"}`}
+              >
+                {v} ML
+              </button>
+            ))}
+          </div>
+
+          {/* GENDER SECTION */}
+          <div className="flex items-center gap-3 py-3 px-5 border-l-4 border-black mb-8">
+            <h2 className="text-md font-bold tracking-wider uppercase">
+              Gender
+            </h2>
+            <span className="h-[.5px] bg-gray-200 w-full"></span>
           </div>
           <div className="flex gap-2 mb-10">
-            {["MEN", "WOMEN", "UNISEX"]?.map((g) => (
+            {["MEN", "WOMEN", "UNISEX"].map((g) => (
               <button
-                aria-label="show gender"
                 key={g}
                 onClick={() =>
                   updateFilter({ gender: filters.gender === g ? "" : g })
                 }
-                className={`cursor-pointer px-4 py-1 border rounded-full text-xs font-bold transition-all 
-                  ${filters.gender === g ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"}`}
+                className={`cursor-pointer px-4 py-1.5 border rounded-full text-[10px] font-black tracking-widest transition-all 
+                  ${filters.gender === g ? "bg-[#81d8d0] text-white border-[#81d8d0]" : "bg-white text-black border-gray-200 hover:border-black"}`}
               >
                 {g}
               </button>
             ))}
           </div>
+          {/* CUSTOM REQUEST SECTION */}
+{/* --- TELEGRAM BOT SECTION --- */}
+<div className="flex items-center gap-3 py-3 px-5 border-l-4 border-[#81d8d0] my-8">
+  <h2 className="text-md font-bold tracking-wider uppercase">Special Requests</h2>
+  <span className="h-[.5px] bg-gray-200 w-full"></span>
+</div>
+
+
         </div>
 
-        {/* SAĞ TƏRƏF */}
+        {/* PRODUCTS AREA */}
         <div className="flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-10 px-2">
             <button
@@ -264,18 +275,17 @@ const Products = () => {
               <MdFilterList size={20} /> Filter
             </button>
 
-            <p className="hidden md:block text-neutral  italic text-sm">
-              {productsData?.totalElements} products found
+            <p className="hidden md:block text-gray-400 italic text-sm">
+              {productsData?.totalElements || 0} products found
             </p>
 
-            {/* SORT BÖLMƏSİ */}
-            <div className="ml-auto relative">
+            <div className="relative">
               <button
-                className="flex items-center justify-end  px-4 py-2 cursor-pointer border border-gray-300 rounded-lg shadow-sm font-semibold hover:bg-gray-50 transition-all min-w-fit"
+                className="flex items-center px-4 py-2 cursor-pointer border border-gray-200 rounded-lg shadow-sm font-semibold hover:bg-gray-50 transition-all"
                 onClick={() => setIsSortOpen(!isSortOpen)}
               >
-                <span className="text-sm  tracking-tighter">
-                  Sort by: {currentSortLabel}
+                <span className="text-xs uppercase tracking-tighter">
+                  Sort: {currentSortLabel}
                 </span>
                 {isSortOpen ? (
                   <MdKeyboardArrowUp size={20} />
@@ -289,9 +299,9 @@ const Products = () => {
                   <div
                     className="fixed inset-0 z-10"
                     onClick={() => setIsSortOpen(false)}
-                  ></div>
-                  <div className="absolute right-0 mt-2 bg-white border border-gray-100 shadow-xl rounded-lg p-2 z-20 animate-in fade-in zoom-in duration-200">
-                    {sortOptions?.map((option) => (
+                  />
+                  <div className="absolute right-0 mt-2 bg-white border border-gray-100 shadow-2xl rounded-xl p-2 z-20 w-48 animate-in fade-in zoom-in duration-200">
+                    {sortOptions.map((option) => (
                       <div
                         key={option.label}
                         onClick={() => {
@@ -301,13 +311,7 @@ const Products = () => {
                           });
                           setIsSortOpen(false);
                         }}
-                        className={`cursor-pointer py-2.5 px-4 whitespace-nowrap rounded-md text-sm transition-colors mb-1
-                          ${
-                            currentSortLabel === option.label
-                              ? "bg-black text-white font-bold"
-                              : "text-gray-600 hover:bg-gray-100 hover:text-black"
-                          }
-                        `}
+                        className={`cursor-pointer py-2 px-4 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors mb-1 ${currentSortLabel === option.label ? "bg-black text-white" : "text-gray-500 hover:bg-gray-100 hover:text-black"}`}
                       >
                         {option.label}
                       </div>
@@ -316,12 +320,13 @@ const Products = () => {
                 </>
               )}
             </div>
+            
           </div>
+
           <div className="flex-1">
-            {isBrandsLoading || isProductsLoading ? (
+            {isProductsLoading ? (
               <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full">
-                {/* 12 dənə (və ya sənin page size-ın qədər) skeleton göstəririk */}
-                {Array.from({ length: 12 }).map((_, i) => (
+                {Array.from({ length: 8 }).map((_, i) => (
                   <ProductSkeleton key={i} />
                 ))}
               </div>
@@ -330,6 +335,7 @@ const Products = () => {
                 data={productsData!}
                 onPageChange={(newPage) => updateFilter({ page: newPage })}
                 page={filters.page}
+                activeMl={filters.ml}
               />
             )}
           </div>

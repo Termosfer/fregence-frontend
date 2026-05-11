@@ -9,13 +9,12 @@ interface CartlistProps {
   data: PageResponse<Perfume>;
   onPageChange: (page: number) => void;
   page: number;
+  activeMl?: number | null; // YENİ: Aktiv filtr ML-i
 }
 
-const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
+const Cartlist = ({ data, onPageChange, page, activeMl }: CartlistProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(
-    null,
-  );
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
 
   const { addToWishlist } = useWishlist();
   const { addToCart } = useCart();
@@ -45,123 +44,110 @@ const Cartlist = ({ data, onPageChange, page }: CartlistProps) => {
   return (
     <>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full">
-        {data?.content?.map((item) => (
-          <div
-            key={item.id}
-            className="relative flex flex-col items-center justify-between text-center group shadow-md rounded-xl p-4 bg-white hover:shadow-xl transition-all duration-500 h-full border border-gray-50"
-          >
-            {/* ŞƏKİL SAHƏSİ */}
-            <div className="relative w-full aspect-square overflow-hidden rounded-lg bg-white flex items-center justify-center">
-              <div className="block w-full h-full p-4">
-                <img
-                  src={item.imageUrl}
-                  alt={item.name}
-                  loading="lazy"
-                  className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
+        {data?.content?.map((item) => {
+          
+          // --- MƏNTİQ: ML-ə görə qiymət seçimi ---
+          // Əgər filtrdən ML seçilibsə, həmin variantın qiymətini götürürük
+          // Seçilməyibsə, backend-in göndərdiyi default (ən ucuz) qiymətləri götürürük
+          const filteredVariant = activeMl 
+            ? item.variants?.find(v => v.ml === activeMl) 
+            : null;
 
-              <span className="absolute top-2 -right-10 bg-red-500 text-white text-[10px] font-black px-10 py-1 rotate-45 shadow-lg z-10 uppercase">
-                Sale
-              </span>
+          const displayPrice = filteredVariant ? filteredVariant.price : item.price;
+          const displayDiscount = filteredVariant ? filteredVariant.discountPrice : item.discountPrice;
+          const hasDiscount = displayDiscount && displayDiscount > 0;
 
-              {/* SIRA İLƏ SAĞDAN SOLA GƏLƏN İKONLAR */}
-              <div className="absolute top-10 right-0 flex flex-col gap-4 p-1 z-20 overflow-hidden ">
-                {/* 1. Quick View (Gecikməsiz) */}
-                <button aria-label="search"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleOpenQuickView(item.id);
-                  }}
-                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500   translate-x-0 opacity-100 xl:translate-x-20  xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-0"
-                >
-                  <FiSearch size={16} />
-                </button>
+          return (
+            <div
+              key={item.id}
+              className="relative flex flex-col items-center justify-between text-center group shadow-md rounded-xl p-4 bg-white hover:shadow-xl transition-all duration-500 h-full border border-gray-50"
+            >
+              {/* ŞƏKİL SAHƏSİ */}
+              <div className="relative w-full aspect-square overflow-hidden rounded-lg bg-white flex items-center justify-center">
+                <div className="block w-full h-full p-4">
+                  <img
+                    src={item.imageUrl || undefined}
+                    alt={item.name}
+                    loading="lazy"
+                    className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
+                  />
+                </div>
 
-                {/* 2. Wishlist (75ms Gecikmə) */}
-                <button aria-label="wishlist"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToWishlist(item);
-                  }}
-                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-0 opacity-100 xl:translate-x-20  xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-[75ms]"
-                >
-                  <FiHeart size={16} />
-                </button>
-
-                {/* 3. Add to Cart (150ms Gecikmə) */}
-                <button aria-label="add to cart"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToCart(item);
-                  }}
-                  className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 translate-x-0 opacity-100 xl:translate-x-20  xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-[150ms]"
-                >
-                  <FiShoppingCart size={16} />
-                </button>
-              </div>
-            </div>
-
-            {/* MƏTN SAHƏSİ */}
-            <div className="mt-4 w-full px-1">
-              <h5 className="text-sm font-bold mb-1 text-gray-800 uppercase tracking-tight truncate px-2">
-                {item.name}
-              </h5>
-              <div className="flex justify-center items-center gap-3 font-[Jost]">
-                {item.discountPrice && item.discountPrice > 0 ? (
-                  // Ehtimal 1: Endirim VARSA
-                  <>
-                    {/* Yeni qiymət (Endirimli) */}
-                    <span className="text-[#81d8d0] text-sm font-black">
-                      {item.discountPrice}{" "} AZN
-                    </span>
-
-                    {/* Köhnə qiymət (Üstü xətli) */}
-                    <span className="line-through text-[11px] text-neutral">
-                      {item.price} AZN
-                    </span>
-                  </>
-                ) : (
-                  // Ehtimal 2: Endirim YOXDURSA (Yalnız normal qiymət)
-                  <span className="text-gray-900 text-sm font-black">
-                    {item.price} AZN
+                {hasDiscount && (
+                  <span className="absolute top-2 -right-10 bg-red-500 text-white text-[10px] font-black px-10 py-1 rotate-45 shadow-lg z-10 uppercase">
+                    Sale
                   </span>
                 )}
+
+                {/* İKONLAR */}
+                <div className="absolute top-10 right-0 flex flex-col gap-4 p-1 z-20 overflow-hidden ">
+                  <button aria-label="search" onClick={() => handleOpenQuickView(item.id)}
+                    className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 xl:translate-x-20 xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                  >
+                    <FiSearch size={16} />
+                  </button>
+
+                  <button aria-label="wishlist" onClick={() => addToWishlist(item)}
+                    className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 xl:translate-x-20 xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-75"
+                  >
+                    <FiHeart size={16} />
+                  </button>
+
+                  <button aria-label="add to cart" 
+                    onClick={() => {
+                      // Əgər ML filtrdədirsə, həmin konkret variantı əlavə edirik
+                      if (filteredVariant) {
+                        addToCart({ ...item, defaultMl: activeMl! });
+                      } else {
+                        addToCart(item);
+                      }
+                    }}
+                    className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg border-none cursor-pointer hover:bg-black hover:text-white transition-all duration-500 xl:translate-x-20 xl:opacity-0 group-hover:translate-x-0 group-hover:opacity-100 delay-150"
+                  >
+                    <FiShoppingCart size={16} />
+                  </button>
+                </div>
+              </div>
+
+              {/* MƏTN SAHƏSİ */}
+              <div className="mt-4 w-full px-1">
+              
+                <h5 className="text-sm font-bold mb-1 text-gray-800 uppercase tracking-tight truncate px-2">
+                  {item.name}
+                </h5>
+                
+                <div className="flex justify-center items-center gap-3 font-[Jost]">
+                  {hasDiscount ? (
+                    <>
+                      <span className="text-[#81d8d0] text-sm font-black">
+                        {displayDiscount} AZN
+                      </span>
+                      <span className="line-through text-[11px] text-gray-300">
+                        {displayPrice} AZN
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-gray-900 text-sm font-black">
+                      {displayPrice} AZN
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      <QuickModal
-        show={showModal}
-        setShowModal={setShowModal}
-        productId={selectedProductId}
-      />
+      <QuickModal show={showModal} setShowModal={setShowModal} productId={selectedProductId} />
 
-      {/* PAGINATION */}
+      {/* PAGINATION HİSSƏSİ (Dəyişməz qalır) */}
       <div className="flex justify-center items-center gap-2 mt-16 mb-10">
         {getPaginationRange().map((p, index) => {
-          if (p === "...")
-            return (
-              <span key={index} className="text-gray-300 px-1">
-                ...
-              </span>
-            );
+          if (p === "...") return <span key={index} className="text-gray-300 px-1">...</span>;
           const isActive = page === p;
           return (
-            <button
-              key={index}
-              onClick={() => {
-                onPageChange(p as number);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className={`w-9 h-9 border rounded-md transition-all duration-300 font-bold text-xs uppercase tracking-widest ${
-                isActive
-                  ? "bg-black text-white border-black scale-105 shadow-md"
-                  : "bg-white text-neutral  border-gray-100 hover:border-black hover:text-black"
-              }`}
-            >
+            <button key={index} onClick={() => { onPageChange(p as number); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+              className={`w-9 h-9 border rounded-md transition-all duration-300 font-bold text-xs uppercase tracking-widest ${isActive ? "bg-black text-white border-black scale-105 shadow-md" : "bg-white text-neutral border-gray-100 hover:border-black hover:text-black"}`}>
               {(p as number) + 1}
             </button>
           );

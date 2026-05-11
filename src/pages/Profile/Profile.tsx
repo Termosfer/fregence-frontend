@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useUser } from "../../hooks/useUser";
 import { FiUser,  FiEye, FiEyeOff,  FiShield, FiLoader } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import type { UserProfile, PasswordUpdateData } from "../../types/perfume";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -25,11 +24,10 @@ const Profile = () => {
   }, [user]);
 
   // Ümumi Logout Funksiyası
-  const forceLogout = (message: string) => {
+  const forceLogout = () => {
     localStorage.clear();
-    queryClient.clear(); // React Query cache-ini silir
-    toast.info(message);
-    setTimeout(() => navigate("/login"), 1000);
+    queryClient.clear(); 
+    setTimeout(() => navigate("/login"), 1500);
   };
 
   // 1. PROFIL YENİLƏMƏ
@@ -43,7 +41,7 @@ const Profile = () => {
     updateProfile(profile, {
       onSuccess: () => {
         setProfileStatus({ msg: "Profile updated! Logging out...", type: "success" });
-        forceLogout("Security notice: Profile changed. Please login again.");
+        setTimeout(forceLogout,1500)
       },
       onError: (err) => {
         setProfileStatus({ msg: err.response?.data?.message || "Update failed.", type: "error" });
@@ -62,7 +60,7 @@ const Profile = () => {
     changePassword(passData, {
       onSuccess: () => {
         setPassStatus({ msg: "Password changed! Logging out...", type: "success" });
-        forceLogout("Security notice: Password changed. Please login again.");
+        setTimeout(forceLogout,1500)
       },
       onError: (err) => {
         setPassStatus({ msg: err.response?.data?.message || "Wrong current password.", type: "error" });

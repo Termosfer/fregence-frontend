@@ -44,7 +44,8 @@ const Header = () => {
   const userName = localStorage.getItem("userName") || "Profile";
 
   const { wishlistCount } = useWishlist();
-  const { cartItems } = useCart();
+  const { cartCount } = useCart();
+ console.log(cartCount,"asda")
 
   const { data: searchResults, isLoading: isSearchLoading } = useQuery<
     PageResponse<Perfume>
@@ -263,7 +264,7 @@ const Header = () => {
                     >
                       <FiPackage /> Orders
                     </Link>
-                    <div className="h-[1px] bg-gray-100 my-1"></div>
+                    <div className="h-px bg-gray-100 my-1"></div>
                     <button
                       onClick={handleLogout}
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer font-bold"
@@ -292,7 +293,7 @@ const Header = () => {
             </div>
 
             {isSearchOpen && (
-              <div className="absolute right-0 mt-6 w-[320px] md:w-[450px] bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 animate-in fade-in zoom-in duration-300 z-[150]">
+              <div className="absolute right-0 mt-6 w-[320px] md:w-[450px] bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 animate-in fade-in zoom-in duration-300 z-150">
                 <form onSubmit={handleSearchSubmit}>
                   <div className="relative group">
                     <input
@@ -336,7 +337,7 @@ const Header = () => {
                             onClick={() => handleResultClick(p.name)}
                             className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-gray-100"
                           >
-                            <div className="w-14 h-16 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 p-1 shadow-md">
+                            <div className="w-14 h-16 bg-gray-50 rounded-xl overflow-hidden shrink-0 p-1 shadow-md">
                               <img
                                 src={p.imageUrl}
                                 alt={p.brand}
@@ -397,9 +398,9 @@ const Header = () => {
             }}
           >
             <FiShoppingCart className="xl:text-xl text-lg" />
-            {cartItems.length > 0 && (
+            {cartCount > 0 && (
               <div className="absolute -top-2 -right-1 bg-[#81d8d0] text-black rounded-full flex items-center justify-center text-xs  w-[15px] h-[15px]">
-                {cartItems.length}
+                {cartCount}
               </div>
             )}
           </div>
