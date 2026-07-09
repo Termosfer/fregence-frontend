@@ -24,6 +24,8 @@ export interface Perfume {
   minPrice: number;        // Son görünən qiymət
   defaultMl: number;       // Avtomatik seçilən ölçü
   variants: PerfumeVariant[];
+  stock:number;
+  ml:number
 }
 
 // --- 2. WISHLIST ---
@@ -172,4 +174,22 @@ export interface BrandGroup {
   count: number;
   mainImage: string;
   products: string[];
+}
+
+export interface AddProductFormInput {
+  name: string;
+  brand: string;
+  gender: "MEN" | "WOMEN" | "UNISEX"; // Perfume interfeysinizə tam uyğun olması üçün
+  description: string;
+  isNew: boolean;
+  isRecommended: boolean;
+  
+  // Düz olan qiymət, ml, stock sahələrini silib, variants massivi əlavə edirik:
+  variants: {
+    id?: number; // Yeni əlavə olunan variantların ID-si olmur, ona görə optional (?) edirik
+    ml: number;
+    price: number;
+    discountPrice: number;
+    stock: number;
+  }[];
 }

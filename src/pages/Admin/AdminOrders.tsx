@@ -100,7 +100,7 @@ const AdminOrders = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+      {/*   <div className="flex items-center gap-3">
           <select 
             value={filters.status}
             onChange={(e) => setFilters({...filters, status: e.target.value})}
@@ -113,10 +113,11 @@ const AdminOrders = () => {
             <option value="DELIVERED">Delivered</option>
           </select>
 
-          {/* <button onClick={() => setConfirmDeleteAll(true)} className="px-5 py-3 border border-red-200 text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all cursor-pointer">
+
+          <button onClick={() => setConfirmDeleteAll(true)} className="px-5 py-3 border border-red-200 text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all cursor-pointer">
             Delete All
-          </button> */}
-        </div>
+          </button>
+        </div> */}
       </div>
 
       {/* TABLE */}

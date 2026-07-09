@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form"; // useFieldArray əlavə edildi
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../api/axios";
 import { toast } from "react-toastify";
 import imageCompression from "browser-image-compression";
 import { FiX, FiUpload, FiLoader, FiCheck } from "react-icons/fi";
-import type {  ApiError, Perfume } from "../../types/perfume";
+import type { AddProductFormInput, ApiError, Perfume } from "../../types/perfume";
 import type { AxiosError } from "axios";
 
 interface Props {
@@ -20,13 +20,20 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isCompressing, setIsCompressing] = useState(false);
 
-  const { register, handleSubmit, reset } = useForm<AddProductFormInput>({
+  // useForm daxilində "control" əlavə edildi
+  const { register, control, handleSubmit, reset } = useForm<AddProductFormInput>({
     defaultValues: {
       isNew: false,
       isRecommended: false,
       gender: "UNISEX",
-      discountPrice: 0, // Default olaraq 0
+      variants: [{ ml: 100, price: 0, discountPrice: 0, stock: 0 }] // Standart olaraq minimum 1 variant
     },
+  });
+
+  // useFieldArray istifadə edərək "variants" massivini idarə edirik
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "variants",
   });
 
   useEffect(() => {
@@ -34,17 +41,31 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
       reset({
         name: initialData.name,
         brand: initialData.brand,
-        price: initialData.price,
-        discountPrice: initialData.discountPrice || 0, // Discount əlavə olundu
-        ml: initialData.ml,
         gender: initialData.gender,
         description: initialData.description,
         isNew: initialData.isNew,
         isRecommended: initialData.isRecommended || false,
+        // Redaktə edərkən bütün variantları forma doldururuq
+        variants: initialData.variants && initialData.variants.length > 0
+          ? initialData.variants.map(v => ({
+              id: v.id,
+              ml: v.ml,
+              price: v.price,
+              discountPrice: v.discountPrice || 0,
+              stock: v.stock || 0
+            }))
+          : [{ ml: 100, price: initialData.price || 0, discountPrice: 0, stock: 0 }]
       });
       setImagePreview(initialData.imageUrl);
     } else if (!isOpen) {
-      reset({ name: "", brand: "", price: 0, discountPrice: 0, ml: 0, description: "", isNew: false, isRecommended: false });
+      reset({ 
+        name: "", 
+        brand: "", 
+        description: "", 
+        isNew: false, 
+        isRecommended: false,
+        variants: [{ ml: 100, price: 0, discountPrice: 0, stock: 0 }] 
+      });
       setImagePreview(null);
       setImageFile(null);
     }
@@ -61,7 +82,6 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
         url: url,
         data: data,
         headers: {
-          // 415 xətasının qarşısını almaq üçün mütləq multipart olmalıdır
           "Content-Type": "multipart/form-data",
         },
       });
@@ -101,12 +121,22 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
 
     const formData = new FormData();
     
- const perfumeData = {
-    ...values,
-    imageUrl: initialData?.imageUrl || null // Köhnə şəkli qoruyuruq
-  };
+    // Backend root səviyyəsində qiymət tələb edərsə, ən ucuz (və ya ilk) variantın qiymətini təyin edirik
+    const primaryPrice = values.variants?.[0]?.price || 0;
 
-    // Backend @RequestPart("perfume") gözlədiyi üçün JSON Blob yaradırıq
+    // Backend-in gözlədiyi tam uyğun struktur
+    const perfumeData = {
+      name: values.name,
+      brand: values.brand,
+      gender: values.gender,
+      description: values.description,
+      isNew: values.isNew,
+      isRecommended: values.isRecommended,
+      price: primaryPrice, // Root səviyyəsində tələb olunan qiymət
+      imageUrl: initialData?.imageUrl || null,
+      variants: values.variants // Bütün variant siyahısı
+    };
+
     const jsonBlob = new Blob([JSON.stringify(perfumeData)], { type: "application/json" });
     formData.append("perfume", jsonBlob);
     
@@ -148,11 +178,11 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
           
           {/* Image Upload */}
           <div className="space-y-3">
-            <span className="text-[10px] font-black text-neutral  uppercase tracking-widest">Product Media</span>
+            <span className="text-[10px] font-black text-neutral uppercase tracking-widest">Product Media</span>
             <div className={`relative border-2 border-dashed border-gray-100 rounded-3xl flex flex-col items-center justify-center transition-all bg-gray-50/50 hover:border-black ${!imagePreview ? 'py-16' : 'p-2'}`}>
               {imagePreview ? (
                 <div className="relative w-full aspect-square">
-                  <img src={imagePreview}  className="w-full h-full object-contain rounded-2xl" alt="upload image" />
+                  <img src={imagePreview} className="w-full h-full object-contain rounded-2xl" alt="upload image" />
                 </div>
               ) : (
                 <div className="text-center text-gray-300">
@@ -168,35 +198,86 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
           <div className="space-y-6">
             {/* Name */}
             <div className="group">
-              <label className="text-[10px] font-black text-neutral  uppercase tracking-widest block mb-1">Perfume Name</label>
+              <label className="text-[10px] font-black text-neutral uppercase tracking-widest block mb-1">Perfume Name</label>
               <input {...register("name", { required: true })} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black transition-all text-sm bg-transparent" />
             </div>
 
             {/* Brand */}
             <div className="group">
-              <label className="text-[10px] font-black text-neutral  uppercase tracking-widest block mb-1">Brand</label>
+              <label className="text-[10px] font-black text-neutral uppercase tracking-widest block mb-1">Brand</label>
               <input {...register("brand", { required: true })} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black transition-all text-sm bg-transparent" />
             </div>
 
-            {/* Prices & ML */}
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="text-[10px] font-black text-neutral  uppercase mb-1">Price</label>
-                <input type="number" {...register("price", { valueAsNumber: true, required: true })} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black text-sm" />
+            {/* DİNAMİK VARİANTLAR (ML, QIYMƏT, ENDİRİM VƏ STOK) */}
+            <div className="space-y-4 pt-4 border-t border-gray-100">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black text-neutral uppercase tracking-widest">
+                  Product Variants (ML & Prices)
+                </span>
+                <button 
+                  type="button" 
+                  onClick={() => append({ ml: 50, price: 0, discountPrice: 0, stock: 0 })}
+                  className="text-[10px] font-bold uppercase text-teal-600 hover:underline cursor-pointer"
+                >
+                  + Add Variant (ML)
+                </button>
               </div>
-              <div>
-                <label className="text-[10px] font-black text-neutral  uppercase mb-1">Discount</label>
-                <input type="number" {...register("discountPrice", { valueAsNumber: true })} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black text-sm" />
-              </div>
-              <div>
-                <label className="text-[10px] font-black text-neutral  uppercase mb-1">Volume (ML)</label>
-                <input type="number" {...register("ml", { valueAsNumber: true, required: true })} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black text-sm" />
+
+              <div className="space-y-4">
+                {fields.map((field, index) => (
+                  <div key={field.id} className="border border-gray-100 p-4 rounded-3xl bg-gray-50/20 relative space-y-4">
+                    {fields.length > 1 && (
+                      <button 
+                        type="button" 
+                        onClick={() => remove(index)} 
+                        className="absolute top-2 right-4 text-red-500 text-[10px] font-bold uppercase hover:underline cursor-pointer"
+                      >
+                        Delete
+                      </button>
+                    )}
+                    
+                    <div className="grid grid-cols-4 gap-3">
+                      <div>
+                        <label className="text-[9px] font-bold text-neutral uppercase mb-1 block">Volume (ML)</label>
+                        <input 
+                          type="number" 
+                          {...register(`variants.${index}.ml` as const, { valueAsNumber: true, required: true })} 
+                          className="w-full border-b border-gray-200 py-2 outline-none focus:border-black text-xs bg-transparent" 
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[9px] font-bold text-neutral uppercase mb-1 block">Price</label>
+                        <input 
+                          type="number" 
+                          {...register(`variants.${index}.price` as const, { valueAsNumber: true, required: true })} 
+                          className="w-full border-b border-gray-200 py-2 outline-none focus:border-black text-xs bg-transparent" 
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[9px] font-bold text-neutral uppercase mb-1 block">Discount</label>
+                        <input 
+                          type="number" 
+                          {...register(`variants.${index}.discountPrice` as const, { valueAsNumber: true })} 
+                          className="w-full border-b border-gray-200 py-2 outline-none focus:border-black text-xs bg-transparent" 
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[9px] font-bold text-neutral uppercase mb-1 block">Stock</label>
+                        <input 
+                          type="number" 
+                          {...register(`variants.${index}.stock` as const, { valueAsNumber: true, required: true })} 
+                          className="w-full border-b border-gray-200 py-2 outline-none focus:border-black text-xs bg-transparent" 
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Gender */}
             <div>
-              <label className="text-[10px] font-black text-neutral  uppercase tracking-widest block mb-1">Gender</label>
+              <label className="text-[10px] font-black text-neutral uppercase tracking-widest block mb-1">Gender</label>
               <select {...register("gender")} className="w-full border-b border-gray-100 py-2 outline-none focus:border-black transition-all text-sm bg-transparent cursor-pointer">
                 <option value="MEN">MEN</option>
                 <option value="WOMEN">WOMEN</option>
@@ -206,7 +287,7 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
 
             {/* Description */}
             <div>
-              <label className="text-[10px] font-black text-neutral  uppercase tracking-widest block mb-1">Description</label>
+              <label className="text-[10px] font-black text-neutral uppercase tracking-widest block mb-1">Description</label>
               <textarea {...register("description")} rows={3} className="w-full border border-gray-100 p-3 rounded-xl outline-none focus:border-black transition-all text-sm resize-none bg-transparent" />
             </div>
 
@@ -218,14 +299,14 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
                     <input type="checkbox" {...register("isNew")} className="peer h-5 w-5 appearance-none rounded border border-gray-300 checked:bg-black transition-all" />
                     <FiCheck className="absolute ml-1 text-white opacity-0 peer-checked:opacity-100 transition-opacity" size={12}/>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-neutral ">New Arrival</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-neutral">New Arrival</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <div className="relative flex items-center">
                     <input type="checkbox" {...register("isRecommended")} className="peer h-5 w-5 appearance-none rounded border border-gray-300 checked:bg-black transition-all" />
                     <FiCheck className="absolute ml-1 text-white opacity-0 peer-checked:opacity-100 transition-opacity" size={12}/>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-neutral ">Featured</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-neutral">Featured</span>
                 </label>
               </div>
             </div>
@@ -234,7 +315,7 @@ const AddProduct = ({ isOpen, onClose, initialData }: Props) => {
 
         {/* Footer */}
         <div className="p-6 border-t bg-[#F8F9FA] flex gap-4">
-          <button type="button" onClick={onClose} className="cursor-pointer flex-1 py-4 text-[10px] font-bold uppercase border border-gray-200 text-neutral  rounded-2xl bg-white hover:text-black hover:border-black transition-all">
+          <button type="button" onClick={onClose} className="cursor-pointer flex-1 py-4 text-[10px] font-bold uppercase border border-gray-200 text-neutral rounded-2xl bg-white hover:text-black hover:border-black transition-all">
             Cancel
           </button>
           <button 

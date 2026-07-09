@@ -17,7 +17,7 @@ type SubscriberProvider = "ALL" | "GMAIL" | "OUTLOOK" | "OTHER";
 
 interface SubscriberFilters {
   search: string;
-  provider: SubscriberProvider; // Artıq "any" deyil, yalnız bu 4 dəyərdən biri ola bilər
+  provider: SubscriberProvider; 
 }
 interface Subscriber {
   id: number;
@@ -119,7 +119,7 @@ const AdminSubscribers = () => {
         <div className="relative w-20 h-20 bg-[#0F172A] text-white flex items-center justify-center rounded-3xl shadow-2xl z-10 animate-[heartbeat_1.5s_ease-in-out_infinite]">
           <div className="flex flex-col items-center">
             <span className="text-2xl font-black tracking-tighter italic">Mi</span>
-            <div className="w-4 h-[1px] bg-teal-500 mt-0.5"></div>
+            <div className="w-4 h-px bg-teal-500 mt-0.5"></div>
           </div>
         </div>
       </div>
@@ -269,7 +269,7 @@ const AdminSubscribers = () => {
           displayedSubscribers?.map((sub) => (
             <div
               key={sub.id}
-              className="bg-white p-6 rounded-[2rem] border border-gray-50 shadow-sm hover:shadow-xl hover:border-black transition-all duration-500 group flex items-center justify-between"
+              className="bg-white p-6 rounded-4xl border border-gray-50 shadow-sm hover:shadow-xl hover:border-black transition-all duration-500 group flex items-center justify-between"
             >
               <div className="flex items-center gap-4 min-w-0">
                 <div className="w-12 h-12 rounded-2xl bg-gray-50 text-neutral  flex items-center justify-center group-hover:bg-[#0F172A] group-hover:text-[#81d8d0] transition-all shadow-inner group-hover:rotate-6">
@@ -303,7 +303,7 @@ const AdminSubscribers = () => {
 
       {/* DELETE CONFIRMATION MODAL */}
       {confirmDeleteId && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200] backdrop-blur-sm animate-in fade-in duration-300">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-200 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white rounded-[2.5rem] p-10 max-w-sm w-full shadow-2xl space-y-6 mx-4 text-center transform animate-in zoom-in-95 duration-300">
             <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mx-auto text-red-500 animate-bounce">
               <FiTrash2 size={36} />

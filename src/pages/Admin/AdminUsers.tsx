@@ -117,7 +117,7 @@ const AdminUsers = () => {
         <div className="relative w-20 h-20 bg-[#0F172A] text-white flex items-center justify-center rounded-3xl shadow-2xl z-10 animate-[heartbeat_1.5s_ease-in-out_infinite]">
           <div className="flex flex-col items-center">
             <span className="text-2xl font-black tracking-tighter italic">Mi</span>
-            <div className="w-4 h-[1px] bg-teal-500 mt-0.5"></div>
+            <div className="w-4 h-px bg-teal-500 mt-0.5"></div>
           </div>
         </div>
       </div>
@@ -321,7 +321,7 @@ const AdminUsers = () => {
                             setConfirmDeleteId(u.id);
                             setConfirmDeleteName(u.name);
                           }}
-                          className="cursor-pointer p-3 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                          className="cursor-pointer p-3 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 "
                         >
                           <FiTrash2 size={18} />
                         </button>
@@ -344,7 +344,7 @@ const AdminUsers = () => {
 
       {/* DELETE MODAL */}
       {confirmDeleteId && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200] backdrop-blur-sm animate-in fade-in duration-300">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-200 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white rounded-[2.5rem] p-10 max-w-sm w-full shadow-2xl space-y-6 mx-4 text-center transform animate-in zoom-in-95 duration-300">
             <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mx-auto text-red-500 animate-bounce">
               <FiTrash2 size={36} />

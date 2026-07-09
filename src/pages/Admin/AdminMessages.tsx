@@ -89,7 +89,7 @@ const AdminMessages = () => {
         <div className="relative w-20 h-20 bg-[#0F172A] text-white flex items-center justify-center rounded-3xl shadow-2xl z-10 animate-[heartbeat_1.5s_ease-in-out_infinite]">
           <div className="flex flex-col items-center">
             <span className="text-2xl font-black tracking-tighter italic">Mi</span>
-            <div className="w-4 h-[1px] bg-teal-500 mt-0.5"></div>
+            <div className="w-4 h-px bg-teal-500 mt-0.5"></div>
           </div>
         </div>
       </div>
@@ -205,10 +205,10 @@ const AdminMessages = () => {
           displayedMessages?.map((msg: ContactMessage) => (
             <div
               key={msg.id}
-              className="bg-white rounded-[2rem] p-6 border border-gray-50 shadow-sm hover:shadow-xl hover:border-black transition-all duration-500 group flex flex-col md:flex-row md:items-center gap-8"
+              className="bg-white rounded-4xl p-6 border border-gray-50 shadow-sm hover:shadow-xl hover:border-black transition-all duration-500 group flex flex-col md:flex-row md:items-center gap-8"
             >
               {/* User Identity */}
-              <div className="flex items-center gap-5 md:w-72 flex-shrink-0">
+              <div className="flex items-center gap-5 md:w-72 shrink-0">
                 <div className="w-12 h-12 rounded-2xl bg-[#0F172A] text-[#81d8d0] flex items-center justify-center font-black text-lg shadow-lg group-hover:rotate-6 transition-transform">
                   {msg.name.charAt(0).toUpperCase()}
                 </div>
@@ -231,7 +231,7 @@ const AdminMessages = () => {
               </div>
 
               {/* Metadata & Actions */}
-              <div className="flex items-center justify-between md:justify-end gap-8 md:w-56 flex-shrink-0">
+              <div className="flex items-center justify-between md:justify-end gap-8 md:w-56 shrink-0">
                 <div className="flex flex-col items-end gap-0.5">
                   <div className="flex items-center gap-1 text-[10px] font-black text-gray-300 uppercase tracking-widest">
                     <FiClock /> {new Date().toLocaleDateString("en-GB")}
@@ -261,7 +261,7 @@ const AdminMessages = () => {
 
       {/* DELETE MODAL */}
       {confirmDeleteId && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[200] backdrop-blur-sm animate-in fade-in duration-300">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-200 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white rounded-[2.5rem] p-10 max-w-sm w-full shadow-2xl space-y-6 mx-4 text-center transform animate-in zoom-in-95 duration-300">
             <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mx-auto text-red-500 animate-bounce">
               <FiTrash2 size={36} />
