@@ -54,7 +54,7 @@ const AdminOrders = () => {
     };
   }, [queryClient]);
 
-  const [filters, setFilters] = useState({ status: "ALL", sortDir: "desc" });
+  /* const [filters, setFilters] = useState({ status: "ALL", sortDir: "desc" }); */
 
   const allOrders = ordersData?.content || [];
   const totalElements = ordersData?.totalElements || 0;
